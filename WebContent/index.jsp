@@ -9,7 +9,7 @@
 <body>
 <form action = "OrderStartServlet" method = "post">
 卓番：<br>
-<input type = "number" name = "table_id"><br>
+<input type = "number" name = "tableId"><br>
 <input type = "submit" value = "登録">
 </form>
 </body>

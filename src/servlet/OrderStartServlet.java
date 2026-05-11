@@ -2,6 +2,7 @@ package servlet;
 
 import java.io.IOException;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,7 +17,14 @@ public class OrderStartServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, 
 			HttpServletResponse response) 
 					throws ServletException, IOException {
+		String tableNumber = request.getParameter("tableNumber");
 		
+		request.setAttribute("tableNumber", tableNumber);
+		
+		RequestDispatcher dispatcher = 
+				request.getRequestDispatcher
+				("WEB-INF/jsp/orderStart.jsp");
+		dispatcher.forward(request, response);
 	}
 
 }
