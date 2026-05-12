@@ -8,6 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.TableInfo;
 
 @WebServlet("/OrderStartServlet")
@@ -17,12 +18,24 @@ public class OrderStartServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, 
 			HttpServletResponse response) 
 					throws ServletException, IOException {
-		String tableNumber = request.getParameter("tableNumber");
+		//request.setCharacterEncoding("UTF-8");
+		String tableNumber = request.getParameter("tableId");
+		String sessionId = request.getParameter("sessionid");
+		String sessionStatus = request.getParameter("sessionStatus");
+		int tableId = 0;
+		int sessionNum = 0;
 		
-		TableInfo tableInfo = new TableInfo();
-		tableInfo.setTableId(Integer.parseInt(tableNumber));
+		try {
+			tableId = Integer.parseInt(tableNumber);
+		} catch (NumberFormatException e) {
+			System.out.println("数値が正しく入力されていません");
+		}
 		
 		
+		TableInfo tableInfo = new TableInfo(tableId, sessionNum, sessionStatus);
+		tableInfo.setTableId(tableId);
+		
+		HttpSession session = request.getSession();
 		
 		request.setAttribute("tableInfo", tableInfo);
 		
