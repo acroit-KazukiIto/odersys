@@ -4,7 +4,9 @@ public class TableInfo {
 	private int tableId, sessionId;
 	private String sessionStatus;
 
-	private TableInfo(int tableId, int sessionId, String sessionStatus) {
+	public TableInfo() {}
+	
+    public TableInfo(int tableId, int sessionId, String sessionStatus) {
 		super();
 		this.tableId = tableId;
 		this.sessionId = sessionId;

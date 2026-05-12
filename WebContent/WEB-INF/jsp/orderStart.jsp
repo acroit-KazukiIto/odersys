@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ page import="model.TableInfo" %>
 <%
-TableInfo t = (TableInfo)request.getAttribute("t");
+TableInfo tableInfo = (TableInfo)request.getAttribute("tableInfo");
 %>
 <!DOCTYPE html>
 <html>
@@ -11,6 +11,6 @@ TableInfo t = (TableInfo)request.getAttribute("t");
 <title>注文開始</title>
 </head>
 <body>
-<h1><%= t %>卓</h1>
+<h1><%= tableInfo.getTableId() %>卓</h1>
 </body>
 </html>
