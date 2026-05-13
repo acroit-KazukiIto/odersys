@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 public class OrderStartDAO {
     private final String JDBC_URL = "jdbc:mysql://localhost:3306/order_management";
-    private final String DB_USER = "Order";
+    private final String DB_USER = "order";
     private final String DB_PASS = "1234";
 
     // テーブル状態とセッション情報の更新
