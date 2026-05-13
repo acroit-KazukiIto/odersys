@@ -1,9 +1,9 @@
 package servlet;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
+import dao.ShowMenuDAO;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,52 +12,40 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.ProductInfo;
 
-@WebServlet("/ShowMenuServlet")
+@WebServlet("/showMenu")
 public class ShowMenuServlet extends HttpServlet {
 
-    private static final long serialVersionUID = 1L;
-
-    protected void doGet(HttpServletRequest request,
-            HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // 卓番を取得
-        String tableNumber =
-                request.getParameter("tableNumber");
+        // guestCountをrequestから取得する
+        String guestCountStr = request.getParameter("guestCount");
+        
+        ShowMenuDAO dao = new ShowMenuDAO();
 
-        // 商品リストを作成
-        List<ProductInfo> productList =
-                new ArrayList<>();
+        // guestCountが送られてきた場合DB更新を実行
+        if (guestCountStr != null && !guestCountStr.isEmpty()) {
+            try {
+                int guestCount = Integer.parseInt(guestCountStr);
+                // table_sessionsのguestCountを更新）
+                dao.updateGuestCount(guestCount);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
 
+        //データベースのproductテーブルから情報をリストとして取得
+        List<ProductInfo> productList = dao.findProductTable();
+
+        //取得したproductListをrequestにセット
+        request.setAttribute("productList", productList);
+
+        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/showMenu.jsp");
+        rd.forward(request, response);
     }
 
-    protected void doPost(HttpServletRequest request,
-            HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        request.setCharacterEncoding("UTF-8");
-
-        // 商品の情報を取得
-        String productName =
-                request.getParameter("productName");
-
-        String productPrice =
-                request.getParameter("productPrice");
-
-        // request保存
-        request.setAttribute(
-                "productName",
-                productName);
-
-        request.setAttribute(
-                "productPrice",
-                productPrice);
-
-        // ItemDetailServletに送るもの
-        RequestDispatcher dispatcher =
-                request.getRequestDispatcher(
-                        "ItemDetailServlet");
-
-        dispatcher.forward(request, response);
+        doGet(request, response);
     }
 }
