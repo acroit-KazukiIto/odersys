@@ -3,7 +3,7 @@ package model;
 import java.util.List;
 
 public class OrderHistoryLogic {
-	// 金額合計
+	// 金額合計の計算
 	public int calcTotalOrderPrice(List<OrderHistoryInfo> list) {
 		int total = 0;
 		for (OrderHistoryInfo item : list) {
@@ -12,7 +12,7 @@ public class OrderHistoryLogic {
 		return total;
 	}
 	
-	// 数量合計
+	// 数量合計の計算
 	public int calcTotalOrderQuantity(List<OrderHistoryInfo> list) {
 		int total = 0;
 		for (OrderHistoryInfo item : list) {
@@ -21,13 +21,15 @@ public class OrderHistoryLogic {
 		return total;
 	}
 	
-	// 全て提供済みかチェック
-	public boolean hasUnprovidedItems(List<OrderHistoryInfo> list) {
+	// ポップアップ表示判定
+	public int showPopUp(List<OrderHistoryInfo> list, String action) {
+		if (!"checkOut".equals(action)) return 0;
+		
 		for (OrderHistoryInfo item : list) {
-			if (item.getOrderFlag() == 0) { // 0:未提供
-				return true;
+			if(item.getOrderFlag() == 0) {
+				return 1;
 			}
 		}
-		return false;
+		return 2;
 	}
 }
