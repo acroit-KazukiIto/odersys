@@ -2,6 +2,7 @@ package servlet;
 
 import java.io.IOException;
 import java.util.List;
+
 import dao.ShowMenuDAO;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -9,52 +10,43 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.ProductInfo;
 
 @WebServlet("/ShowMenuServlet")
 public class ShowMenuServlet extends HttpServlet {
+    
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+        String tableNumber = request.getParameter("tableNumber");
+        if (tableNumber != null) {
+            session.setAttribute("tableNumber", tableNumber);
+        }
 
-        request.setCharacterEncoding("UTF-8");
-
-        // 1. JSPのリンクやOrderStartから送られてくるパラメータを取得
-        String category = request.getParameter("category");
         String guestCountStr = request.getParameter("guestCount");
-
-        // 初回アクセス（カテゴリ未選択）の場合はデフォルトで「okonomiyaki」にする
-        if (category == null || category.isEmpty()) {
-            category = "okonomiyaki";
-        }
-
         ShowMenuDAO dao = new ShowMenuDAO();
-
-        // 2. 人数更新処理
-        if (guestCountStr != null && !guestCountStr.isEmpty()) {
-            try {
-                int guestCount = Integer.parseInt(guestCountStr);
-                dao.updateGuestCount(guestCount);
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
+        if (guestCountStr != null) {
+            dao.updateGuestCount(Integer.parseInt(guestCountStr));
         }
 
-        // 3. DAOにカテゴリを渡して、絞り込んだリストを取得
-        List<ProductInfo> productList = dao.findProductTable(category);
+        //  商品データ取得
+        List<ProductInfo> productList = dao.findProductTable();
+        session.setAttribute("productList", productList);
 
-        // 4. JSPに渡すデータをセット
-        request.setAttribute("productList", productList);
-        // 現在選ばれているカテゴリも渡すと便利（任意）
+        // カテゴリ
+        String category = request.getParameter("category");
+        if (category == null) {
+            category = "お好み焼き"; 
+        }
         request.setAttribute("currentCategory", category);
 
-        // 5. 遷移（フォルダ構成に合わせてパスを修正）
-        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/showMenu.jsp");
-        rd.forward(request, response);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/showMenu.jsp");
+        dispatcher.forward(request, response);
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8"); 
         doGet(request, response);
     }
 }

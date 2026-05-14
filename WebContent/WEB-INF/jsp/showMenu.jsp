@@ -1,98 +1,88 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.List, model.ProductInfo, model.TableInfo" %>
+<%@ page import="java.util.*, model.ProductInfo" %>
+<%
+    List<ProductInfo> productList = (List<ProductInfo>) session.getAttribute("productList");
+    String currentCategory = (String) request.getAttribute("currentCategory");
+    String tableNumber = (String) session.getAttribute("tableNumber");
+
+    Integer items = (Integer) session.getAttribute("items");
+    if(items == null) items = 0;
+    if(tableNumber == null) tableNumber = "whyman";
+%>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>メニュー画面</title>
+    <title>メニュー</title>
 </head>
 <body>
 
-    <div id="categoryHeader">
-        <table border="0">
+    <form action="ShowMenuServlet" method="post">
+        <table border="1">
             <tr>
-                <td><button onclick="location.href='ShowMenuServlet?category=okonomiyaki'">お好み焼き</button></td>
-                <td><button onclick="location.href='ShowMenuServlet?category=monjayaki'">もんじゃ焼き</button></td>
-                <td><button onclick="location.href='ShowMenuServlet?category=teppanyaki'">鉄板焼き</button></td>
-                <td><button onclick="location.href='ShowMenuServlet?category=sideMenu'">サイドメニュー</button></td>
-                <td><button onclick="location.href='ShowMenuServlet?category=softDrink'">ソフトドリンク</button></td>
-                <td><button onclick="location.href='ShowMenuServlet?category=alcohol'">お酒</button></td>
-                <td><button onclick="location.href='ShowMenuServlet?category=bottle'">ボトル</button></td>
+                <td><input type="submit" name="category" value="お好み焼き"></td>
+                <td><input type="submit" name="category" value="もんじゃ焼き"></td>
+                <td><input type="submit" name="category" value="鉄板焼き"></td>
+                <td><input type="submit" name="category" value="サイドメニュー"></td>
+                <td><input type="submit" name="category" value="ソフトドリンク"></td>
+                <td><input type="submit" name="category" value="お酒"></td>
+                <td><input type="submit" name="category" value="ボトル"></td>
             </tr>
         </table>
-    </div>
+    </form>
 
     <hr>
 
-    <div id="productList">
-        <table border="1" width="100%">
-            <%
-                List<ProductInfo> productList = (List<ProductInfo>) request.getAttribute("productList");
-                if (productList != null && !productList.isEmpty()) {
-                    for (ProductInfo product : productList) {
-            %>
-                <tr>
-                    <td width="60%">
-                        <strong><%= product.getProductName() %></strong>
-                    </td>
-                    <td width="20%">
-                        <%= product.getProductPrice() %>円
-                    </td>
-                    <td width="20%" align="center">
-                        <form action="ItemDetailServlet" method="post" style="margin:0;">
-                            <input type="hidden" name="productName" value="<%= product.getProductName() %>">
-                            <input type="hidden" name="productPrice" value="<%= product.getProductPrice() %>">
-                            <button type="submit" name="productButton">+</button>
-                        </form>
-                    </td>
-                </tr>
-            <%
-                    }
-                } else {
-            %>
-                <tr>
-                    <td colspan="3" align="center">
-                        商品データが読み込めませんでした。<br>
-                        (DB内のcategory_nameが英単語と一致しているか確認してください)
-                    </td>
-                </tr>
-            <%
+    <table width="100%">
+        <% 
+        if(productList != null) {
+            for(ProductInfo p : productList) { 
+                if(p.getCategoryName().trim().equals(currentCategory)) {
+        %>
+        <tr>
+            <td>
+                <b><%= p.getProductName() %></b><br>
+                <%= p.getProductPrice() %>円
+            </td>
+            <td align="right">
+                <% if(p.getProductStock() > 0) { %>
+                    <form action="ItemDetailServlet" method="post">
+                        <input type="hidden" name="productName" value="<%= p.getProductName() %>">
+                        <input type="hidden" name="productPrice" value="<%= p.getProductPrice() %>">
+                        <input type="submit" value="＋">
+                    </form>
+                <% } else { %>
+                    売切
+                <% } %>
+            </td>
+        </tr>
+        <tr><td colspan="2"><hr></td></tr>
+        <% 
                 }
-            %>
-        </table>
-    </div>
+            }
+        } 
+        %>
+    </table>
 
-    <hr>
+    <table border="1" width="100%">
+        <tr>
+            <td align="center">
+                <form action="OrderHistoryServlet" method="post">
+                    <input type="submit" value="履歴・お会計">
+                </form>
+            </td>
 
-    <div id="footer">
-        <table border="0" width="100%">
-            <tr>
-                <td width="33%" align="left">
-                    <button onclick="location.href='OrderHistoryServlet'">履歴・お会計</button>
-                </td>
-                
-                <td width="34%" align="center">
-                    <%
-                        TableInfo tableInfo = (TableInfo) request.getAttribute("tableInfo");
-                        int tId = (tableInfo != null) ? tableInfo.getTableId() : 1; 
-                    %>
-                    <strong><%= tId %>卓</strong>
-                </td>
-                
-                <td width="33%" align="right">
-                    <%
-                        Integer cartSize = (Integer) session.getAttribute("cartSize");
-                    %>
-                    <button onclick="location.href='OrderListServlet'">
-                        注文リスト 
-                        <% if (cartSize != null && cartSize > 0) { %>
-                            (items: <%= cartSize %>)
-                        <% } %>
-                    </button>
-                </td>
-            </tr>
-        </table>
-    </div>
+            <td align="center">
+                <%= tableNumber %>卓
+            </td>
+
+            <td align="center">
+                <form action="OrderListServlet" method="post">
+                    <input type="submit" value="注文リスト(<%= items %>)">
+                </form>
+            </td>
+        </tr>
+    </table>
 
 </body>
 </html>
