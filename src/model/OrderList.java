@@ -5,7 +5,27 @@ import java.io.Serializable;
 public class OrderList implements Serializable{
 	private int[] productToppingList;
 	private String productName, toppingName;
-	private int toppingPrice, subTotal, productPrice, toppingQuantity;
+	private int toppingPrice, subTotal, productPrice, toppingQuantity, orderQuantity, toppingStock, productStock;
+	
+	
+	public int getToppingStock() {
+		return toppingStock;
+	}
+	public void setToppingStock(int toppingStock) {
+		this.toppingStock = toppingStock;
+	}
+	public int getProductStock() {
+		return productStock;
+	}
+	public void setProductStock(int productStock) {
+		this.productStock = productStock;
+	}
+	public int getOrderQuantity() {
+		return orderQuantity;
+	}
+	public void setOrderQuantity(int orderQuantity) {
+		this.orderQuantity = orderQuantity;
+	}
 	private String productId, toppingId, productToppingId;
 	
 	

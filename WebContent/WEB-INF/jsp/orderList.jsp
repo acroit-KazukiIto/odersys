@@ -10,25 +10,38 @@ OrderList ol = (OrderList)request.getAttribute ("ol");
 <meta charset="UTF-8">
 <title>注文リスト画面</title>
 </head>
+
 <body>
-<h1>注文リスト画面</h1>
+<form action="OrderListServlet" method="post">
 	<ul><%= ol.getProductName() %>
 		<li></li>
 		<li><%= ol.getToppingName() %></li><li><%= ol.getToppingQuantity() %></li><li><%= ol.getToppingPrice() %></li>
-    	<li><input type = "button" name = "minusButton" value = "-"></li>
-    	<li><input type = "number" name = "orderQuantity"></li>
-    	<li><input type = "button" name = "plusButton" value = "+"></li>
+    	<li><input type = "button" name = "Button" value = "-"></li>
+    	<li></li>
+    	<li><input type = "button" name = "Button" value = "+"></li>
     	<li><%= ol.getSubTotal() %></li>
-    	<li><input type = "button" name = "orderChangeButton" value = "変更"></li>
+    	<form action="ItemDetailsChangeServlet" method="post">
+    		<li><input type = "button" name = "Button" value = "変更"></li>
+    	</form>
     </ul>
     
     
     
-    
+</form>
+
 </body>
 <footer>
-<input type = "button" name = "menuButton" value="メニュー">
-<input type = "button" name = "orderButton" value="注文する">
+<form action="OrderListServlet" method="post">
+<div ="right">
+	<input type ="button" name ="Button" value ="メニュー">
+</div>
+<div ="center">
+	1卓
+</div>
+<div ="left">
+	<input type ="button" name ="Button" value ="注文する">
+</div>
+</form>
 </footer>
 
 </html>
