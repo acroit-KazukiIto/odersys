@@ -12,7 +12,7 @@ OrderList ol = (OrderList)request.getAttribute ("ol");
 </head>
 
 <body>
-<form action="OrderListServlet" method="post">
+<form action="/OrderListServlet" method="get">
 	<ul><%= ol.getProductName() %>
 		<li></li>
 		<li><%= ol.getToppingName() %></li><li><%= ol.getToppingQuantity() %></li><li><%= ol.getToppingPrice() %></li>
@@ -20,7 +20,7 @@ OrderList ol = (OrderList)request.getAttribute ("ol");
     	<li></li>
     	<li><input type = "button" name = "Button" value = "+"></li>
     	<li><%= ol.getSubTotal() %></li>
-    	<form action="ItemDetailsChangeServlet" method="post">
+ 		<form action="ItemDetailsChangeServlet" method="post">
     		<li><input type = "button" name = "Button" value = "変更"></li>
     	</form>
     </ul>
@@ -32,15 +32,17 @@ OrderList ol = (OrderList)request.getAttribute ("ol");
 </body>
 <footer>
 <form action="OrderListServlet" method="post">
-<div ="right">
-	<input type ="button" name ="Button" value ="メニュー">
-</div>
-<div ="center">
-	1卓
-</div>
-<div ="left">
-	<input type ="button" name ="Button" value ="注文する">
-</div>
+	<div ="right">
+		<form action="OrderListServlet" method="post">
+		<input type ="button" name ="Button" value ="メニュー">
+		</form>
+	</div>
+	<div ="center">
+		1卓
+	</div>
+	<div ="left">
+		<input type ="button" name ="Button" value ="注文する">
+	</div>
 </form>
 </footer>
 

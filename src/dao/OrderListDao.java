@@ -75,4 +75,25 @@ public class OrderListDao {
 			e.printStackTrace();
 		}
 	}
+	
+	public void insertOrderDetails() throws SQLException{
+		//JDBCドライバを読み込む
+		try {
+			Class.forName("mysql-connector-j-9.3.0");
+		}catch(ClassNotFoundException e){
+			throw new IllegalStateException("JDBCドライバを読み込めませんでした");
+		}
+		
+		//DB接続
+		try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
+			
+			//order_details行挿入のsql
+			String sql = ""; 
+			PreparedStatement pStmt = conn.prepareStatement(sql);
+			ResultSet rs = pStmt.executeQuery();
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
 }
