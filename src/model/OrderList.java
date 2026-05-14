@@ -1,15 +1,33 @@
 package model;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class OrderList implements Serializable{
 	private int[] productToppingList;
 	private String productName, toppingName;
 	private int toppingPrice, subTotal, productPrice, toppingQuantity;
+	private String productId, toppingId, productToppingId;
 	
 	
 	
+	public String getProductId() {
+		return productId;
+	}
+	public void setProductId(String productId) {
+		this.productId = productId;
+	}
+	public String getToppingId() {
+		return toppingId;
+	}
+	public void setToppingId(String toppingId) {
+		this.toppingId = toppingId;
+	}
+	public String getProductToppingId() {
+		return productToppingId;
+	}
+	public void setProductToppingId(String productToppingId) {
+		this.productToppingId = productToppingId;
+	}
 	public int[] getProductToppingList() {
 		return productToppingList;
 	}
@@ -51,9 +69,5 @@ public class OrderList implements Serializable{
 	}
 	public void setToppingQuantity(int toppingQuantity) {
 		this.toppingQuantity = toppingQuantity;
-	}
-	public void setOrderList(List<String> orderList) {
-		// TODO 自動生成されたメソッド・スタブ
-		
 	}
 }

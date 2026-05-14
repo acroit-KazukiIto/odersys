@@ -15,34 +15,49 @@ import model.OrderList;
 @WebServlet("/OrderListServlet")
 public class OrderListServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
        
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		
-	}
-
-	
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//System.out.println("サーブレットgetの1番うえ");
 		//リクエストパラメータの文字コード指定
 		request.setCharacterEncoding("UTF-8");
 		//リクエストパラメータの取得
+		/*
 		String productName = request.getParameter("productName");
 		String toppingName = request.getParameter("toppingName");
 		String productPrice = request.getParameter("productPrice");
 		String toppingPrice = request.getParameter("toppingPrice");
 		String toppingQuantity = request.getParameter("toppingQuantity");
 		String subTotal = request.getParameter("subTotal");
+		*/
+		//仮パラメーター
+		String productName = "お好み焼き";
+		String toppingName = "ベビースター";
+		String productPrice = "700";
+		String toppingPrice = "200";
+		String toppingQuantity = "3";
+		String subTotal = "1300";
 		
-		List<String>orderList = new ArrayList<String>(); 
-		orderList.add("productName");
-		orderList.add("toppingName");
-		orderList.add("productPrice");
-		orderList.add("toppingPrice");
-		orderList.add("toppingQuantity");
-		orderList.add("subTotal");
-			
+		List<String>List = new ArrayList<String>(); 
 		
+		List.add("productName");
+		List.add("toppingName");
+		List.add("productPrice");
+		List.add("toppingPrice");
+		List.add("toppingQuantity");
+		List.add("subTotal");
+		
+		
+		/*
+		System.out.println(productName); 
+		System.out.println(toppingName);
+		System.out.println(productPrice);
+		System.out.println(toppingPrice);
+		System.out.println(toppingQuantity);
+		System.out.println(subTotal);
+		*/
 		
 		//おそらくトッピング選択の段階で使われると思う。
 		//String productTopping  = request.getParameter("productTopping");
@@ -55,13 +70,83 @@ public class OrderListServlet extends HttpServlet {
 		ol.setToppingPrice(Integer.parseInt(toppingPrice));
 		ol.setToppingQuantity(Integer.parseInt(toppingQuantity));
 		ol.setSubTotal(Integer.parseInt(subTotal));
-		ol.setOrderList(orderList);
+		//ol.setOrderList(orderList);
 		
 		 
 		//ol.setOrderList(orderList);
 		//おそらくトッピング選択の段階で使われると思う。
 		//ol.setProductTopping(Integer.parseInt(productTopping)); 
-		request.setAttribute("orderList", orderList);
+		
+		//String log = "log";
+		//request.setAttribute("log", log);
+		
+		request.setAttribute("ol", ol);
+		//フォーワード
+		RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/orderList.jsp");
+		dispatcher.forward(request, response);
+		
+	}
+
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		//System.out.println("サーブレットgetの1番うえ");
+				//リクエストパラメータの文字コード指定
+				request.setCharacterEncoding("UTF-8");
+				//リクエストパラメータの取得
+				/*
+				String productName = request.getParameter("productName");
+				String toppingName = request.getParameter("toppingName");
+				String productPrice = request.getParameter("productPrice");
+				String toppingPrice = request.getParameter("toppingPrice");
+				String toppingQuantity = request.getParameter("toppingQuantity");
+				String subTotal = request.getParameter("subTotal");
+				*/
+				//仮パラメーター
+				String productName = "お好み焼き";
+				String toppingName = "ベビースター";
+				String productPrice = "700";
+				String toppingPrice = "200";
+				String toppingQuantity = "3";
+				String subTotal = "1300";
+				
+				List<String>List = new ArrayList<String>(); 
+				
+				List.add("productName");
+				List.add("toppingName");
+				List.add("productPrice");
+				List.add("toppingPrice");
+				List.add("toppingQuantity");
+				List.add("subTotal");
+				
+				
+				/*
+				System.out.println(productName); 
+				System.out.println(toppingName);
+				System.out.println(productPrice);
+				System.out.println(toppingPrice);
+				System.out.println(toppingQuantity);
+				System.out.println(subTotal);
+				*/
+				
+				//おそらくトッピング選択の段階で使われると思う。
+				//String productTopping  = request.getParameter("productTopping");
+				
+				//入力値をプロパティに設定
+				OrderList ol = new OrderList();
+				ol.setProductName(productName);
+				ol.setToppingName(toppingName);
+				ol.setProductPrice(Integer.parseInt(productPrice));
+				ol.setToppingPrice(Integer.parseInt(toppingPrice));
+				ol.setToppingQuantity(Integer.parseInt(toppingQuantity));
+				ol.setSubTotal(Integer.parseInt(subTotal));
+				//ol.setOrderList(orderList);
+				
+				 
+				//ol.setOrderList(orderList);
+				//おそらくトッピング選択の段階で使われると思う。
+				//ol.setProductTopping(Integer.parseInt(productTopping)); 
+				request.setAttribute("orderList", ol);
 		
 		//フォーワード
 		RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/orderList.jsp");
