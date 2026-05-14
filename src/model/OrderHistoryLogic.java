@@ -23,7 +23,7 @@ public class OrderHistoryLogic {
 	
 	// ポップアップ表示判定
 	public int showPopUp(List<OrderHistoryInfo> list, String action) {
-		if (!"checkOut".equals(action)) return 0;
+		if (list == null || !"checkOut".equals(action)) return 0;
 		
 		for (OrderHistoryInfo item : list) {
 			if(item.getOrderFlag() == 0) {

@@ -1,12 +1,40 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="model.CheckOutInfo" %>
+<%
+  CheckOutInfo info = (CheckOutInfo)request.getAttribute("checkOutInfo");
+  String tableNum = (info != null) ? info.getTableNumber() : "0";
+  int totalPrice = (info != null) ? info.getTotalOrderPrice() : 0;
+%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>会計完了</title>
 </head>
-<body>
+<body bgcolor="#FDF5E6">
+  <center>
+    <table width="400" border="0" cellpadding="0" cellspacing="0">
+      <tr>
+        <td bgcolor="FFD700" align="center">
+          <br>
+          <font size="4">会計が確定されました</font><br><br>
+          <font size="4">ご利用ありがとうございます</font><br><br>
+          <font size="5"><b><%= tableNum %></b></font><br>
+          <font size="6"><u><b>合計：<%= totalPrice %>円(税込)</b></u></font>
+          <br><br>
+        </td>
+      </tr>
+      
+      <tr>
+        <td align="center">
+          <br><br>
+          <font size="4">レジにてお支払いください</font><br><br>
+          <font size="4">またのご利用をお待ちしております</font>
+        </td>
+      </tr>
+    </table>
+  </center>
 
 </body>
 </html>

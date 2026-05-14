@@ -34,7 +34,7 @@ public class OrderHistoryServlet extends HttpServlet {
 		List<OrderHistoryInfo> dbList = dao.findOrderDetails();
 		List<OrderHistoryInfo> orderList = new ArrayList<>();
 		
-		if (productNames != null && dbList != null) {
+		if (productNames != null && dbList != null && productNames.length <= dbList.size()) {
 			for (int i = 0; i < productNames.length; i++) {
 				OrderHistoryInfo item = dbList.get(i);
 				item.setProductName(productNames[i]);
@@ -63,7 +63,7 @@ public class OrderHistoryServlet extends HttpServlet {
 		// 画面遷移判定
 		if ("yes".equals(action)) {
 			// 会計完了画面へ遷移
-			RequestDispatcher dispatcher = request.getRequestDispatcher("/CheckOutServlet");
+			RequestDispatcher dispatcher = request.getRequestDispatcher("CheckOutServlet");
 			dispatcher.forward(request, response);
 		} else {
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/orderHistory.jsp");

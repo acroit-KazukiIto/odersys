@@ -14,18 +14,13 @@ public class OrderHistoryDAO {
 	private final String JDBC_URL = "jdbc:mysql://localhost:3306/order_management";
 	private final String DB_USER = "order";
 	private final String DB_PASS = "1234";
-<<<<<<< HEAD
-
-	public List<OrderHistoryInfo> findOrderDetails(int tableId) {
-=======
 	
 	// order_idを元にorder_flag等の情報を取得
 	public List<OrderHistoryInfo> findOrderDetails() {
->>>>>>> branch 'master' of https://github.com/acroit-KazukiIto/odersys
 		List<OrderHistoryInfo> list = new ArrayList<>();
+		String sql = "SELECT order_id, order_flag FROM order_details ORDER BY order_id ASC";
+		
 		try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)) {
-			// order_idの昇順で取得
-			String sql = "SELECT order_id, order_flag, order_price FROM order_details ORDER BY order_id ASC";
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 			ResultSet rs = pStmt.executeQuery();
 			
@@ -37,7 +32,7 @@ public class OrderHistoryDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return null;
+			return new ArrayList<>();
 		}
 		return list;
 	}

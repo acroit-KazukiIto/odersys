@@ -10,26 +10,61 @@
 <meta charset="UTF-8">
 <title>注文開始</title>
 </head>
-<body>
-    <div style="text-align: center;">
-        <h1><%= tableNumber %>卓</h1>
-        <h3>いらっしゃいませ！</h3>
-        <h3>人数を設定してください</h3>
-        
-        <form action="OrderStartServlet" method="post">
+<body bgcolor="#FDF5E6">
+  <center>
+    <table width="400" border="0" cellpadding="0" cellspacing="0" style="background-color: #FDF5E6;">
+      <tr>
+        <td align="center">
+          <div style="background-color: #FFD700; width: 350px; padding: 30px 0; border-radius: 15px;">
+            <font size="7"><b><%= tableNumber %>卓</b></font>
+          </div>
+        </td>
+      </tr>
+
+      <tr><td height="30"></td></tr>
+      <tr>
+        <td align="center">
+          <font size="4">いらっしゃいませ！</font><br><br>
+          <font size="4">人数を設定してください</font>
+        </td>
+      </tr>
+
+      <tr><td height="20"></td></tr>
+      <tr>
+        <td align="center">
+          <form action="OrderStartServlet" method="post">
             <input type="hidden" name="tableId" value="<%= tableNumber %>">
             <input type="hidden" name="guestCount" value="<%= guestCount %>">
 
-            <div>
-                <button type="submit" name="action" value="minus">－</button>
-                <span style="font-size: 2em; margin: 0 20px;"><%= guestCount %></span>
-                <button type="submit" name="action" value="plus">＋</button>
-            </div>
+                        
+            <table border="0" cellpadding="10">
+              <tr>
+                <td>
+                  <button type="submit" name="action" value="minus" style="background-color: #5cb85c; color: white; border: none; width: 50px; height: 50px; font-size: 25px; font-weight: bold; border-radius: 5px; cursor: pointer;">
+                    -
+                  </button>
+                </td>
+                <td width="60" align="center">
+                  <font size="7"><b><%= guestCount %></b></font>
+                </td>
+                <td>
+                  <button type="submit" name="action" value="plus" style="background-color: #5cb85c; color: white; border: none; width: 50px; height: 50px; font-size: 25px; font-weight: bold; border-radius: 5px; cursor: pointer;">
+                    +
+                  </button>
+                </td>
+              </tr>
+            </table>
+            
             <br><br>
-            <div>
-                <button type="submit" name="action" value="start" style="padding: 10px 20px;">注文開始</button>
-            </div>
-        </form>
-    </div>
+            
+            <button type="submit" name="action" value="start" style="background-color: #008000; color: white; border: none; padding: 10px 30px; font-size: 18px; font-weight: bold; border-radius: 5px; cursor: pointer;">
+              注文開始
+            </button>
+          </form>
+        </td>
+      </tr>
+      <tr><td height="50"></td></tr>
+    </table>
+  </center>
 </body>
 </html>
