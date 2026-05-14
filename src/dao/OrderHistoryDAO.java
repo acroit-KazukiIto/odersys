@@ -14,8 +14,7 @@ public class OrderHistoryDAO {
 	private final String JDBC_URL = "jdbc:mysql://localhost:3306/order_management";
 	private final String DB_USER = "order";
 	private final String DB_PASS = "1234";
-	
-	// セッションIDに基づいて注文履歴を取得する
+
 	public List<OrderHistoryInfo> findOrderDetails(int tableId) {
 		List<OrderHistoryInfo> list = new ArrayList<>();
 		// order_detailsからorder_flag, order_id, order_price等を取得

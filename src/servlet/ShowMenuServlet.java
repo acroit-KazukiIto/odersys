@@ -23,7 +23,7 @@ public class ShowMenuServlet extends HttpServlet {
         if (tableNumber != null) {
             session.setAttribute("tableNumber", tableNumber);
         }
-
+//why
         String guestCountStr = request.getParameter("guestCount");
         ShowMenuDAO dao = new ShowMenuDAO();
         if (guestCountStr != null) {

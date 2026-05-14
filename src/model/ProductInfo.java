@@ -21,7 +21,7 @@ public class ProductInfo implements Serializable {
         this.productStock = productStock;
         this.productDisplayFlag = productDisplayFlag;
     }
-
+//oamaa
     public int getProductId() { return productId; }
     public void setProductId(int productId) { this.productId = productId; }
     

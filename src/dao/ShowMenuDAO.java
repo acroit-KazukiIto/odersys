@@ -13,7 +13,7 @@ public class ShowMenuDAO {
     private static final String JDBC_URL = "jdbc:mysql://localhost:3306/order_management";
     private static final String DB_USER = "order";
     private static final String DB_PASS = "1234";
-
+//whyman
     public void updateGuestCount(int guestCount) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");

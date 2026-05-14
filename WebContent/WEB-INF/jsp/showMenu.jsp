@@ -7,7 +7,7 @@
 
     Integer items = (Integer) session.getAttribute("items");
     if(items == null) items = 0;
-    if(tableNumber == null) tableNumber = "whyman";
+    if(tableNumber == null) tableNumber = "whyman"//whyman
 %>
 <!DOCTYPE html>
 <html>
