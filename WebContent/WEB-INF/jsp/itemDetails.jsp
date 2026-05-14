@@ -4,9 +4,9 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>エラー画面</title>
+<title>Insert title here</title>
 </head>
 <body>
-エラーが発生しました。
+
 </body>
 </html>

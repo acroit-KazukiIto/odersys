@@ -15,26 +15,21 @@ import model.ProductInfo;
 
 @WebServlet("/ShowMenuServlet")
 public class ShowMenuServlet extends HttpServlet {
-    
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
 
-        String tableNumber = request.getParameter("tableNumber");
-        if (tableNumber != null) {
-            session.setAttribute("tableNumber", tableNumber);
+        String tableId = request.getParameter("tableId");
+        
+        if (tableId != null && !tableId.isEmpty()) {
+            session.setAttribute("tableNumber", tableId);
         }
 
-        String guestCountStr = request.getParameter("guestCount");
+        // 3. 商品取得
         ShowMenuDAO dao = new ShowMenuDAO();
-        if (guestCountStr != null) {
-            dao.updateGuestCount(Integer.parseInt(guestCountStr));
-        }
-
-        //  商品データ取得
         List<ProductInfo> productList = dao.findProductTable();
         session.setAttribute("productList", productList);
 
-        // カテゴリ
         String category = request.getParameter("category");
         if (category == null) {
             category = "お好み焼き"; 
