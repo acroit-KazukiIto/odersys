@@ -81,7 +81,6 @@
                 
                 <td width="33%" align="right">
                     <%
-                        // セッション等から注文件数を取得（例：cartSize）
                         Integer cartSize = (Integer) session.getAttribute("cartSize");
                     %>
                     <button onclick="location.href='OrderListServlet'">
