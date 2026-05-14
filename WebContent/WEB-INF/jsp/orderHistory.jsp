@@ -8,7 +8,6 @@
 </head>
 <body bgcolor="#FDF5E6" style="margin: 0; padding: 0; font-family: sans-serif;">
 
-    <!-- メインレイアウトコンテナ -->
     <div style="width: 100%; min-height: 100vh; display: flex; flex-direction: column;">
         
         <div style="flex-grow: 1; overflow-y: auto; padding-bottom: 100px; width: 100%;">
