@@ -1,62 +1,98 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
-<%@ page import="java.util.List" %>
-<%@ page import="model.ProductInfo" %>
-<%
-    //  tablenumverからもらう物
-    String tableNumber = request.getParameter("tableNumber");
-    if (tableNumber == null || tableNumber.isEmpty()) {
-        tableNumber = "0";
-    }
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List, model.ProductInfo, model.TableInfo" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>メニュー画面</title>
+</head>
+<body>
 
-    // サーブレットの商品リストをもらう
-    List<ProductInfo> productList = (List<ProductInfo>) request.getAttribute("productList");
-    
-    // カートの数
-    Integer items = (Integer) session.getAttribute("items");
-    if (items == null) items = 0;
-%>
-
-<div>
-    <button type="button">お好み焼き</button>
-    <button type="button">もんじゃ焼き</button>
-    <button type="button">鉄板焼き</button>
+    <div id="categoryHeader">
+        <table border="0">
+            <tr>
+                <td><button onclick="location.href='ShowMenuServlet?category=okonomiyaki'">お好み焼き</button></td>
+                <td><button onclick="location.href='ShowMenuServlet?category=monjayaki'">もんじゃ焼き</button></td>
+                <td><button onclick="location.href='ShowMenuServlet?category=teppanyaki'">鉄板焼き</button></td>
+                <td><button onclick="location.href='ShowMenuServlet?category=sideMenu'">サイドメニュー</button></td>
+                <td><button onclick="location.href='ShowMenuServlet?category=softDrink'">ソフトドリンク</button></td>
+                <td><button onclick="location.href='ShowMenuServlet?category=alcohol'">お酒</button></td>
+                <td><button onclick="location.href='ShowMenuServlet?category=bottle'">ボトル</button></td>
+            </tr>
+        </table>
     </div>
 
-<hr>
+    <hr>
 
-<% if (productList != null) { %>
-    <% for (ProductInfo p : productList) { %>
-        <div>
-            <%= p.getProductName() %> / <%= p.getProductPrice() %>円
-            <form action="ItemDetailServlet" method="get" style="display:inline;">
-                <input type="hidden" name="productId" value="<%= p.getProductId() %>">
-                <input type="hidden" name="tableNumber" value="<%= tableNumber %>">
-                <button type="submit">＋</button>
-            </form>
-        </div>
-        <br>
-    <% } %>
-<% } %>
+    <div id="productList">
+        <table border="1" width="100%">
+            <%
+                List<ProductInfo> productList = (List<ProductInfo>) request.getAttribute("productList");
+                if (productList != null && !productList.isEmpty()) {
+                    for (ProductInfo product : productList) {
+            %>
+                <tr>
+                    <td width="60%">
+                        <strong><%= product.getProductName() %></strong>
+                    </td>
+                    <td width="20%">
+                        <%= product.getProductPrice() %>円
+                    </td>
+                    <td width="20%" align="center">
+                        <form action="ItemDetailServlet" method="post" style="margin:0;">
+                            <input type="hidden" name="productName" value="<%= product.getProductName() %>">
+                            <input type="hidden" name="productPrice" value="<%= product.getProductPrice() %>">
+                            <button type="submit" name="productButton">+</button>
+                        </form>
+                    </td>
+                </tr>
+            <%
+                    }
+                } else {
+            %>
+                <tr>
+                    <td colspan="3" align="center">
+                        商品データが読み込めませんでした。<br>
+                        (DB内のcategory_nameが英単語と一致しているか確認してください)
+                    </td>
+                </tr>
+            <%
+                }
+            %>
+        </table>
+    </div>
 
-<hr>
+    <hr>
 
-<table width="100%" border="1">
-    <tr>
-        <td align="center">
-            <a href="OrderHistoryServlet?tableNumber=<%= tableNumber %>" style="display:block; text-decoration:none; color:black; padding:10px;">
-                履歴・お会計
-            </a>
-        </td>
-        
-        <td align="center">
-            <%= tableNumber %> 卓
-        </td>
-        
-        <td align="center">
-            <a href="OrderListServlet?tableNumber=<%= tableNumber %>" style="display:block; text-decoration:none; color:black; padding:10px;">
-                注文リスト 
-                <% if(items > 0) { %> (<%= items %>) <% } %>
-            </a>
-        </td>
-    </tr>
-</table>
+    <div id="footer">
+        <table border="0" width="100%">
+            <tr>
+                <td width="33%" align="left">
+                    <button onclick="location.href='OrderHistoryServlet'">履歴・お会計</button>
+                </td>
+                
+                <td width="34%" align="center">
+                    <%
+                        TableInfo tableInfo = (TableInfo) request.getAttribute("tableInfo");
+                        int tId = (tableInfo != null) ? tableInfo.getTableId() : 1; 
+                    %>
+                    <strong><%= tId %>卓</strong>
+                </td>
+                
+                <td width="33%" align="right">
+                    <%
+                        Integer cartSize = (Integer) session.getAttribute("cartSize");
+                    %>
+                    <button onclick="location.href='OrderListServlet'">
+                        注文リスト 
+                        <% if (cartSize != null && cartSize > 0) { %>
+                            (items: <%= cartSize %>)
+                        <% } %>
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</body>
+</html>
