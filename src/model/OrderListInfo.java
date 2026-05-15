@@ -2,12 +2,18 @@ package model;
 
 import java.io.Serializable;
 
-public class OrderList implements Serializable{
+public class OrderListInfo implements Serializable{
 	private int[] productToppingList;
 	private String productName, toppingName;
-	private int toppingPrice, subTotal, productPrice, toppingQuantity, orderQuantity, toppingStock, productStock;
+	private int toppingPrice, subTotal, productPrice, toppingQuantity, orderQuantity, toppingStock, productStock, allOrderPrice;
 	
 	
+	public int getAllOrderPrice() {
+		return allOrderPrice;
+	}
+	public void setAllOrderPrice(int allOrderPrice) {
+		this.allOrderPrice = allOrderPrice;
+	}
 	public int getToppingStock() {
 		return toppingStock;
 	}
