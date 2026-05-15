@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import dao.ToppingListDAO;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -11,58 +12,64 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.ItemDetailsInfo;
+import model.ItemDetailsLogic;
 
 @WebServlet("/ItemDetailsServlet")
 public class ItemDetailsServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         
-        // ShowMenuからの情報取得
+        // メニュー画面からのパラメータ取得
         String name = request.getParameter("productName");
-        String price = request.getParameter("productPrice");
-        if(name != null) session.setAttribute("selectedPName", name);
-        if(price != null) session.setAttribute("selectedPPrice", Integer.parseInt(price));
+        String priceStr = request.getParameter("productPrice");
 
-        // トッピングリスト取得（初回のみ）
-        ToppingListDAO dao = new ToppingListDAO();
-        List<ItemDetailsInfo> toppingList = dao.findToppingTable();
-        session.setAttribute("toppingList", toppingList);
+        // 初回アクセス（メニューから来たとき）だけDAOを実行
+        if (name != null && priceStr != null) {
+            try {
+                int price = Integer.parseInt(priceStr);
+                session.setAttribute("selectedPName", name);
+                session.setAttribute("selectedPPrice", price);
+                session.setAttribute("subTotal", price);
+                
+                // DBからトッピングを取得
+                ToppingListDAO dao = new ToppingListDAO();
+                List<ItemDetailsInfo> toppingList = dao.findToppingTable();
+                session.setAttribute("toppingList", toppingList);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
 
-        calcSubTotal(request);
-        request.getRequestDispatcher("WEB-INF/jsp/itemDetails.jsp").forward(request, response);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/itemDetails.jsp");
+        dispatcher.forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         HttpSession session = request.getSession();
-        String action = request.getParameter("action");
+
+        // ＋ーボタンの処理
+        String actionParam = request.getParameter("action");
         List<ItemDetailsInfo> toppingList = (List<ItemDetailsInfo>) session.getAttribute("toppingList");
+        Integer productPrice = (Integer) session.getAttribute("selectedPPrice");
 
-        if (action.startsWith("plus") || action.startsWith("minus")) {
-            int index = Integer.parseInt(action.substring(action.indexOf("_") + 1));
-            ItemDetailsInfo target = toppingList.get(index);
-            int qty = target.getToppingQuantity();
+        if (actionParam != null && actionParam.contains("_") && toppingList != null) {
+            String[] parts = actionParam.split("_");
+            String action = parts[0];
+            int index = Integer.parseInt(parts[1]);
 
-            if (action.startsWith("plus") && qty < target.getToppingStock()) {
-                target.setToppingQuantity(qty + 1);
-            } else if (action.startsWith("minus") && qty > 0) {
-                target.setToppingQuantity(qty - 1);
+            ItemDetailsLogic logic = new ItemDetailsLogic();
+            logic.calcToppingQuantity(toppingList, index, action);
+            
+            if (productPrice != null) {
+                session.setAttribute("subTotal", logic.calcSubTotal(productPrice, toppingList));
             }
-            calcSubTotal(request);
-            request.getRequestDispatcher("WEB-INF/jsp/itemDetails.jsp").forward(request, response);
         }
-    }
 
-    // 小計計算 Logic
-    private void calcSubTotal(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        int basePrice = (Integer) session.getAttribute("selectedPPrice");
-        List<ItemDetailsInfo> list = (List<ItemDetailsInfo>) session.getAttribute("toppingList");
-        
-        int total = basePrice;
-        for (ItemDetailsInfo t : list) {
-            total += (t.getToppingPrice() * t.getToppingQuantity());
-        }
-        session.setAttribute("subTotal", total);
+        // doPostの後も同じJSPを表示
+        RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/itemDetails.jsp");
+        dispatcher.forward(request, response);
     }
 }
