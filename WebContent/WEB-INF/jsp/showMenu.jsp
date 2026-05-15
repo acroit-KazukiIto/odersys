@@ -3,8 +3,11 @@
 <%
     List<ProductInfo> productList = (List<ProductInfo>) session.getAttribute("productList");
     String currentCategory = (String) request.getAttribute("currentCategory");
+    
 
     Object tableObj = session.getAttribute("tableNumber");
+    String tableNum = (tableObj != null) ? tableObj.toString() : "-";
+
     Integer items = (Integer) session.getAttribute("items");
     if(items == null) items = 0;
 %>

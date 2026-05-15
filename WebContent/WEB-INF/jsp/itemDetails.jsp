@@ -2,7 +2,7 @@
 <%@ page import="java.util.List, model.ItemDetailsInfo" %>
 <%
     // セッションから表示用データを取得
-    String pName = (String) session.getAttribute("selectedPName");
+    String pName = (String) session.getAttribute("selectedPName");//a
     Integer pPrice = (Integer) session.getAttribute("selectedPPrice");
     String tableNum = (String) session.getAttribute("tableNumber");
     List<ItemDetailsInfo> toppingList = (List<ItemDetailsInfo>) session.getAttribute("toppingList");

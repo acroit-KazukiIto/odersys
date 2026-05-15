@@ -33,7 +33,7 @@ public class ItemDetailsServlet extends HttpServlet {
                 session.setAttribute("selectedPPrice", price);
                 session.setAttribute("subTotal", price);
                 
-                // DBからトッピングを取得
+                // DBからトッピングを取得a
                 ToppingListDAO dao = new ToppingListDAO();
                 List<ItemDetailsInfo> toppingList = dao.findToppingTable();
                 session.setAttribute("toppingList", toppingList);

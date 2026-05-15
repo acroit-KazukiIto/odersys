@@ -1,7 +1,9 @@
 package servlet;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
+import dao.OrderCompleteDAO;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,7 +18,13 @@ public class OrderCompleteServlet extends HttpServlet {
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//注文フラグをtrueに
-		
+		OrderCompleteDAO ocDAO = new OrderCompleteDAO();
+		try {
+			ocDAO.updateOrderDetails();
+		} catch (SQLException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
 		
 		//わホー(セイキン）
 		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/jsp/orderComplete.jsp");

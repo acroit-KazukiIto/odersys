@@ -1,18 +1,17 @@
 package servlet;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import dao.OrderListDao;
+import dao.OrderListDAO;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.OrderList;
+import model.OrderListInfo;
 import model.OrderListLogic;
 
 @WebServlet("/OrderListServlet")
@@ -34,13 +33,15 @@ public class OrderListServlet extends HttpServlet {
 		String subTotal = "1300";
 		String Button = request.getParameter("Button");
 				
-		OrderList ol = new OrderList();
+		OrderListInfo ol = new OrderListInfo();
 		ol.setProductName(productName);
 		ol.setToppingName(toppingName);
 		ol.setProductPrice(Integer.parseInt(productPrice));
 		ol.setToppingPrice(Integer.parseInt(toppingPrice));
 		ol.setToppingQuantity(Integer.parseInt(toppingQuantity));
 		ol.setSubTotal(Integer.parseInt(subTotal));
+		
+		
 		
 
 		if("+".equals(Button)) {
@@ -64,8 +65,11 @@ public class OrderListServlet extends HttpServlet {
 
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String Items;
 		System.out.println("サーブレットpostの1番うえ");
+		OrderListInfo ol = new OrderListInfo();
+		OrderListDAO olDAO = new OrderListDAO();
+		
+		String Items;
 		
 		//リクエストスコープからインスタンス取り出し
 		//ItemDetails item = (ItemDetails)request.getAttribute("item");
@@ -105,12 +109,8 @@ public class OrderListServlet extends HttpServlet {
 			RequestDispatcher rs = request.getRequestDispatcher("/OrderRemoveServlet");
 			rs.forward(request, response);
 		}else if("追加".equals(Button)) {
-			OrderListDao olDAO = new OrderListDao();
-			try {
-				olDAO.insertOrderDetails();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			RequestDispatcher rs = request.getRequestDispatcher("/OrderCompleteServlet");
+			rs.forward(request, response);
 		}
 		
 		List<String>List = new ArrayList<String>(); 
@@ -136,7 +136,8 @@ public class OrderListServlet extends HttpServlet {
 		//String productTopping  = request.getParameter("productTopping");
 		
 		//入力値をプロパティに設定
-		OrderList ol = new OrderList();
+		
+		
 		ol.setProductName(productName);
 		ol.setToppingName(toppingName);
 		ol.setProductPrice(Integer.parseInt(productPrice));

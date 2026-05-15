@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="model.OrderList" %>
+<%@ page import="model.OrderListInfo" %>
 <%
-OrderList ol = (OrderList)request.getAttribute ("ol");
+OrderListInfo ol = (OrderListInfo)request.getAttribute ("ol");
 %>
 
 <!DOCTYPE html>
