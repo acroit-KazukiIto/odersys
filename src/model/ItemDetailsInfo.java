@@ -8,7 +8,7 @@ public class ItemDetailsInfo implements Serializable {
     private int toppingPrice;
     private int toppingStock;
     private int toppingDisplayFlag;
-    private int toppingQuantity; // 画面表示用
+    private int toppingQuantity; // 画面表示用aa
 
     public ItemDetailsInfo() {}
 

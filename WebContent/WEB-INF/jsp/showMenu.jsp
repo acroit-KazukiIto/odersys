@@ -1,16 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List, model.ProductInfo" %>
 <%
-    // セッションから商品リストを取得
     List<ProductInfo> productList = (List<ProductInfo>) session.getAttribute("productList");
-    // サーブレットから現在のカテゴリ名を取得
     String currentCategory = (String) request.getAttribute("currentCategory");
-    
-    // 卓番号の取得
-    Object tableObj = session.getAttribute("tableNumber");
-    String tableNum = (tableObj != null) ? tableObj.toString() : "-";
 
-    // カート内のアイテム数
+    Object tableObj = session.getAttribute("tableNumber");
     Integer items = (Integer) session.getAttribute("items");
     if(items == null) items = 0;
 %>
