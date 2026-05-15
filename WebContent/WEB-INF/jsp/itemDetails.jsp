@@ -16,7 +16,7 @@
 </head>
 <body style="margin: 0; padding-top: 80px; font-family: sans-serif;">
 
-    <footer style="position: fixed; top: 0; left: 0; width: 100%; background-color: white; border-bottom: 1px solid #ccc; z-index: 100;">
+    <footer style="position: fixed; bottom: 0; left: 0; width: 100%; background-color: white; border-bottom: 1px solid #ccc; z-index: 100;">
         <table width="100%" border="1" style="height: 60px; text-align: center; border-collapse: collapse;">
             <tr>
                 <td width="33%">
