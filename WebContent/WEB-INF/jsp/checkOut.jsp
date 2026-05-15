@@ -25,7 +25,6 @@
           <br><br>
         </td>
       </tr>
-      
       <tr>
         <td align="center">
           <br><br>
@@ -35,6 +34,5 @@
       </tr>
     </table>
   </center>
-
 </body>
 </html>

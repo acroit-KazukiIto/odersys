@@ -29,7 +29,6 @@ public class CheckOutServlet extends HttpServlet {
             dao.updateByTableMaster(tableNumber);
         } catch (SQLException e) {
             e.printStackTrace();
-            // request.getRequestDispatcher("/error.jsp").forward(request, response);
         }
 
         // jspへの出力データのセット
