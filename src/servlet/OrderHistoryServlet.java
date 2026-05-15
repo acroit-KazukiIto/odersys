@@ -25,6 +25,7 @@ public class OrderHistoryServlet extends HttpServlet {
 		// 前画面からの入力データ
 		String[] productNames = request.getParameterValues("productName");
 		String[] toppingNames = request.getParameterValues("toppingName");
+		String[] toppingQuantities = request.getParameterValues("toppingQuantity");
 		String[] subTotals = request.getParameterValues("subTotal");
 		String[] orderQuantities = request.getParameterValues("orderQuantity");
 		String tableNumber = request.getParameter("tableNumber");
@@ -39,6 +40,8 @@ public class OrderHistoryServlet extends HttpServlet {
 				OrderHistoryInfo item = dbList.get(i);
 				item.setProductName(productNames[i]);
 				item.setToppingName(toppingNames[i]);
+				
+				item.setToppingQuantity(Integer.parseInt(toppingQuantities[i]));
 				
 				item.setSubTotal(Integer.parseInt(subTotals[i]));
 				
