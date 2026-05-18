@@ -3,15 +3,17 @@ package model;
 import java.io.Serializable;
 
 public class ItemDetailsInfo implements Serializable {
-    private int toppingId;      // トッピングID
-    private String toppingName; // トッピング名
-    private int toppingPrice;   // トッピング価格
-    private int toppingStock;   // 在庫数
-    private int toppingQuantity; // 選択された数量（初期値0）
+    private static final long serialVersionUID = 1L;
+
+    private int toppingId;
+    private String toppingName;
+    private int toppingPrice;
+    private int toppingStock;
+    private int toppingQuantity;
+    private String category;
 
     public ItemDetailsInfo() {}
 
-    // ゲッター・セッター
     public int getToppingId() { return toppingId; }
     public void setToppingId(int toppingId) { this.toppingId = toppingId; }
 
@@ -26,4 +28,7 @@ public class ItemDetailsInfo implements Serializable {
 
     public int getToppingQuantity() { return toppingQuantity; }
     public void setToppingQuantity(int toppingQuantity) { this.toppingQuantity = toppingQuantity; }
+
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 }
