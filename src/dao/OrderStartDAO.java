@@ -30,6 +30,7 @@ public class OrderStartDAO {
                 		+ "SET table_status = 'active', updated_at = NOW()"
                 		+ "WHERE table_id = ?";
                 try (PreparedStatement pStmt1 = conn.prepareStatement(sql1)) {
+                	ResultSet rs = pStmt1.executeQuery();
                     pStmt1.setInt(1, tableId);
                     pStmt1.executeUpdate();
                 }
@@ -40,6 +41,7 @@ public class OrderStartDAO {
                 		+ "SET session_status = 'active', start_time = NOW(), guest_count = ?"
                 		+ "WHERE table_id = ?";
                 try (PreparedStatement pStmt2 = conn.prepareStatement(sql2)) {
+                	ResultSet rs = pStmt2.executeQuery();
                     pStmt2.setInt(1, guestCount);
                     pStmt2.setInt(2, tableId);
                     pStmt2.executeUpdate();
