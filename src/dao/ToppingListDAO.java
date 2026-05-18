@@ -16,7 +16,7 @@ public class ToppingListDAO {
     private static final String DB_PASS = "1234";
 
     /**
-     * 【シンプル版】product_details テーブルに1行追加するメソッド
+     * product_details テーブルに1行追加するメソッド
      */
     public boolean insertProductDetail(int orderId, int productId) {
         Connection conn = null;
@@ -48,7 +48,7 @@ public class ToppingListDAO {
     }
 
     /**
-     * 【既存機能】トッピング一覧の取得
+     * トッピング一覧の取得
      */
     public List<ItemDetailsInfo> findToppingList(String categoryName) {
         List<ItemDetailsInfo> toppingList = new ArrayList<>();
