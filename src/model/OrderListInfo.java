@@ -6,8 +6,18 @@ public class OrderListInfo implements Serializable{
 	private int[] productToppingList;
 	private String productName, toppingName;
 	private int toppingPrice, subTotal, productPrice, toppingQuantity, orderQuantity, toppingStock, productStock, allOrderPrice;
+	private int productQuantity;
 	
+
 	
+	public OrderListInfo(String toppingName2, String productName2, int subTotal2, int productPrice2, int toppingPrice2,
+			int toppingQuantity2, int productQuantity2) {
+	}
+
+	public OrderListInfo() {
+		// TODO 自動生成されたコンストラクター・スタブ
+	}
+
 	public int getAllOrderPrice() {
 		return allOrderPrice;
 	}

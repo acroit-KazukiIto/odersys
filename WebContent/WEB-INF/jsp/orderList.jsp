@@ -2,6 +2,7 @@
 <%@ page import="model.OrderListInfo" %>
 <%
 OrderListInfo ol = (OrderListInfo)request.getAttribute ("ol");
+Object tableObj = session.getAttribute("tableNumber");
 %>
 
 <!DOCTYPE html>
@@ -16,12 +17,12 @@ OrderListInfo ol = (OrderListInfo)request.getAttribute ("ol");
 	<ul><%= ol.getProductName() %>
 		<li></li>
 		<li><%= ol.getToppingName() %></li><li><%= ol.getToppingQuantity() %></li><li><%= ol.getToppingPrice() %></li>
-    	<li><input type = "button" name = "Button" value = "-"></li>
+    	<li><button type = "submit" name = "Button" value = "-">-</button></li>
     	<li></li>
-    	<li><input type = "button" name = "Button" value = "+"></li>
+    	<li><button type = "submit" name = "Button" value = "+">+</button></li>
     	<li><%= ol.getSubTotal() %></li>
  		<form action="ItemDetailsChangeServlet" method="post">
-    		<li><input type = "button" name = "Button" value = "変更"></li>
+    		<li><button type = "submit" name = "Button" value = "変更">変更</button></li>
     	</form>
     </ul>
     
@@ -33,15 +34,13 @@ OrderListInfo ol = (OrderListInfo)request.getAttribute ("ol");
 <footer>
 <form action="OrderListServlet" method="post">
 	<div ="right">
-		<form action="OrderListServlet" method="post">
-		<input type ="button" name ="Button" value ="メニュー">
-		</form>
+		<button type = "submit" name = "Button" value = "注文">注文</button>
 	</div>
 	<div ="center">
 		1卓
 	</div>
 	<div ="left">
-		<input type ="button" name ="Button" value ="注文する">
+		<button type = "submit" name = "Button" value = "メニュー">メニュー</button>
 	</div>
 </form>
 </footer>

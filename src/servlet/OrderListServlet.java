@@ -1,7 +1,7 @@
 package servlet;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
 
 import dao.OrderListDAO;
@@ -66,26 +66,25 @@ public class OrderListServlet extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("サーブレットpostの1番うえ");
+		
 		OrderListInfo ol = new OrderListInfo();
+		
+		
 		OrderListDAO olDAO = new OrderListDAO();
+		try {
+			List<OrderListInfo> olInfo = olDAO.findorderDetailsByorderFlag();
+		} catch (SQLException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
 		
-		String Items;
-		
-		//リクエストスコープからインスタンス取り出し
-		//ItemDetails item = (ItemDetails)request.getAttribute("item");
-		//リクエストパラメータの文字コード指定
+		request.setAttribute("ol", ol);
 		request.setCharacterEncoding("UTF-8");
-		//リクエストパラメータの取得
-		//showMenuから
-		String productName = request.getParameter("productName");
-		String toppingName = request.getParameter("toppingName");
-		String productPrice = request.getParameter("productPrice");
-		String toppingPrice = request.getParameter("toppingPrice");
-		String toppingQuantity = request.getParameter("toppingQuantity");
-		String subTotal = request.getParameter("subTotal");
 		//orderListから
 		String Button = request.getParameter("Button");
 		
+		
+		//イベント処理
 		if("+".equals(Button)) {
 			//プラス処理
 			OrderListLogic logic = new OrderListLogic();
@@ -96,33 +95,23 @@ public class OrderListServlet extends HttpServlet {
 			logic.calcOrderQuantity(-1);
 			
 		}else if("メニュー".equals(Button)) {
+			System.out.println("メニューボタン");
 			//ShowMenuServletに遷移
-			RequestDispatcher rs = request.getRequestDispatcher("/ShowMenuServlet");
+			RequestDispatcher rs = request.getRequestDispatcher("ShowMenuServlet");
 			rs.forward(request, response);
 			
 		}else if("注文する".equals(Button)) {
 			//ShowMenuServletに遷移
-			RequestDispatcher rs = request.getRequestDispatcher("/Servlet");
+			RequestDispatcher rs = request.getRequestDispatcher("OrderCompleteServlet");
 			rs.forward(request, response);
 			
 		}else if("変更".equals(Button)){
-			RequestDispatcher rs = request.getRequestDispatcher("/OrderRemoveServlet");
+			RequestDispatcher rs = request.getRequestDispatcher("OrderRemoveServlet");
 			rs.forward(request, response);
 		}else if("追加".equals(Button)) {
-			RequestDispatcher rs = request.getRequestDispatcher("/OrderCompleteServlet");
+			RequestDispatcher rs = request.getRequestDispatcher("OrderCompleteServlet");
 			rs.forward(request, response);
-		}
-		
-		List<String>List = new ArrayList<String>(); 
-		
-		List.add("productName");
-		List.add("toppingName");
-		List.add("productPrice");
-		List.add("toppingPrice");
-		List.add("toppingQuantity");
-		List.add("subTotal");
-		
-		
+		}		
 		/*
 		System.out.println(productName); 
 		System.out.println(toppingName);
@@ -134,17 +123,6 @@ public class OrderListServlet extends HttpServlet {
 		
 		//おそらくトッピング選択の段階で使われると思う。
 		//String productTopping  = request.getParameter("productTopping");
-		
-		//入力値をプロパティに設定
-		
-		
-		ol.setProductName(productName);
-		ol.setToppingName(toppingName);
-		ol.setProductPrice(Integer.parseInt(productPrice));
-		ol.setToppingPrice(Integer.parseInt(toppingPrice));
-		ol.setToppingQuantity(Integer.parseInt(toppingQuantity));
-		ol.setSubTotal(Integer.parseInt(subTotal));
-		//ol.setOrderList(orderList);
 		
 		 
 		//ol.setOrderList(orderList);

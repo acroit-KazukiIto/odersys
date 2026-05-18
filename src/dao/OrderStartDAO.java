@@ -13,6 +13,13 @@ public class OrderStartDAO {
 
     // テーブル状態とセッション情報の更新
     public void updateStatus(int tableId, int guestCount) {
+    	
+    	try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		}catch(ClassNotFoundException e){
+			throw new IllegalStateException("JDBCドライバを読み込めませんでしたあ");
+		}
+    	
         try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)) {
             conn.setAutoCommit(false);
 
@@ -50,6 +57,13 @@ public class OrderStartDAO {
 
     // セッションIDの取得
     public int findSessionId(int tableId) {
+    	
+    	try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		}catch(ClassNotFoundException e){
+			throw new IllegalStateException("JDBCドライバを読み込めませんでしたあ");
+		}
+    	
         int sessionId = 0;
         String sql =
         		"SELECT session_id"

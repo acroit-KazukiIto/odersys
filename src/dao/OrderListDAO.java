@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import model.OrderListInfo;
 
@@ -15,58 +17,47 @@ public class OrderListDAO {
 	private final String DB_PASS = "1234";
 
 
-	public void findorderDetailsByorderFlag() throws SQLException{
+	public List<OrderListInfo> findorderDetailsByorderFlag() throws SQLException {
+		List<OrderListInfo> olList = new ArrayList<>();
+		System.out.println("ダオにきたお");
 		//JDBCドライバを読み込む
 		try {
-			Class.forName("mysql-connector-j-9.3.0");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 		}catch(ClassNotFoundException e){
-			throw new IllegalStateException("JDBCドライバを読み込めませんでした");
+			throw new IllegalStateException("JDBCドライバを読み込めませんでしたあ");
 		}
 
 		try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
-			String sql = "SELECT order_details.product_quantity, product_details.product_id"
-					+ "FROM order_details WHERE order_flag = 0"
-					+ "INNER JOIN product_details"
-					+ "ON order_details.order_id = product_details.order_id"
-					+ "UNION"
-					+ "SELECT product_details.order_id, product.product_name, product.product_price"
-					+ "FROM product_details WHERE order_id"
-					+ "INNER JOIN product"
-					+ "ON product_details.product_id = product.product_id"
-					+ "UNION"
-					+ "SELECT order_details.order_price, multiple_toppings.topping_id, multiple_toppings.topping_quantity"
-					+ "FROM order_details "
-					+ "ON order_details.order_id = multiple_toppings.order_id"
-					+ "UNION"
-					+ "SELECT multiple_toppings.topping_id, topping.topping_name, topping.topping_price"
-					+ "FROM multiple_toppings"
-					+ "INNER JOIN topping"
-					+ "ON multiple_topping.topping_id = topping.topping_name";
+			String sql = "SELECT od.order_id, od.product_quantity, od.order_price, od.session_id, od.order_flag, p.product_name, p.product_price, p.product_stock, t.topping_name, t.topping_price, t.topping_stock, mt.topping_quantity FROM order_details AS od LEFT JOIN product_details AS pd ON od.order_id = pd.order_id LEFT JOIN product AS p ON pd.product_id = p.product_id LEFT JOIN multiple_toppings AS mt ON od.order_id = mt.order_id LEFT JOIN topping AS t ON mt.topping_id = t.topping_id";
 					
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 			ResultSet rs = pStmt.executeQuery();
 			while(rs.next()) {
-				OrderListInfo order = new OrderListInfo();
-				order.setSubTotal(Integer.parseInt("order_price"));
-				order.setProductName("product_name");
-				order.setToppingName("topping_name");
-				order.setProductPrice(Integer.parseInt("product_price"));
-				order.setToppingPrice(Integer.parseInt("topping_price"));
-				order.setToppingQuantity(Integer.parseInt("topping_quantity"));
-				order.setOrderQuantity(Integer.parseInt("product_quantity"));
+				int subTotal = rs.getInt("order_price");
+				String productName = rs.getString("product_name");
+				String toppingName = rs.getString("topping_name");
+				int productPrice = rs.getInt("product_price");
+				int toppingPrice = rs.getInt("topping_price");
+				int toppingQuantity = rs.getInt("topping_quantity");
+				int productQuantity = rs.getInt("product_quantity");
+				OrderListInfo olInfo = new OrderListInfo(toppingName, productName, subTotal, productPrice, toppingPrice, toppingQuantity, productQuantity);
+				olList.add(olInfo);
+				System.out.println("リスト表示" + olList);
 				
 			}
 
 		}catch(SQLException e){
 			e.printStackTrace();
+			System.out.println("失敗");
 		}
+		return olList;
 	}
 
 	
 	public void updateOrderDetails() throws SQLException {
 		//JDBCドライバを読み込む
 		try {
-			Class.forName("mysql-connector-j-9.3.0");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 		}catch(ClassNotFoundException e){
 			throw new IllegalStateException("JDBCドライバを読み込めませんでした");
 		}
@@ -84,10 +75,10 @@ public class OrderListDAO {
 		}
 	}
 
-	public void insertOrderDetails() throws SQLException{
+	public void insertOrderDetails() throws SQLException {
 		//JDBCドライバを読み込む
 		try {
-			Class.forName("mysql-connector-j-9.3.0");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 		}catch(ClassNotFoundException e){
 			throw new IllegalStateException("JDBCドライバを読み込めませんでした");
 		}
@@ -108,7 +99,7 @@ public class OrderListDAO {
 	public void insertProductDetails() throws SQLException{
 		//JDBCドライバを読み込む
 		try {
-			Class.forName("mysql-connector-j-9.3.0");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 		}catch(ClassNotFoundException e){
 			throw new IllegalStateException("JDBCドライバを読み込めませんでした");
 		}
@@ -127,7 +118,7 @@ public class OrderListDAO {
 	public void insertMultipleOrderDetails() throws SQLException{
 		//JDBCドライバを読み込む
 		try {
-			Class.forName("mysql-connector-j-9.3.0");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 		}catch(ClassNotFoundException e){
 			throw new IllegalStateException("JDBCドライバを読み込めませんでした");
 		}
@@ -148,7 +139,7 @@ public class OrderListDAO {
 		OrderListInfo order = new OrderListInfo();
 		//JDBCドライバを読み込む
 		try {
-			Class.forName("mysql-connector-j-9.3.0");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 		}catch(ClassNotFoundException e){
 			throw new IllegalStateException("JDBCドライバを読み込めませんでした");
 		}
