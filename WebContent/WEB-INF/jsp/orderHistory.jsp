@@ -33,7 +33,7 @@
                 <td align="left">
                   <font size="4"><b>${item.productName}</b></font><br>
                   <c:if test="${not empty item.toppingName}">
-                    <font size="3" color="#555">・${item.toppingName}</font>
+                    <font size="3" color="#555">・${item.toppingName}✕${item.toppingQuantity}</font>
                   </c:if>
                 </td>
                 <td align="center"><font size="4">${item.orderQuantity}</font></td>
@@ -117,7 +117,6 @@
           <!-- 未提供ポップアップ -->
           <c:when test="${popupStatus == 1}">
             <font size="5"><b>未提供の注文があります。</b></font><br><br><br>
-            
             <!-- 閉じるボタン -->
             <form action="OrderHistoryServlet" method="post">
               <button type="submit" name="action" value="close"
@@ -133,13 +132,11 @@
             <form action="OrderHistoryServlet" method="post">
               <input type="hidden" name="tableNumber" value="${tableNumber}">
               <input type="hidden" name="totalOrderPrice" value="${totalOrderPrice}">
-              
               <!-- いいえボタン -->
               <button type="submit" name="action" value="no"
                 style="width: 200px; padding: 15px; background: white; border: 2px solid black; font-size: 1.2em; font-weight: bold; cursor: pointer; margin-bottom: 20px;">
                   いいえ
               </button><br>
-              
               <!-- はいボタン -->
               <button type="submit" name="action" value="yes"
                 style="width: 200px; padding: 15px; background: red; color: white; border: 2px solid black; font-size: 1.2em; font-weight: bold; cursor: pointer;">
@@ -147,6 +144,7 @@
               </button>
             </form>
           </c:when>
+          
         </c:choose>
       </div>
     </div>
