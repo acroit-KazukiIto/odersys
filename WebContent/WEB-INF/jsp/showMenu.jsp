@@ -144,7 +144,7 @@ if(p.getProductStock() > 0){
 %>
 
 <form action="ItemDetailsServlet"
-      method="get">
+      method="post">
 
 <input type="hidden"
        name="productId"
@@ -240,7 +240,7 @@ border-top:1px solid #ccc;">
 <td width="33%">
 
 <form action="OrderHistoryServlet"
-      method="get">
+      method="post">
 
 <input type="hidden"
        name="tableId"
@@ -266,7 +266,7 @@ border-top:1px solid #ccc;">
 <td width="33%">
 
 <form action="OrderListServlet"
-      method="get">
+      method="post">
 
 <input type="submit"
        value="注文リスト(<%= items %>)">

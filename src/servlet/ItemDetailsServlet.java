@@ -17,82 +17,129 @@ import model.ItemDetailsLogic;
 public class ItemDetailsServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 1. 詳細画面でボタン（＋、－、追加、メニュー）が押されたときの処理
+     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         HttpSession session = request.getSession();
-        String checkAction = request.getParameter("action");
+        
+        // JSPの name="Button" に合わせて正確に取得
+        String checkAction = request.getParameter("Button");
         List<ItemDetailsInfo> toppingList = (List<ItemDetailsInfo>) session.getAttribute("toppingList");
         Integer productPrice = (Integer) session.getAttribute("selectedPPrice");
         
-        System.out.println("【デバッグ】doPostに届いたaction: " + checkAction);
+        System.out.println("【デバッグ:doPost】クリックされたボタンの値: " + checkAction);
 
         if (checkAction != null) {
 
-            if ("insert".equals(checkAction) || "submit_insert".equals(checkAction)) {
-                
+            // --- 1-1. 「追加」ボタンが押されたとき（DBへ注文詳細を登録） ---
+            if ("追加".equals(checkAction)) {
                 Integer productId = (Integer) session.getAttribute("selectedProductId");
-                System.out.println("【デバッグ】読み込んだproductId: " + productId);
+                System.out.println("【デバッグ:doPost】インサートを試みるproductId: " + productId);
 
                 if (productId != null) {
                     ToppingListDAO dao = new ToppingListDAO();
                     boolean isSuccess = dao.insertProductDetail(productId);
 
                     if (isSuccess) {
-                        System.out.println("【デバッグ】自動連番で新しい行を追加しました。商品ID: " + productId);
+                        System.out.println("【デバッグ:doPost】DB登録成功！OrderListServletへ遷移します。");
                         response.sendRedirect("OrderListServlet");
                         return; 
                     } else {
-                        System.out.println("【エラー】データベースへのインサートに失敗しました。");
-                        response.sendRedirect("itemDetails.jsp");
+                        System.out.println("【エラー:doPost】DBインサートに失敗しました。");
+                        response.sendRedirect("ItemDetailsServlet");
                         return;
                     }
                 } else {
-                    System.out.println("【エラー】selectedProductIdがセッションにありません。");
-                    response.sendRedirect("itemDetails.jsp");
+                    System.out.println("【エラー:doPost】selectedProductIdがセッションにありませんでした。");
+                    response.sendRedirect("ItemDetailsServlet");
                     return;
                 }
             }
             
+            // --- 1-2. 「メニュー」ボタンが押されたとき（メニュー一覧へ戻る） ---
+            if ("メニュー".equals(checkAction)) {
+                response.sendRedirect("ShowMenuServlet");
+                return;
+            }
 
+            // --- 1-3. トッピングの「＋」「－」ボタンが押されたとき ---
             ItemDetailsLogic logic = new ItemDetailsLogic();
-            
-            if (checkAction.startsWith("plus_")) {
-                int index = Integer.parseInt(checkAction.substring(5));
+            if (checkAction.startsWith("+")) {
+                int index = Integer.parseInt(checkAction.substring(1));
                 logic.calcToppingQuantity(toppingList, index, "plus");
-                
-            } else if (checkAction.startsWith("minus_")) {
-                int index = Integer.parseInt(checkAction.substring(6));
+            } else if (checkAction.startsWith("-")) {
+                int index = Integer.parseInt(checkAction.substring(1));
                 logic.calcToppingQuantity(toppingList, index, "minus");
             }
 
-            // トッピング計算後の新しい小計を計算するa
+            // 計算後の新しい小計を計算して更新
             if (productPrice != null && toppingList != null) {
                 session.setAttribute("subTotal", logic.calcSubTotal(productPrice, toppingList));
             }
         }
 
-        // 計算が終わった後は詳細画面のJSPへ戻す
-        request.getRequestDispatcher("/WEB-INF/jsp/itemDetails.jsp").forward(request, response);
+        // POST処理が終わったらリダイレクトでdoGetへ飛ばす
+        response.sendRedirect("ItemDetailsServlet");
     }
 
+    /**
+     * 2. 詳細画面を表示する（最初にメニューから来た時 ＆ プラスマイナス後のリダイレクト時）
+     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         
-        // メニュー画面から渡ってきたカテゴリ名や各種情報を一時取得
+        // メニュー画面（showMenu.jsp）から送られてきたパラメータを取得
+        String reqId = request.getParameter("productId");
+        String reqName = request.getParameter("productName");
+        String reqPrice = request.getParameter("productPrice");
         String category = request.getParameter("productCategory");
-        
+
+        // ★コンソールログでデータの流れを完全に追跡します！
+        System.out.println("===== 【デバッグ:doGet】開始 =====");
+        System.out.println("URLパラメータ [productId]: " + reqId);
+        System.out.println("URLパラメータ [productName]: " + reqName);
+        System.out.println("URLパラメータ [productPrice]: " + reqPrice);
+        System.out.println("URLパラメータ [productCategory]: " + category);
+
+        // メニュー画面から新しくデータが送られてきた場合のみ、セッションの情報をカチッと更新する
+        if (reqId != null && reqName != null && reqPrice != null) {
+            System.out.println("👉 メニュー画面からの遷移を検知。セッション情報を新規登録・上書きします。");
+            int productId = Integer.parseInt(reqId);
+            int productPrice = Integer.parseInt(reqPrice);
+
+            session.setAttribute("selectedProductId", productId);
+            session.setAttribute("selectedPName", reqName);
+            session.setAttribute("selectedPPrice", productPrice);
+            session.setAttribute("subTotal", productPrice); // 初期状態の小計＝商品価格
+        } else {
+            System.out.println("👉 リダイレクト、または画面更新を検知。既存のセッション数値を維持します。");
+        }
+
+        // 現在セッションに格納されている値を最終確認
+        System.out.println("現在のセッション [selectedPName]: " + session.getAttribute("selectedPName"));
+        System.out.println("現在のセッション [selectedPPrice]: " + session.getAttribute("selectedPPrice"));
+        System.out.println("現在のセッション [selectedProductId]: " + session.getAttribute("selectedProductId"));
+        System.out.println("==================================");
+
+        // カテゴリ情報の保存とトッピング一覧の取得処理
         if (category == null) {
             category = (String) session.getAttribute("savedCategory");
+        } else {
+            session.setAttribute("savedCategory", category.trim());
         }
         
-        // ★【重要】最初の表示のときに、データベースからトッピング一覧をロードしてセッションに入れる！
         if (category != null) {
             ToppingListDAO dao = new ToppingListDAO();
             List<ItemDetailsInfo> toppingList = dao.findToppingList(category.trim());
-            session.setAttribute("toppingList", toppingList);
+            // セッションに既存のトッピングリストがない場合のみ新規セット（数量リセット防止）
+            if (session.getAttribute("toppingList") == null || reqId != null) {
+                session.setAttribute("toppingList", toppingList);
+            }
         }
         
-        // JSPのフォルダ位置に合わせてフォワード
-        request.getRequestDispatcher("/WEB-INF/jsp/itemDetails.jsp").forward(request, response);
+        // 確実にフォワードしてJSPを表示する（Eclipseの環境依存を防ぐため先頭のスラッシュを外しています）
+        request.getRequestDispatcher("WEB-INF/jsp/itemDetails.jsp").forward(request, response);
     }
 }

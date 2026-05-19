@@ -81,7 +81,7 @@
         <table width="100%" border="0" style="height: 60px; table-layout: fixed; text-align: center;">
             <tr>
                 <td>
-                    <form action="ItemDetailsServlet" method="post" style="margin:0;">
+                    <form action="ShowMenuServlet" method="post" style="margin:0;">
                         <input type="submit" name="Button" value="メニュー" style="width: 90%; height: 50px;">
                     </form>
                 </td>
