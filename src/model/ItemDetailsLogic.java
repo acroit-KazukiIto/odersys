@@ -12,7 +12,7 @@ public class ItemDetailsLogic {
         int currentQty = target.getToppingQuantity();
 
         if ("plus".equals(action)) {
-            // 20個以上にいかない
+            // 20個以上にいかないa
             if (currentQty < 20 && currentQty < target.getToppingStock()) {
                 target.setToppingQuantity(currentQty + 1);
             }
