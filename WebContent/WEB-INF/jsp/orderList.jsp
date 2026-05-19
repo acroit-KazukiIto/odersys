@@ -50,7 +50,7 @@ Object tableObj = session.getAttribute("tableNumber");
 	</div>
 	<div="center">1卓</div>
 	<div="left">
-		<form action="ShowMenuServlet" method="get">
+		<form action="ShowMenuServlet" method="post">
 			<button type="submit" name="Button" value="メニュー">メニュー</button>
 		</form>
 	</div>
