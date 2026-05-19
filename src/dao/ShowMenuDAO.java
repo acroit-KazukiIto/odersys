@@ -26,19 +26,25 @@ public class ShowMenuDAO {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
+    /**
+     * product_id, product_name, product_price, category_nameをjoinを使って取得
+     */
     public List<ProductInfo> findProductTable() {
         List<ProductInfo> productList = new ArrayList<>();
+        String sql = "SELECT p.product_id, p.product_name, p.category_name, p.product_price, p.product_stock, p.product_display_flag " +
+                     "FROM product p " +
+                     "LEFT JOIN product_details pd ON p.product_id = pd.product_id " + // JOINを実行
+                     "GROUP BY p.product_id"; 
+
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)) {
-
-                String sql = "SELECT product_id, product_name, category_name, product_price, product_stock, product_display_flag FROM product";
                 PreparedStatement pStmt = conn.prepareStatement(sql);
                 ResultSet rs = pStmt.executeQuery();
 
                 while (rs.next()) {
                     ProductInfo product = new ProductInfo(
-                        rs.getInt("product_id"),
+                        rs.getInt("product_id"), 
                         rs.getString("product_name"),
                         rs.getString("category_name"),
                         rs.getInt("product_price"),

@@ -1,17 +1,20 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List, model.ItemDetailsInfo" %>
 <%
-
+    // セッションから値を取得
     String pName = (String) session.getAttribute("selectedPName");
     Integer pPrice = (Integer) session.getAttribute("selectedPPrice");
-    String tableNum = (String) session.getAttribute("tableNumber");
     List<ItemDetailsInfo> toppingList = (List<ItemDetailsInfo>) session.getAttribute("toppingList");
     Integer subTotal = (Integer) session.getAttribute("subTotal");
+    String tableNum = (String) session.getAttribute("tableNumber");
 
-    // 前画面から送られてきたカテゴリ名を取得する
+    // nullエラー防止のための初期化
+    if(pName == null) pName = "未選択";
+    if(subTotal == null) subTotal = 0;
+    if(tableNum == null) tableNum = "1";
+
+    // menuから送られてきたカテゴリ名を取得してセッションに保存する
     String category = request.getParameter("productCategory");
-
-    //  ＋・－ボタン用のカテゴリ保存
     if (category != null && !category.isEmpty()) {
         session.setAttribute("savedCategory", category.trim());
     }
@@ -21,7 +24,7 @@
         savedCategory = "";
     }
 
-    // お好み焼き・もんじゃ焼き・鉄板焼き・鉄板焼の時だけでる
+    // お好み焼き・もんじゃ焼き・鉄板焼き・鉄板焼の時だけトッピングを表示
     boolean showTopping = savedCategory.equals("お好み焼き") ||
                           savedCategory.equals("もんじゃ焼き") ||
                           savedCategory.equals("鉄板焼") ||
@@ -33,87 +36,75 @@
     <meta charset="UTF-8">
     <title>商品詳細</title>
 </head>
-<body style="margin: 0; padding-top: 10px; padding-bottom: 80px; font-family: sans-serif;">
+<body style="margin: 0; padding-bottom: 120px; font-family: sans-serif;">
 
-    <div style="padding: 10px;">
-        <table width="100%" cellpadding="5">
-            <tr>
-                <td>
-                    <small>選択中の商品：</small><br>
-                    <strong><%= (pName != null) ? pName : "未選択" %></strong>
-                </td>
-                <td align="right">
-                    <%= (pPrice != null) ? pPrice : 0 %>円
-                </td>
-            </tr>
-        </table>
-    </div>
+    <%-- Body 上部 --%>
+    <table width="100%" border="0" style="padding: 10px;">
+        <tr>
+            <td align="left"><strong style="font-size: 1.2em;"><%= pName %></strong></td>
+            <td align="right"><%= (pPrice != null ? pPrice : 0) %>円(税込)</td>
+        </tr>
+    </table>
     <hr>
 
+    <%-- トッピング一覧 (指定カテゴリのみ表示) --%>
     <% if(showTopping) { %>
     <div style="padding: 10px;">
-        <table width="100%" cellpadding="5">
-            <% 
-            if(toppingList != null && !toppingList.isEmpty()) { 
-                for(int i = 0; i < toppingList.size(); i++) { 
-                    ItemDetailsInfo t = toppingList.get(i); 
-            %>
+        <table width="100%" border="0" cellpadding="10" style="table-layout: fixed;">
+            <% if(toppingList != null) { 
+                for(int i=0; i < toppingList.size(); i++) { 
+                    ItemDetailsInfo t = toppingList.get(i); %>
             <tr>
-                <td>
-                    <%= t.getToppingName() %><br>
-                    <small>+<%= t.getToppingPrice() %>円</small>
-                </td>
-                <td align="right">
-                    <form action="ItemDetailsServlet" method="post" style="display: inline;">
-                        <button type="submit" name="action" value="minus_<%= i %>" 
-                            <%= t.getToppingQuantity() <= 0 ? "disabled" : "" %>> － </button>
+                <td align="left" width="60%"><%= t.getToppingName() %><br><small><%= t.getToppingPrice() %>円</small></td>
+                <td align="right" width="40%" style="white-space: nowrap;">
+                    <form action="ItemDetailsServlet" method="post" style="display:inline;">
+                        <button type="submit" name="Button" value="-<%= i %>" 
+                                style="width:40px; height:40px;" 
+                                <%= (t.getToppingQuantity() <= 0) ? "disabled" : "" %>>－</button>
                         
-                        <span style="margin: 0 10px;"><strong><%= t.getToppingQuantity() %></strong></span>
+                        <span style="display: inline-block; width: 25px; text-align: center; font-weight: bold;">
+                            <%= t.getToppingQuantity() %>
+                        </span>
                         
-                        <button type="submit" name="action" value="plus_<%= i %>" 
-                            <%= t.getToppingQuantity() >= 20 ? "disabled" : "" %>> ＋ </button>
+                        <button type="submit" name="Button" value="+<%= i %>" 
+                                style="width:40px; height:40px;" 
+                                <%= (t.getToppingQuantity() >= 20) ? "disabled" : "" %>>＋</button>
                     </form>
                 </td>
             </tr>
-            <tr><td colspan="2"><hr></td></tr>
-            <% 
-                } 
-            } else {
-            %>
-            <tr><td colspan="2" align="center">トッピングデータがありません</td></tr>
-            <% } %>
+            <% } } %>
         </table>
     </div>
     <% } %>
 
-    <div align="right" style="padding: 20px; font-size: 1.2em;">
-        小計：<strong><%= (subTotal != null) ? subTotal : 0 %>円</strong>
+    <%-- Body 下部: 右揃え小計 --%>
+    <div align="right" style="padding: 20px; border-top: 1px solid #ccc; margin-bottom: 50px;">
+        <span style="text-decoration: underline; font-weight: bold; font-size: 1.3em;">
+            小計:<%= subTotal %>円(税込)
+        </span>
     </div>
 
-    <heater style="position: fixed; bottom: 0; left: 0; width: 100%; background-color: white; border-top: 1px solid #ccc; z-index: 100;">
-        <table width="100%" border="1" style="height: 60px; text-align: center; border-collapse: collapse;">
+    <%-- Footer: 画面最下部に白背景で固定 --%>
+    <div style="position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; border-top: 2px solid #333; z-index: 1000; padding: 10px 0;">
+        <table width="100%" border="0" style="height: 60px; table-layout: fixed; text-align: center;">
             <tr>
-                <td width="33%">
-                    <form action="ShowMenuServlet" method="get">
-                        <input type="submit" value="メニュー" style="width: 90%; height: 40px;">
+                <td>
+                    <form action="ItemDetailsServlet" method="post" style="margin:0;">
+                        <input type="submit" name="Button" value="メニュー" style="width: 90%; height: 50px;">
                     </form>
                 </td>
-
-                <td width="34%">
-                    <strong><%= (tableNum != null) ? tableNum : "-" %>卓</strong>
+                <td>
+                    <strong style="font-size: 1.5em;"><%= tableNum %>卓</strong>
                 </td>
-
-                <td width="33%">
-                    <form action="ItemDetailsServlet" method="post">
-                        
-                        <input type="hidden" name="action" value="submit_insert">
-
-                        <input type="submit" value="追加" style="width: 90%; height: 40px; background-color: orange; color: white; border: none; font-weight: bold; cursor: pointer;">
+                <td>
+                    <form action="ItemDetailsServlet" method="post" style="margin:0;">
+                        <input type="submit" name="Button" value="追加" 
+                               style="width: 90%; height: 50px; background: orange; color: white; border: none; font-weight: bold;">
                     </form>
                 </td>
             </tr>
         </table>
-    </heater>
+    </div>
 
 </body>
 </html>

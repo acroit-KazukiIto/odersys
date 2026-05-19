@@ -16,34 +16,30 @@ public class ToppingListDAO {
     private static final String DB_PASS = "1234";
 
     /**
-     * product_details テーブルに1行追加するメソッド
+     * product_details テーブルに新しい注文を1行追加
+     * (order_id は AUTO_INCREMENT なので、product_id のみを指定してインサートします)
      */
-    public boolean insertProductDetail(int orderId, int productId) {
-        Connection conn = null;
-        PreparedStatement pStmt = null;
-        String sql = "INSERT INTO product_details (order_id, product_id) VALUES (?, ?)";
+    public boolean insertProductDetail(int productId) { 
+        String sql = "INSERT INTO product_details (product_id) VALUES (?)";
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
 
-            pStmt = conn.prepareStatement(sql);
-            pStmt.setInt(1, orderId);
-            pStmt.setInt(2, productId);
+            try (
+                Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
+                PreparedStatement pStmt = conn.prepareStatement(sql)
+            ) {
+                // 「?」に商品IDをセット
+                pStmt.setInt(1, productId);
 
-            int rowsInserted = pStmt.executeUpdate();
-            return rowsInserted > 0;
+                int rowsInserted = pStmt.executeUpdate();
+
+                return rowsInserted > 0;
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
             return false;
-        } finally {
-            try {
-                if (pStmt != null) pStmt.close();
-                if (conn != null) conn.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 

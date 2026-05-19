@@ -43,8 +43,6 @@ pageEncoding="UTF-8"%>
 <body style="margin:0;
              padding-bottom:80px;">
 
-<!-- カテゴリボタン -->
-
 <nav>
 
 <form action="ShowMenuServlet"
@@ -108,8 +106,6 @@ pageEncoding="UTF-8"%>
 
 <hr>
 
-<!-- 商品一覧 -->
-
 <div style="padding:10px;">
 
 <table width="100%"
@@ -120,11 +116,7 @@ if(productList != null){
 
     for(ProductInfo p : productList){
 
-        /*
-         * カテゴリ一致
-         * 表示フラグ1
-         * の商品だけ表示
-         */
+
         if(p.getCategoryName().trim().equals(currentCategory)
                 && p.getProductDisplayFlag() == 1){
 %>
@@ -154,17 +146,18 @@ if(p.getProductStock() > 0){
 <form action="ItemDetailsServlet"
       method="get">
 
-<!-- 商品名 -->
+<input type="hidden"
+       name="productId"
+       value="<%= p.getProductId() %>">
+
 <input type="hidden"
        name="productName"
        value="<%= p.getProductName() %>">
 
-<!-- 商品価格 -->
 <input type="hidden"
        name="productPrice"
        value="<%= p.getProductPrice() %>">
 
-<!-- カテゴリ -->
 <input type="hidden"
        name="productCategory"
        value="<%= p.getCategoryName() %>">
@@ -228,8 +221,6 @@ if(p.getProductStock() > 0){
 
 </div>
 
-<!-- 下固定メニュー -->
-
 <footer style="
 position:fixed;
 bottom:0;
@@ -245,8 +236,6 @@ border-top:1px solid #ccc;">
        text-align:center;">
 
 <tr>
-
-<!-- 履歴 -->
 
 <td width="33%">
 
@@ -264,8 +253,6 @@ border-top:1px solid #ccc;">
 
 </td>
 
-<!-- 卓番号 -->
-
 <td width="34%">
 
 <strong>
@@ -275,8 +262,6 @@ border-top:1px solid #ccc;">
 </strong>
 
 </td>
-
-<!-- 注文リスト -->
 
 <td width="33%">
 
