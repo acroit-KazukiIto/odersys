@@ -13,15 +13,15 @@ Object tableObj = session.getAttribute("tableNumber");
 </head>
 
 <body>
-<form action="/OrderListServlet" method="get">
+<form action="OrderListServlet" method="get">
 	<ul><%= ol.getProductName() %>
 		<li></li>
 		<li><%= ol.getToppingName() %></li><li><%= ol.getToppingQuantity() %></li><li><%= ol.getToppingPrice() %></li>
     	<li><button type = "submit" name = "Button" value = "-">-</button></li>
-    	<li></li>
+    	<li><%= ol.getProductQuantity() %></li>
     	<li><button type = "submit" name = "Button" value = "+">+</button></li>
     	<li><%= ol.getSubTotal() %></li>
- 		<form action="ItemDetailsChangeServlet" method="post">
+ 		<form action="ItemDetailsChangeServlet" method="get">
     		<li><button type = "submit" name = "Button" value = "変更">変更</button></li>
     	</form>
     </ul>
@@ -32,7 +32,7 @@ Object tableObj = session.getAttribute("tableNumber");
 
 </body>
 <footer>
-<form action="OrderListServlet" method="post">
+<form action="OrderCompleteServlet" method="get">
 	<div ="right">
 		<button type = "submit" name = "Button" value = "注文">注文</button>
 	</div>

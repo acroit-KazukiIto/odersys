@@ -3,20 +3,24 @@ package model;
 import java.io.Serializable;
 
 public class OrderListInfo implements Serializable{
-	private int[] productToppingList;
+	//private int[] productToppingList;
 	private String productName, toppingName;
 	private int toppingPrice, subTotal, productPrice, toppingQuantity, orderQuantity, toppingStock, productStock, allOrderPrice;
 	private int productQuantity;
 	
+	
+	public OrderListInfo() {}	
+	public OrderListInfo(String toppingName, String productName, int subTotal, int productPrice, int toppingPrice,
+			int toppingQuantity, int productQuantity) {
+		this.toppingName = toppingName;
+		this.productName = productName;
+		this.subTotal = subTotal;
+		this.productPrice = productPrice;
+		this.toppingQuantity = toppingQuantity;
+		this.productQuantity = productQuantity;
+	}
 
 	
-	public OrderListInfo(String toppingName2, String productName2, int subTotal2, int productPrice2, int toppingPrice2,
-			int toppingQuantity2, int productQuantity2) {
-	}
-
-	public OrderListInfo() {
-		// TODO 自動生成されたコンストラクター・スタブ
-	}
 
 	public int getAllOrderPrice() {
 		return allOrderPrice;
@@ -64,12 +68,14 @@ public class OrderListInfo implements Serializable{
 	public void setProductToppingId(String productToppingId) {
 		this.productToppingId = productToppingId;
 	}
+	/*
 	public int[] getProductToppingList() {
 		return productToppingList;
 	}
 	public void setProductToppingList(int[] productToppingList) {
 		this.productToppingList = productToppingList;
 	}
+	*/
 	public String getProductName() {
 		return productName;
 	}
@@ -105,5 +111,13 @@ public class OrderListInfo implements Serializable{
 	}
 	public void setToppingQuantity(int toppingQuantity) {
 		this.toppingQuantity = toppingQuantity;
+	}
+
+	public int getProductQuantity() {
+		return productQuantity;
+	}
+
+	public void setProductQuantity(int productQuantity) {
+		this.productQuantity = productQuantity;
 	}
 }

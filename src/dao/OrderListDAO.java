@@ -18,8 +18,9 @@ public class OrderListDAO {
 
 
 	public List<OrderListInfo> findorderDetailsByorderFlag() throws SQLException {
-		List<OrderListInfo> olList = new ArrayList<>();
 		System.out.println("ダオにきたお");
+		
+		List<OrderListInfo> olList = new ArrayList<>();
 		//JDBCドライバを読み込む
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -40,9 +41,18 @@ public class OrderListDAO {
 				int toppingPrice = rs.getInt("topping_price");
 				int toppingQuantity = rs.getInt("topping_quantity");
 				int productQuantity = rs.getInt("product_quantity");
-				OrderListInfo olInfo = new OrderListInfo(toppingName, productName, subTotal, productPrice, toppingPrice, toppingQuantity, productQuantity);
-				olList.add(olInfo);
-				System.out.println("リスト表示" + olList);
+				OrderListInfo ol = new OrderListInfo(toppingName, productName, subTotal, productPrice, toppingPrice,
+						 toppingQuantity, productQuantity);
+				ol.setSubTotal(subTotal);
+				ol.setProductName(productName);
+				ol.setToppingName(toppingName);
+				ol.setProductPrice(productPrice);
+				ol.setToppingPrice(toppingPrice);
+				ol.setProductQuantity(productQuantity);
+				ol.setToppingQuantity(toppingQuantity);
+				olList.add(ol);
+				String pname = ol.getProductName();
+				System.out.println("DAOチェック" + pname);
 				
 			}
 
@@ -54,7 +64,7 @@ public class OrderListDAO {
 	}
 
 	
-	public void updateOrderDetails() throws SQLException {
+	public void updateOrderDetails(int n) throws SQLException {
 		//JDBCドライバを読み込む
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -66,9 +76,18 @@ public class OrderListDAO {
 		try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
 			//order_details更新のsql
-			String sql = "UPDATE ordertDetails SET product_quantity = productQuantity"; 
-			PreparedStatement pStmt = conn.prepareStatement(sql);
-			ResultSet rs = pStmt.executeQuery();
+			if(n > 0) {
+				String sql = "UPDATE order_details SET product_quantity = product_quantity + 1"; 
+				PreparedStatement pStmt = conn.prepareStatement(sql);
+				int rs = pStmt.executeUpdate();
+				System.out.println("オーダー増加dao");				
+			}else {
+				String sql = "UPDATE order_details SET product_quantity = product_quantity - 1";; 
+				PreparedStatement pStmt = conn.prepareStatement(sql);
+				int rs = pStmt.executeUpdate();
+				System.out.println("オーダー減少dao");
+			}
+			
 
 		}catch(SQLException e) {
 			e.printStackTrace();

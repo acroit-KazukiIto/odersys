@@ -13,46 +13,10 @@ public class OrderCompleteDAO {
 	private final String DB_PASS = "1234";
 
 
-	public void updateProduct() throws SQLException{
-		//JDBCドライバを読み込む
-		try {
-			Class.forName("mysql-connector-j-9.3.0");
-		}catch(ClassNotFoundException e){
-			throw new IllegalStateException("JDBCドライバを読み込めませんでした");
-		}
-
-		try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
-			String sql = ""; 
-			PreparedStatement pStmt = conn.prepareStatement(sql);
-			ResultSet rs = pStmt.executeQuery();
-
-		}catch(SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void updateTopping() throws SQLException{
-		//JDBCドライバを読み込む
-		try {
-			Class.forName("mysql-connector-j-9.3.0");
-		}catch(ClassNotFoundException e){
-			throw new IllegalStateException("JDBCドライバを読み込めませんでした");
-		}
-
-		try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
-			String sql = "";
-			PreparedStatement pStmt = conn.prepareStatement(sql);
-			ResultSet rs = pStmt.executeQuery();
-
-		}catch(SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
 	public void updateOrderDetails() throws SQLException {
-		//JDBCドライバを読み込む
+		
 		try {
-			Class.forName("mysql-connector-j-9.3.0");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 		}catch(ClassNotFoundException e){
 			throw new IllegalStateException("JDBCドライバを読み込めませんでした");
 		}

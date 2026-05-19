@@ -17,12 +17,12 @@ public class OrderCompleteServlet extends HttpServlet {
        
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 		//注文フラグをtrueに
 		OrderCompleteDAO ocDAO = new OrderCompleteDAO();
 		try {
 			ocDAO.updateOrderDetails();
 		} catch (SQLException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
 		
