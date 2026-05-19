@@ -5,12 +5,13 @@ import java.io.Serializable;
 public class OrderListInfo implements Serializable{
 	//private int[] productToppingList;
 	private String productName, toppingName;
-	private int toppingPrice, subTotal, productPrice, toppingQuantity, orderQuantity, toppingStock, productStock, allOrderPrice;
+	private int orderId, toppingPrice, subTotal, productPrice, toppingQuantity, orderQuantity, toppingStock, productStock, allOrderPrice;
+	
 	private int productQuantity;
 	
 	
 	public OrderListInfo() {}	
-	public OrderListInfo(String toppingName, String productName, int subTotal, int productPrice, int toppingPrice,
+	public OrderListInfo(int orderId, String toppingName, String productName, int subTotal, int productPrice, int toppingPrice,
 			int toppingQuantity, int productQuantity) {
 		this.toppingName = toppingName;
 		this.productName = productName;
@@ -21,7 +22,12 @@ public class OrderListInfo implements Serializable{
 	}
 
 	
-
+	public int getOrderId() {
+		return orderId;
+	}
+	public void setOrderId(int orderId) {
+		this.orderId = orderId;
+	}
 	public int getAllOrderPrice() {
 		return allOrderPrice;
 	}
@@ -120,4 +126,5 @@ public class OrderListInfo implements Serializable{
 	public void setProductQuantity(int productQuantity) {
 		this.productQuantity = productQuantity;
 	}
+	
 }

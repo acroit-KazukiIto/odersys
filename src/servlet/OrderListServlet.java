@@ -2,6 +2,7 @@ package servlet;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import dao.OrderListDAO;
@@ -90,16 +91,26 @@ public class OrderListServlet extends HttpServlet {
 
 		request.setCharacterEncoding("UTF-8");
 		OrderListDAO olDAO = new OrderListDAO();
-		
 		//データ取得処理
-		List<OrderListInfo> olList;
-		try {
+		List<OrderListInfo> olList = new ArrayList<>();
+				try {
 			olList = olDAO.findorderDetailsByorderFlag();
+			Integer oli = olList.size();
+			System.out.println("ol出力" + oli);
+			
+			if(oli == 0) {
+				RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/orderListNull.jsp");
+				dispatcher.forward(request, response);
+			}
 			for(OrderListInfo ol : olList) {
-				String debug = ol.getProductName();
-				System.out.println("ol出力" + debug);
+				int debug = ol.getOrderId();
+				
 				request.setAttribute("ol", ol);
 			}
+			
+
+			
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}	

@@ -34,6 +34,7 @@ public class OrderListDAO {
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 			ResultSet rs = pStmt.executeQuery();
 			while(rs.next()) {
+				int orderId = rs.getInt("order_id");
 				int subTotal = rs.getInt("order_price");
 				String productName = rs.getString("product_name");
 				String toppingName = rs.getString("topping_name");
@@ -41,8 +42,9 @@ public class OrderListDAO {
 				int toppingPrice = rs.getInt("topping_price");
 				int toppingQuantity = rs.getInt("topping_quantity");
 				int productQuantity = rs.getInt("product_quantity");
-				OrderListInfo ol = new OrderListInfo(toppingName, productName, subTotal, productPrice, toppingPrice,
+				OrderListInfo ol = new OrderListInfo(orderId, toppingName, productName, subTotal, productPrice, toppingPrice,
 						 toppingQuantity, productQuantity);
+				ol.setOrderId(orderId);
 				ol.setSubTotal(subTotal);
 				ol.setProductName(productName);
 				ol.setToppingName(toppingName);
