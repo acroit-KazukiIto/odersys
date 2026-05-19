@@ -27,9 +27,7 @@ public class ItemDetailsServlet extends HttpServlet {
         System.out.println("【デバッグ】doPostに届いたaction: " + checkAction);
 
         if (checkAction != null) {
-            // ====================================================
-            // A. 「追加」ボタンが押されたときの処理
-            // ====================================================
+
             if ("insert".equals(checkAction) || "submit_insert".equals(checkAction)) {
                 
                 Integer productId = (Integer) session.getAttribute("selectedProductId");
@@ -55,9 +53,7 @@ public class ItemDetailsServlet extends HttpServlet {
                 }
             }
             
-            // ====================================================
-            // B. トッピング「＋」「－」ボタンの計算処理
-            // ====================================================
+
             ItemDetailsLogic logic = new ItemDetailsLogic();
             
             if (checkAction.startsWith("plus_")) {
@@ -69,7 +65,7 @@ public class ItemDetailsServlet extends HttpServlet {
                 logic.calcToppingQuantity(toppingList, index, "minus");
             }
 
-            // トッピング計算後の新しい小計を計算する
+            // トッピング計算後の新しい小計を計算するa
             if (productPrice != null && toppingList != null) {
                 session.setAttribute("subTotal", logic.calcSubTotal(productPrice, toppingList));
             }
