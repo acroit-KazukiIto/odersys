@@ -7,7 +7,7 @@
     List<ItemDetailsInfo> toppingList = (List<ItemDetailsInfo>) session.getAttribute("toppingList");
     Integer subTotal = (Integer) session.getAttribute("subTotal");
     String tableNum = (String) session.getAttribute("tableNumber");
-    // menuから送られてきたカテゴリ名を取得して保存する
+    // menuから送られてきたカテゴリ名を取得して保存するa
     String category = request.getParameter("productCategory");
     if (category != null && !category.isEmpty()) {
         session.setAttribute("savedCategory", category.trim());

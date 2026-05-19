@@ -17,7 +17,7 @@ public class ToppingListDAO {
 
     /**
      * product_details テーブルに新しい注文を1行追加
-     * (order_id は AUTO_INCREMENT なので、product_id のみを指定してインサートします)
+     * (order_id は AUTO_INCREMENT なので、product_id のみを指定してaインサートします)
      */
     public boolean insertProductDetail(int productId) { 
         String sql = "INSERT INTO product_details (product_id) "

@@ -27,9 +27,19 @@ public class OrderHistoryDAO {
 		
 		try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)) {
 			String sql = 
-					"SELECT order_id, product_quantity, order_price, order_flag, accounting_flag "
+					"SELECT order_id, product_id, topping_id, product_quantity, order_price, order_flag, accounting_flag "
 					+ "FROM order_details "
-					+ "ORDER BY order_id ASC";
+					+ "ORDER BY order_id ASC "
+					/*+ "UNION "
+					+ "SELECT T1.order_id, T2.product_name, T2.product_price "
+					+ "FROM order_details AS T1 "
+					+ "LEFT OUTER JOIN product AS T2 "
+					+ "ON T1.product_id = T2.product_id "
+					+ "UNION "
+					+ "SELECT T1.order_id, T2.topping_name, T2.topping_price "
+					+ "FROM order_details AS T1 "
+					+ "LEFT OUTER JOIN topping AS T2 "
+					+ "ON T1.topping_id = T2.topping_id"*/;
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 			ResultSet rs = pStmt.executeQuery();
 			
