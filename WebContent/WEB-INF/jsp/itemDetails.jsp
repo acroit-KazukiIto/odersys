@@ -7,13 +7,7 @@
     List<ItemDetailsInfo> toppingList = (List<ItemDetailsInfo>) session.getAttribute("toppingList");
     Integer subTotal = (Integer) session.getAttribute("subTotal");
     String tableNum = (String) session.getAttribute("tableNumber");
-
-    // nullエラー防止のための初期化
-    if(pName == null) pName = "未選択";
-    if(subTotal == null) subTotal = 0;
-    if(tableNum == null) tableNum = "1";
-
-    // menuから送られてきたカテゴリ名を取得してセッションに保存する
+    // menuから送られてきたカテゴリ名を取得して保存する
     String category = request.getParameter("productCategory");
     if (category != null && !category.isEmpty()) {
         session.setAttribute("savedCategory", category.trim());
@@ -46,8 +40,6 @@
         </tr>
     </table>
     <hr>
-
-    <%-- トッピング一覧 (指定カテゴリのみ表示) --%>
     <% if(showTopping) { %>
     <div style="padding: 10px;">
         <table width="100%" border="0" cellpadding="10" style="table-layout: fixed;">
@@ -97,7 +89,7 @@
                     <strong style="font-size: 1.5em;"><%= tableNum %>卓</strong>
                 </td>
                 <td>
-                    <form action="ItemDetailsServlet" method="post" style="margin:0;">
+                    <form action="OrderListServlet" method="post" style="margin:0;">
                         <input type="submit" name="Button" value="追加" 
                                style="width: 90%; height: 50px; background: orange; color: white; border: none; font-weight: bold;">
                     </form>
