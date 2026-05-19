@@ -20,7 +20,8 @@ public class ToppingListDAO {
      * (order_id は AUTO_INCREMENT なので、product_id のみを指定してインサートします)
      */
     public boolean insertProductDetail(int productId) { 
-        String sql = "INSERT INTO product_details (product_id) VALUES (?)";
+        String sql = "INSERT INTO product_details (product_id) "
+        		+ "VALUES ('2')";
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
