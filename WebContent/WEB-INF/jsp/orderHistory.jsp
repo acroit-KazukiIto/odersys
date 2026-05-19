@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -14,8 +14,8 @@
   
   /* テーブルスタイル */
   .order-table { width: 100%; border-collapse: collapse; background-color: rgba(255,255,255,0.5); }
-  .order-table th { background-color: #F5DEB3; padding: 15px; border-bottom: 2px solid #333; }
-  .order-table td { padding: 15px; border-bottom: 1px solid #ddd; }
+  .order-table th { background-color: #F5DEB3; padding: 15px; border-bottom: 1px solid #333; border: 1px solid; }
+  .order-table td { padding: 15px; border-bottom: 1px solid #ddd; border: 1px solid; }
   
   /* 合計エリア */
   .total-area { text-align: right; padding: 30px; border-top: 2px solid #333; }
@@ -59,8 +59,8 @@
   <div class="content">
     <c:choose>
       <c:when test="${empty orderList}">
-        <div style="padding: 100px 20px; text-align: center;">
-          <div style="background: #FFD700; padding: 60px; border-radius: 15px; font-size: 1.5rem; font-weight: bold;">
+        <div style="padding: 250px 30px; text-align: center;">
+          <div style="background: #FFD700; padding: 110px; border-radius: 15px; font-size: 1.5rem; font-weight: bold;">
             注文履歴がありません
           </div>
         </div>
@@ -140,8 +140,8 @@
           <form action="OrderHistoryServlet" method="post" class="btn-group">
             <input type="hidden" name="tableNumber" value="${tableNumber}">
             <input type="hidden" name="totalOrderPrice" value="${totalOrderPrice}">
-            <button type="submit" name="action" value="yes" class="btn-base btn-yes">はい</button>
             <button type="button" class="btn-base btn-no" onclick="closeModal()">いいえ</button>
+            <button type="submit" name="action" value="yes" class="btn-base btn-yes">はい</button>
           </form>
         </c:when>
       </c:choose>
