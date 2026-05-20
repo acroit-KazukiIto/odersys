@@ -33,7 +33,7 @@ public class ItemDetailsServlet extends HttpServlet {
 
         if (checkAction != null) {
 
-            // --- 1-1. 「追加」ボタンが押されたとき（DBへ注文詳細を登録） ---
+            // 「追加」ボタンが押されたとき（DBへ注文詳細を登録） ---
             if ("追加".equals(checkAction)) {
                 Integer productId = (Integer) session.getAttribute("selectedProductId");
                 System.out.println("【デバッグ:doPost】インサートを試みるproductId: " + productId);
@@ -58,13 +58,13 @@ public class ItemDetailsServlet extends HttpServlet {
                 }
             }
             
-            // --- 1-2. 「メニュー」ボタンが押されたとき（メニュー一覧へ戻る） ---
+            // 「メニュー」ボタンが押されたとき
             if ("メニュー".equals(checkAction)) {
                 response.sendRedirect("ShowMenuServlet");
                 return;
             }
 
-            // --- 1-3. トッピングの「＋」「－」ボタンが押されたとき ---
+            // トッピングの「＋」「－」ボタンが押されたとき ---
             ItemDetailsLogic logic = new ItemDetailsLogic();
             if (checkAction.startsWith("+")) {
                 int index = Integer.parseInt(checkAction.substring(1));
@@ -90,13 +90,12 @@ public class ItemDetailsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         
-        // メニュー画面（showMenu.jsp）から送られてきたパラメータを取得
+        // メニュー画面から送られてきたパラメータを取得
         String reqId = request.getParameter("productId");
         String reqName = request.getParameter("productName");
         String reqPrice = request.getParameter("productPrice");
         String category = request.getParameter("productCategory");
 
-        // ★コンソールログでデータの流れを完全に追跡します！
         System.out.println("===== 【デバッグ:doGet】開始 =====");
         System.out.println("URLパラメータ [productId]: " + reqId);
         System.out.println("URLパラメータ [productName]: " + reqName);
@@ -112,7 +111,7 @@ public class ItemDetailsServlet extends HttpServlet {
             session.setAttribute("selectedProductId", productId);
             session.setAttribute("selectedPName", reqName);
             session.setAttribute("selectedPPrice", productPrice);
-            session.setAttribute("subTotal", productPrice); // 初期状態の小計＝商品価格
+            session.setAttribute("subTotal", productPrice);
         } else {
             System.out.println("👉 リダイレクト、または画面更新を検知。既存のセッション数値を維持します。");
         }
@@ -139,7 +138,6 @@ public class ItemDetailsServlet extends HttpServlet {
             }
         }
         
-        // 確実にフォワードしてJSPを表示する（Eclipseの環境依存を防ぐため先頭のスラッシュを外しています）
         request.getRequestDispatcher("WEB-INF/jsp/itemDetails.jsp").forward(request, response);
     }
 }
