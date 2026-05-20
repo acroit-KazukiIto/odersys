@@ -16,14 +16,12 @@
   <center>
     <table width="400" border="0" cellpadding="0" cellspacing="0">
       <tr>
-        <td bgcolor="FFD700" align="center">
-          <br>
+        <div style="background-color: #FFD700; width: 450px; padding: 20px 0; border-radius: 15px;">
           <font size="4">会計が確定されました</font><br><br>
           <font size="4">ご利用ありがとうございます</font><br><br>
-          <font size="5"><b><%= tableNum %></b></font><br>
-          <font size="6"><u><b>合計：<%= totalPrice %>円(税込)</b></u></font>
-          <br><br>
-        </td>
+          <font size="5"><b><%= tableNum %>卓</b></font><br>
+          <font size="5"><u><b>合計：<%= totalPrice %>円(税込)</b></u></font>
+        </div>
       </tr>
       <tr>
         <td align="center">

@@ -17,8 +17,8 @@
       <!-- 卓番号の表示 -->
       <tr>
         <td align="center">
-          <div style="background-color: #FFD700; width: 350px; padding: 30px 0; border-radius: 15px;">
-            <font size="7"><b><%= tableNumber %>卓</b></font>
+          <div style="background-color: #FFD700; width: 450px; padding: 50px 0; border-radius: 15px;">
+            <font size="6"><b><%= tableNumber %>卓</b></font>
           </div>
         </td>
       </tr>
