@@ -9,8 +9,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>会計完了</title>
+  <meta charset="UTF-8">
+  <title>会計完了</title>
 </head>
 <body bgcolor="#FDF5E6">
   <center>
