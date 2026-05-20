@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ page import="model.OrderListInfo"%>
+<%@ page import="model.OrderListInfo, model.TableInfo"%>
 <%
+TableInfo ti = (TableInfo)session.getAttribute("loginUser");
 OrderListInfo ol = (OrderListInfo) request.getAttribute("ol");
 Object tableObj = session.getAttribute("tableNumber");
 %>
@@ -23,7 +24,7 @@ Object tableObj = session.getAttribute("tableNumber");
 	<c:forEach var="ol" items="ol">
 
 		<ul><%=ol.getOrderId() %><%=ol.getProductName()%><%=ol.getProductPrice() %>
-			<form action="OrderListServlet" method="get">
+			<form action="OrderListServlet" method="post">
 				<li></li>
 				<li><%=ol.getToppingName()%></li>
 				<li><%=ol.getToppingQuantity()%></li>
@@ -33,7 +34,7 @@ Object tableObj = session.getAttribute("tableNumber");
 				<li><button type="submit" name="Button" value="+">+</button></li>
 				<li><%=ol.getSubTotal()%></li>
 			</form>
-			<form action="ItemDetailsChangeServlet" method="get">
+			<form action="ItemDetailsChangeServlet" method="post">
 				<li><button type="submit" name="Button" value="変更">変更</button></li>
 			</form>
 
@@ -48,9 +49,9 @@ Object tableObj = session.getAttribute("tableNumber");
 			<button type="submit" name="Button" value="注文">注文</button>
 		</form>
 	</div>
-	<div="center">1卓</div>
+	<div="center">卓</div>
 	<div="left">
-		<form action="ShowMenuServlet" method="post">
+		<form action="ShowMenuServlet" method="get">
 			<button type="submit" name="Button" value="メニュー">メニュー</button>
 		</form>
 	</div>

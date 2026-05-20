@@ -12,6 +12,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.OrderListInfo;
 import model.OrderListLogic;
 
@@ -22,9 +23,54 @@ public class OrderListServlet extends HttpServlet {
 
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("サーブレットpostの1番うえ");
+
+		request.setCharacterEncoding("UTF-8");
+		OrderListDAO olDAO = new OrderListDAO();
+		//データ取得処理
+		List<OrderListInfo> olList = new ArrayList<>();
+		try {
+			olList = olDAO.findorderDetailsByorderFlag();
+			Integer oli = olList.size();
+			System.out.println("ol出力" + oli);
+
+			if(oli == 0) {
+				RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/orderListNull.jsp");
+				dispatcher.forward(request, response);
+			}
+			for(OrderListInfo ol : olList) {
+				int debug = ol.getOrderId();
+
+				request.setAttribute("ol", ol);
+			}
+
+
+
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}	
+		RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/orderList.jsp");
+		dispatcher.forward(request, response);
+		
+		
+		
+
+
+	}
+
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("サーブレットgetの1番うえ");
 		request.setCharacterEncoding("UTF-8");
 		String Button = request.getParameter("Button");
+		
+		//卓番号取得処理
+		HttpSession session = request.getSession();
+        String tableId = request.getParameter("tableId");
+        if (tableId != null && !tableId.isEmpty()) {
+            session.setAttribute("tableNumber", tableId);
+        }
 
 
 		//イベント処理
@@ -34,9 +80,9 @@ public class OrderListServlet extends HttpServlet {
 			//プラス処理
 			OrderListLogic logic = new OrderListLogic();
 			logic.calcOrderQuantity(1);
-			
+
 			OrderListDAO olDAO = new OrderListDAO();
-			
+
 			//データ取得処理
 			List<OrderListInfo> olList;
 			try {
@@ -49,15 +95,15 @@ public class OrderListServlet extends HttpServlet {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}	
-			
+
 			RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/orderList.jsp");
 			dispatcher.forward(request, response);
-			
+
 		}else if("-".equals(Button)) {
 			//マイナス処理
 			OrderListLogic logic = new OrderListLogic();
 			logic.calcOrderQuantity(-1);
-			
+
 
 			OrderListDAO olDAO = new OrderListDAO();
 			//データ取得処理
@@ -72,52 +118,13 @@ public class OrderListServlet extends HttpServlet {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}	
-			
+
 			RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/orderList.jsp");
 			dispatcher.forward(request, response);
-			
+
 		}
 
 
-		
-		//フォーワード
-		
-
-	}
-
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("サーブレットpostの1番うえ");
-
-		request.setCharacterEncoding("UTF-8");
-		OrderListDAO olDAO = new OrderListDAO();
-		//データ取得処理
-		List<OrderListInfo> olList = new ArrayList<>();
-				try {
-			olList = olDAO.findorderDetailsByorderFlag();
-			Integer oli = olList.size();
-			System.out.println("ol出力" + oli);
-			
-			if(oli == 0) {
-				RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/orderListNull.jsp");
-				dispatcher.forward(request, response);
-			}
-			for(OrderListInfo ol : olList) {
-				int debug = ol.getOrderId();
-				
-				request.setAttribute("ol", ol);
-			}
-			
-
-			
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}	
-		RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/orderList.jsp");
-		dispatcher.forward(request, response);
-
-		
 
 		/*
 		System.out.println(productName); 
