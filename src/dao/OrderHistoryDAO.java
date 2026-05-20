@@ -26,6 +26,7 @@ public class OrderHistoryDAO {
 		}
 		
 		try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)) {
+			System.out.println("DB◯");
 			String sql = 
 					"SELECT order_id, product_id, topping_id, product_quantity, order_price, order_flag, accounting_flag "
 					+ "FROM order_details "
@@ -38,9 +39,11 @@ public class OrderHistoryDAO {
 				orderHistoryInfo.setOrderId(rs.getInt("order_id"));
 				orderHistoryInfo.setOrderFlag(rs.getInt("order_flag"));
 				list.add(orderHistoryInfo);
+				System.out.println("DB_set◯");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+			System.out.println("✕");
 			return new ArrayList<>();
 		}
 		return list;
