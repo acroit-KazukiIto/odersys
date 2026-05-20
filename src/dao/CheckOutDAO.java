@@ -12,6 +12,7 @@ public class CheckOutDAO {
 	
 	// order_detailsの合計フラグを更新
 	public void updateByOrderDetails(String tableNumber) throws SQLException {
+		System.out.println("order_detailsの合計フラグを更新に入りました");
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
@@ -19,6 +20,7 @@ public class CheckOutDAO {
 		}
 		
 		try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)) {
+			System.out.println("order_details DB◯");
 			String sql =
 					"UPDATE order_details SET accounting_flag = 1 "
 					+ "WHERE session_id = ? AND accounting_flag = 0";
@@ -30,6 +32,7 @@ public class CheckOutDAO {
 	
 	// table_sessionsのステータスと客数を更新
 	public void updateByTableSession(String tableNumber) throws SQLException {
+		System.out.println("table_sessionsのステータスと客数を更新に入りました");
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
@@ -37,6 +40,7 @@ public class CheckOutDAO {
 		}
 		
 		try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)) {
+			System.out.println("table_session DB◯");
 			String sql =
 					"UPDATE table_sessions SET session_status = 'inactive', guest_count = 0 "
 					+ "WHERE session_id = ? AND session_status = 'active'";
@@ -48,6 +52,7 @@ public class CheckOutDAO {
 	
 	// table_masterのステータスと更新日時を更新
 	public void updateByTableMaster(String tableNumber) throws SQLException {
+		System.out.println("table_masterのステータスと更新日時を更新に入りました");
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
@@ -55,6 +60,7 @@ public class CheckOutDAO {
 		}
 		
 		try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)) {
+			System.out.println("table_master DB◯");
 			String sql =
 					"UPDATE table_master "
 					+ "SET table_status = 'inactive', updated_at = CURRENT_TIMESTAMP "

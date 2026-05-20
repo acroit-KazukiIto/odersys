@@ -14,7 +14,7 @@ public class CheckOutInfo implements Serializable {
 	}
 	
 	public String getTableNumber() { return tableNumber; }
-	public void setTableNumber(String tablNumber) {
+	public void setTableNumber(String tableNumber) {
 		this.tableNumber = tableNumber;
 	}
 	
