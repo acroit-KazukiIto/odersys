@@ -20,7 +20,9 @@ public class ItemDetailsServlet extends HttpServlet {
     /**
      * 1. 詳細画面でボタン（＋、－、追加、メニュー）が押されたときの処理
      */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, 
+    		HttpServletResponse response) 
+    				throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         HttpSession session = request.getSession();
         
@@ -39,22 +41,8 @@ public class ItemDetailsServlet extends HttpServlet {
                 System.out.println("【デバッグ:doPost】インサートを試みるproductId: " + productId);
 
                 if (productId != null) {
-                    ToppingListDAO dao = new ToppingListDAO();
-                    boolean isSuccess = dao.insertProductDetail(productId);
-
-                    if (isSuccess) {
-                        System.out.println("【デバッグ:doPost】DB登録成功！OrderListServletへ遷移します。");
-                        response.sendRedirect("OrderListServlet");
-                        return; 
-                    } else {
-                        System.out.println("【エラー:doPost】DBインサートに失敗しました。");
-                        response.sendRedirect("ItemDetailsServlet");
-                        return;
-                    }
-                } else {
-                    System.out.println("【エラー:doPost】selectedProductIdがセッションにありませんでした。");
-                    response.sendRedirect("ItemDetailsServlet");
-                    return;
+                	 ToppingListDAO dao = new ToppingListDAO();
+                	 boolean isSuccess = dao.insertProductDetail(productId);
                 }
             }
             
