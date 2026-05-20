@@ -28,7 +28,7 @@ public class OrderHistoryServlet extends HttpServlet {
         String action = request.getParameter("action");
 
         try {
-            // 注文履歴情報の取得 (DBから最新情報を取得)
+            // 注文履歴情報の取得
             OrderHistoryDAO dao = new OrderHistoryDAO();
             List<OrderHistoryInfo> orderList = dao.findOrderDetails(sessionId);
 
@@ -67,7 +67,7 @@ public class OrderHistoryServlet extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
             // 例外発生時はエラー画面へ
-            // response.sendRedirect("/WEB-INF/error.jsp");
+            response.sendRedirect("/WEB-INF/error.jsp");
             System.out.println("error");
         }
     }
