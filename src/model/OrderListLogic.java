@@ -45,6 +45,7 @@ public class OrderListLogic {
 		int subTotal = ol.getSubTotal();
 		subTotal = (productPrice + toppingPrice * toppingQuantity) * order;
 		ol.setSubTotal(subTotal);
+		calcAllOrderPrice(subTotal);
 	}
 	public void calcAllOrderPrice(int subTotal) {
 		int num = ol.getAllOrderPrice();

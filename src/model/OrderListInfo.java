@@ -5,23 +5,32 @@ import java.io.Serializable;
 public class OrderListInfo implements Serializable{
 	//private int[] productToppingList;
 	private String productName, toppingName;
-	private int orderId, toppingPrice, subTotal, productPrice, toppingQuantity, orderQuantity, toppingStock, productStock, allOrderPrice;
+	private int orderId, toppingPrice, subTotal, productPrice, toppingQuantity, orderQuantity, toppingStock, productStock, allOrderPrice, sessionId;
+	
 	
 	private int productQuantity;
 	
 	
 	public OrderListInfo() {}	
 	public OrderListInfo(int orderId, String toppingName, String productName, int subTotal, int productPrice, int toppingPrice,
-			int toppingQuantity, int productQuantity) {
+			int toppingQuantity, int productQuantity, int sessionId) {
 		this.toppingName = toppingName;
 		this.productName = productName;
 		this.subTotal = subTotal;
 		this.productPrice = productPrice;
+		this.toppingPrice = toppingPrice;
 		this.toppingQuantity = toppingQuantity;
 		this.productQuantity = productQuantity;
+		this.sessionId = sessionId;
 	}
 
 	
+	public int getSessionId() {
+		return sessionId;
+	}
+	public void setSessionId(int sessionId) {
+		this.sessionId = sessionId;
+	}
 	public int getOrderId() {
 		return orderId;
 	}

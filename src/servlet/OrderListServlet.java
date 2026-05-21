@@ -2,7 +2,6 @@ package servlet;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import dao.OrderListDAO;
@@ -12,7 +11,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import model.OrderListInfo;
 import model.OrderListLogic;
 
@@ -28,28 +26,34 @@ public class OrderListServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		OrderListDAO olDAO = new OrderListDAO();
 		//データ取得処理
-		List<OrderListInfo> olList = new ArrayList<>();
 		try {
-			olList = olDAO.findorderDetailsByorderFlag();
+			List<OrderListInfo> olList = olDAO.findorderDetailsByorderFlag();
+			request.setAttribute("olList", olList);
+		} catch (SQLException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
+		/*
+		try {
+			olList = 
 			Integer oli = olList.size();
-			System.out.println("ol出力" + oli);
+			OrderListInfo oli2 = olList.get(2);
+			System.out.println("ol出力" + oli + oli2);
 
 			if(oli == 0) {
 				RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/orderListNull.jsp");
 				dispatcher.forward(request, response);
 			}
+			/*
 			for(OrderListInfo ol : olList) {
 				int debug = ol.getOrderId();
 
 				request.setAttribute("ol", ol);
 			}
+			*/
 
 
-
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}	
+		
 		RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/orderList.jsp");
 		dispatcher.forward(request, response);
 		
@@ -64,38 +68,31 @@ public class OrderListServlet extends HttpServlet {
 		System.out.println("サーブレットgetの1番うえ");
 		request.setCharacterEncoding("UTF-8");
 		String Button = request.getParameter("Button");
+		OrderListDAO olDAO = new OrderListDAO();
 		
-		//卓番号取得処理
-		HttpSession session = request.getSession();
-        String tableId = request.getParameter("tableId");
-        if (tableId != null && !tableId.isEmpty()) {
-            session.setAttribute("tableNumber", tableId);
-        }
-
-
 		//イベント処理
 		if("追加".equals(Button)){
-
+			
+			//データ取得処理
+			try {
+				List<OrderListInfo> olList = olDAO.findorderDetailsByorderFlag();
+				request.setAttribute("olList", olList);
+			} catch (SQLException e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
+			}
 		}else if("+".equals(Button)) {
 			//プラス処理
 			OrderListLogic logic = new OrderListLogic();
 			logic.calcOrderQuantity(1);
-
-			OrderListDAO olDAO = new OrderListDAO();
-
 			//データ取得処理
-			List<OrderListInfo> olList;
 			try {
-				olList = olDAO.findorderDetailsByorderFlag();
-				for(OrderListInfo ol : olList) {
-					String debug = ol.getProductName();
-					System.out.println("ol出力" + debug);
-					request.setAttribute("ol", ol);
-				}
+				List<OrderListInfo> olList = olDAO.findorderDetailsByorderFlag();
+				request.setAttribute("olList", olList);
 			} catch (SQLException e) {
+				// TODO 自動生成された catch ブロック
 				e.printStackTrace();
-			}	
-
+			}
 			RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/orderList.jsp");
 			dispatcher.forward(request, response);
 
@@ -103,26 +100,19 @@ public class OrderListServlet extends HttpServlet {
 			//マイナス処理
 			OrderListLogic logic = new OrderListLogic();
 			logic.calcOrderQuantity(-1);
-
-
-			OrderListDAO olDAO = new OrderListDAO();
 			//データ取得処理
-			List<OrderListInfo> olList;
 			try {
-				olList = olDAO.findorderDetailsByorderFlag();
-				for(OrderListInfo ol : olList) {
-					String debug = ol.getProductName();
-					System.out.println("ol出力" + debug);
-					request.setAttribute("ol", ol);
-				}
+				List<OrderListInfo> olList = olDAO.findorderDetailsByorderFlag();
+				request.setAttribute("olList", olList);
 			} catch (SQLException e) {
+				// TODO 自動生成された catch ブロック
 				e.printStackTrace();
-			}	
-
+			}
 			RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/orderList.jsp");
 			dispatcher.forward(request, response);
-
 		}
+		
+		
 
 
 
