@@ -33,4 +33,8 @@ public class ItemDetailsLogic {
         }
         return total;
     }
+	public boolean isToppingRequired(String category) {
+		// TODO 自動生成されたメソッド・スタブ
+		return false;
+	}
 }

@@ -9,7 +9,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import model.ItemDetailsInfo;
 import model.ItemDetailsLogic;
 
@@ -17,115 +16,165 @@ import model.ItemDetailsLogic;
 public class ItemDetailsServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 1. 詳細画面でボタン（＋、－、追加、メニュー）が押されたときの処理
-     */
-    protected void doPost(HttpServletRequest request, 
-    		HttpServletResponse response) 
-    				throws ServletException, IOException {
+    // 商品詳細画面表示
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
         request.setCharacterEncoding("UTF-8");
-        HttpSession session = request.getSession();
-        
-        // JSPの name="Button" に合わせて正確に取得
-        String checkAction = request.getParameter("Button");
-        List<ItemDetailsInfo> toppingList = (List<ItemDetailsInfo>) session.getAttribute("toppingList");
-        Integer productPrice = (Integer) session.getAttribute("selectedPPrice");
-        
-        System.out.println("【デバッグ:doPost】クリックされたボタンの値: " + checkAction);
 
-        if (checkAction != null) {
+        String productId = request.getParameter("productId");
+        String name = request.getParameter("productName");
+        String category = request.getParameter("productCategory");
 
-            // 「追加」ボタンが押されたとき（DBへ注文詳細を登録） ---
-            if ("追加".equals(checkAction)) {
-                Integer productId = (Integer) session.getAttribute("selectedProductId");
-                System.out.println("【デバッグ:doPost】インサートを試みるproductId: " + productId);
+        if (category == null) {
+            category = request.getParameter("categoryName");
+        }
 
-                if (productId != null) {
-                	 ToppingListDAO dao = new ToppingListDAO();
-                	 boolean isSuccess = dao.insertProductDetail(productId);
-                }
-            }
-            
-            // 「メニュー」ボタンが押されたとき
-            if ("メニュー".equals(checkAction)) {
+        int price = 0;
+
+        String priceStr = request.getParameter("productPrice");
+
+        if (priceStr != null && !priceStr.isEmpty()) {
+            price = Integer.parseInt(priceStr);
+        }
+
+        // トッピング取得
+        List<ItemDetailsInfo> tList =
+                new ToppingListDAO().findToppingList(category);
+
+        // request保存
+        request.setAttribute("productId", productId);
+        request.setAttribute("selectedPName", name);
+        request.setAttribute("selectedPPrice", price);
+        request.setAttribute("currentCategory", category);
+        request.setAttribute("subTotal", price);
+
+        if (tList.isEmpty()) {
+            request.setAttribute("toppingList", null);
+        } else {
+            request.setAttribute("toppingList", tList);
+        }
+
+        request.getRequestDispatcher("WEB-INF/jsp/itemDetails.jsp").forward(request, response);
+    }
+
+    // ボタン処理
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        request.setCharacterEncoding("UTF-8");
+
+        String buttonName = request.getParameter("Button");
+
+        // 追加ボタン
+        if ("追加".equals(buttonName)) {
+
+            String productIdStr =
+                    request.getParameter("productId");
+
+            if (productIdStr == null
+                    || productIdStr.equals("null")
+                    || productIdStr.isEmpty()) {
+
                 response.sendRedirect("ShowMenuServlet");
                 return;
             }
 
-            // トッピングの「＋」「－」ボタンが押されたとき ---
-            ItemDetailsLogic logic = new ItemDetailsLogic();
-            if (checkAction.startsWith("+")) {
-                int index = Integer.parseInt(checkAction.substring(1));
-                logic.calcToppingQuantity(toppingList, index, "plus");
-            } else if (checkAction.startsWith("-")) {
-                int index = Integer.parseInt(checkAction.substring(1));
-                logic.calcToppingQuantity(toppingList, index, "minus");
+            int productId =
+                    Integer.parseInt(productIdStr);
+
+            ToppingListDAO dao =
+                    new ToppingListDAO();
+
+            boolean isSuccess =
+                    dao.insertProductDetail(productId);
+
+            if (isSuccess) {
+
+                response.sendRedirect("OrderListServlet");
+                return;
             }
 
-            // 計算後の新しい小計を計算して更新
-            if (productPrice != null && toppingList != null) {
-                session.setAttribute("subTotal", logic.calcSubTotal(productPrice, toppingList));
-            }
+            // INSERT失敗
+            response.sendRedirect("ShowMenuServlet");
+            return;
         }
 
-        // POST処理が終わったらリダイレクトでdoGetへ飛ばす
-        response.sendRedirect("ItemDetailsServlet");
-    }
-
-    /**
-     * 2. 詳細画面を表示する（最初にメニューから来た時 ＆ プラスマイナス後のリダイレクト時）
-     */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        
-        // メニュー画面から送られてきたパラメータを取得
-        String reqId = request.getParameter("productId");
-        String reqName = request.getParameter("productName");
-        String reqPrice = request.getParameter("productPrice");
+        // ＋－ボタン処理
+        String productId = request.getParameter("productId");
+        String name = request.getParameter("productName");
+        String priceStr = request.getParameter("productPrice");
         String category = request.getParameter("productCategory");
 
-        System.out.println("===== 【デバッグ:doGet】開始 =====");
-        System.out.println("URLパラメータ [productId]: " + reqId);
-        System.out.println("URLパラメータ [productName]: " + reqName);
-        System.out.println("URLパラメータ [productPrice]: " + reqPrice);
-        System.out.println("URLパラメータ [productCategory]: " + category);
+        int price = 0;
 
-        // メニュー画面から新しくデータが送られてきた場合のみ、セッションの情報をカチッと更新する
-        if (reqId != null && reqName != null && reqPrice != null) {
-            System.out.println("👉 メニュー画面からの遷移を検知。セッション情報を新規登録・上書きします。");
-            int productId = Integer.parseInt(reqId);
-            int productPrice = Integer.parseInt(reqPrice);
-
-            session.setAttribute("selectedProductId", productId);
-            session.setAttribute("selectedPName", reqName);
-            session.setAttribute("selectedPPrice", productPrice);
-            session.setAttribute("subTotal", productPrice);
-        } else {
-            System.out.println("👉 リダイレクト、または画面更新を検知。既存のセッション数値を維持します。");
+        if (priceStr != null && !priceStr.isEmpty()) {
+            price = Integer.parseInt(priceStr);
         }
 
-        // 現在セッションに格納されている値を最終確認
-        System.out.println("現在のセッション [selectedPName]: " + session.getAttribute("selectedPName"));
-        System.out.println("現在のセッション [selectedPPrice]: " + session.getAttribute("selectedPPrice"));
-        System.out.println("現在のセッション [selectedProductId]: " + session.getAttribute("selectedProductId"));
-        System.out.println("==================================");
+        // トッピング取得
+        List<ItemDetailsInfo> tList =
+                new ToppingListDAO().findToppingList(category);
 
-        // カテゴリ情報の保存とトッピング一覧の取得処理
-        if (category == null) {
-            category = (String) session.getAttribute("savedCategory");
-        } else {
-            session.setAttribute("savedCategory", category.trim());
-        }
-        
-        if (category != null) {
-            ToppingListDAO dao = new ToppingListDAO();
-            List<ItemDetailsInfo> toppingList = dao.findToppingList(category.trim());
-            // セッションに既存のトッピングリストがない場合のみ新規セット（数量リセット防止）
-            if (session.getAttribute("toppingList") == null || reqId != null) {
-                session.setAttribute("toppingList", toppingList);
+        // 前回数量復元
+        if (!tList.isEmpty()) {
+
+            for (int i = 0; i < tList.size(); i++) {
+
+                String qtyStr =
+                        request.getParameter("oldQty_" + i);
+
+                if (qtyStr != null
+                        && !qtyStr.isEmpty()) {
+
+                    tList.get(i).setToppingQuantity(
+                            Integer.parseInt(qtyStr));
+                }
             }
+
+            // + -
+            if (buttonName != null
+                    && (buttonName.startsWith("+")
+                    || buttonName.startsWith("-"))) {
+
+                ItemDetailsLogic logic =
+                        new ItemDetailsLogic();
+
+                String action =
+                        buttonName.startsWith("+")
+                        ? "plus"
+                        : "minus";
+
+                int index =
+                        Integer.parseInt(
+                                buttonName.substring(1));
+
+                logic.calcToppingQuantity(
+                        tList,
+                        index,
+                        action);
+            }
+
+            // 小計計算
+            int total =
+                    new ItemDetailsLogic()
+                    .calcSubTotal(price, tList);
+
+            request.setAttribute("subTotal", total);
+            request.setAttribute("toppingList", tList);
+
+        } else {
+
+            request.setAttribute("subTotal", price);
+            request.setAttribute("toppingList", null);
         }
-        
+
+        // request保存
+        request.setAttribute("productId", productId);
+        request.setAttribute("selectedPName", name);
+        request.setAttribute("selectedPPrice", price);
+        request.setAttribute("currentCategory", category);
+
         request.getRequestDispatcher("WEB-INF/jsp/itemDetails.jsp").forward(request, response);
     }
 }

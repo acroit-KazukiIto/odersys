@@ -20,7 +20,7 @@ public class ToppingListDAO {
      */
     public boolean insertProductDetail(int productId) { 
 
-        String sql = "INSERT INTO product_details (product_id) VALUES ('2')";
+        String sql = "INSERT INTO product_details (product_id) VALUES (?)";
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -29,7 +29,7 @@ public class ToppingListDAO {
                 Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
                 PreparedStatement pStmt = conn.prepareStatement(sql)
             ) {
-                // 「?」に商品IDをセット
+
                 pStmt.setInt(1, productId);
 
                 int rowsInserted = pStmt.executeUpdate();
@@ -57,10 +57,10 @@ public class ToppingListDAO {
                 PreparedStatement pStmt = conn.prepareStatement(sql);
                 ResultSet rs = pStmt.executeQuery()
             ) {
-                if (categoryName.equals("お好み焼き")
-                        || categoryName.equals("もんじゃ焼き")
-                        || categoryName.equals("鉄板焼")
-                        || categoryName.equals("鉄板焼き")) {
+                if ("お好み焼き".equals(categoryName)
+                        || "もんじゃ焼き".equals(categoryName)
+                        || "鉄板焼".equals(categoryName)
+                        || "鉄板焼き".equals(categoryName)) {
 
                     while (rs.next()) {
                         ItemDetailsInfo topping = new ItemDetailsInfo();
