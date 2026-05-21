@@ -9,9 +9,19 @@ public class OrderHistoryInfo implements Serializable {
 	private String toppingName;
 	private int toppingQuantity;
 	private int orderQuantity;
+	private int orderPrice;
 	private int subTotal;
 	
 	public OrderHistoryInfo() {}
+	public OrderHistoryInfo(int orderId, int orderFlag, String productName, String toppingName, 
+			int toppingQuantity, int orderQuantity, int subTotal) {
+		this.orderFlag = orderFlag;
+		this.productName = productName;
+		this.toppingName = toppingName;
+		this.toppingQuantity = toppingQuantity;
+		this.orderQuantity = orderQuantity;
+		this.subTotal = subTotal;
+	}
 
 	public int getOrderId() { return orderId; }
 	public void setOrderId(int orderId) {
@@ -41,6 +51,11 @@ public class OrderHistoryInfo implements Serializable {
 	public int getOrderQuantity() { return orderQuantity; }
 	public void setOrderQuantity(int orderQuantity) {
 		this.orderQuantity = orderQuantity;
+	}
+	
+	public int getOrderPrice() { return orderPrice; }
+	public void setOrderPrice(int orderPrice) {
+		this.orderPrice = orderPrice;
 	}
 
 	public int getSubTotal() { return subTotal; }

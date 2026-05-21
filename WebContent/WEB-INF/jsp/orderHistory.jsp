@@ -174,7 +174,7 @@
   <div class="container">
     <div class="content">
       <c:choose>
-        <c:when test="${empty orderList}">
+        <c:when test="${empty orderHistoryList}">
           <div style="padding: 250px 30px; text-align: center;">
             <div style="background: #FFD700; padding: 110px; border-radius: 15px; font-size: 1.5rem; font-weight: bold;">
               注文履歴がありません
@@ -191,7 +191,7 @@
               </tr>
             </thead>
             <tbody>
-              <c:forEach var="item" items="${orderList}">
+              <c:forEach var="item" items="${orderHistoryList}">
                 <tr>
                   <td>
                     <strong>${item.productName}</strong><br>
@@ -223,7 +223,7 @@
       <div class="table-num">${tableNumber}卓</div>
 
       <div style="flex: 1; border-left: 1px solid #ccc;">
-        <c:if test="${not empty orderList}">
+        <c:if test="${not empty orderHistoryList}">
           <form action="OrderHistoryServlet" method="post" style="height:100%;">
             <input type="hidden" name="tableNumber" value="${tableNumber}">
             <input type="hidden" name="totalOrderPrice" value="${totalOrderPrice}">
