@@ -21,9 +21,14 @@ public class OrderRemoveDAO {
 			try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 				System.out.println("だおまできたお");
 				String sql = "DELETE FROM order_details WHERE order_id = ?"
-						+ "LEFT JOIN ";
+						+ "UNION"
+						+ "DELETE FROM product_details WHERE order_id = ?"
+						+ "UNION"
+						+ "DELETE FROM multiple_toppings WHERE order_id = ?";
 				PreparedStatement ps = conn.prepareStatement(sql);
 				ps.setInt(1, num);
+				ps.setInt(2, num);
+				ps.setInt(3, num);
 				ps.executeUpdate();
 			}catch(SQLException e){
 				e.printStackTrace();

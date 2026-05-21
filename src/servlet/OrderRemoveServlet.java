@@ -29,7 +29,7 @@ public class OrderRemoveServlet extends HttpServlet {
 		OrderRemoveDAO orDAO = new OrderRemoveDAO();
 		orDAO.deleteOrderDetails(num);
 
-		RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/orderList.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/Remove.jsp");
 		dispatcher.forward(request, response);
 	}
 

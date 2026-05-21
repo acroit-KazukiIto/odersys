@@ -7,6 +7,9 @@
 <title>注文削除画面</title>
 </head>
 <body>
-この商品を削除します。よろしいですか？
+<form action = "OrderListServlet" method="get">
+削除しました
+<button type="submit" name="Button" value="戻る">戻る</button>
+</form>
 </body>
 </html>

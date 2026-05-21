@@ -3,7 +3,6 @@ package dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class OrderCompleteDAO {
@@ -25,9 +24,9 @@ public class OrderCompleteDAO {
 		try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 
 			//order_details更新のsql
-			String sql = "UPDATE ordertDetails SET product_quantity = productQuantity"; 
+			String sql = "UPDATE order_details SET order_flag = 1 WHERE order_flag = 0"; 
 			PreparedStatement pStmt = conn.prepareStatement(sql);
-			ResultSet rs = pStmt.executeQuery();
+			int rs = pStmt.executeUpdate();
 
 		}catch(SQLException e) {
 			e.printStackTrace();
