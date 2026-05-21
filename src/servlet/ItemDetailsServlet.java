@@ -15,166 +15,87 @@ import model.ItemDetailsLogic;
 @WebServlet("/ItemDetailsServlet")
 public class ItemDetailsServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-
-    // 商品詳細画面表示
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
 
         String productId = request.getParameter("productId");
         String name = request.getParameter("productName");
         String category = request.getParameter("productCategory");
+        int price = (request.getParameter("productPrice") != null) ? Integer.parseInt(request.getParameter("productPrice")) : 0;
+        //dao
+        ToppingListDAO dao = new ToppingListDAO();
 
-        if (category == null) {
-            category = request.getParameter("categoryName");
-        }
-
-        int price = 0;
-
-        String priceStr = request.getParameter("productPrice");
-
-        if (priceStr != null && !priceStr.isEmpty()) {
-            price = Integer.parseInt(priceStr);
-        }
-
-        // トッピング取得
-        List<ItemDetailsInfo> tList =
-                new ToppingListDAO().findToppingList(category);
-
-        // request保存
+        List<ItemDetailsInfo> tList = dao.findToppingList(category);
+        //request
         request.setAttribute("productId", productId);
         request.setAttribute("selectedPName", name);
         request.setAttribute("selectedPPrice", price);
         request.setAttribute("currentCategory", category);
         request.setAttribute("subTotal", price);
-
-        if (tList.isEmpty()) {
-            request.setAttribute("toppingList", null);
-        } else {
-            request.setAttribute("toppingList", tList);
-        }
-
+        request.setAttribute("toppingList", tList);
         request.getRequestDispatcher("WEB-INF/jsp/itemDetails.jsp").forward(request, response);
     }
 
-    // ボタン処理
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
+    //イベント
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-
         String buttonName = request.getParameter("Button");
-
-        // 追加ボタン
-        if ("追加".equals(buttonName)) {
-
-            String productIdStr =
-                    request.getParameter("productId");
-
-            if (productIdStr == null
-                    || productIdStr.equals("null")
-                    || productIdStr.isEmpty()) {
-
-                response.sendRedirect("ShowMenuServlet");
-                return;
+        String productIdStr = request.getParameter("productId");
+        String name = request.getParameter("productName");
+        String priceStr = request.getParameter("productPrice");
+        String subTotalStr = request.getParameter("subTotal");
+        String category = request.getParameter("productCategory");
+        
+        int productId = Integer.parseInt(productIdStr);
+        int price = Integer.parseInt(priceStr);
+        int subTotal = Integer.parseInt(subTotalStr);
+        //dao
+        ToppingListDAO dao = new ToppingListDAO();
+        List<ItemDetailsInfo> tList = dao.findToppingList(category);
+        for (int i = 0; i < tList.size(); i++) {
+            String qtyStr = request.getParameter("oldQty_" + i);
+            if (qtyStr != null) {
+                tList.get(i).setToppingQuantity(Integer.parseInt(qtyStr));
             }
+        }
 
-            int productId =
-                    Integer.parseInt(productIdStr);
+        //bottun 表示
+        if (buttonName.startsWith("+") || buttonName.startsWith("-")) {
+            ItemDetailsLogic logic = new ItemDetailsLogic();
+            String action = buttonName.startsWith("+") ? "plus" : "minus";
+            int index = Integer.parseInt(buttonName.substring(1));
+            logic.calcToppingQuantity(tList, index, action);
+            subTotal = logic.calcSubTotal(price, tList);
 
-            ToppingListDAO dao =
-                    new ToppingListDAO();
+            request.setAttribute("productId", productIdStr);
+            request.setAttribute("selectedPName", name);
+            request.setAttribute("selectedPPrice", price);
+            request.setAttribute("currentCategory", category);
+            request.setAttribute("subTotal", subTotal);
+            request.setAttribute("toppingList", tList);
 
-            boolean isSuccess =
-                    dao.insertProductDetail(productId);
+            request.getRequestDispatcher("WEB-INF/jsp/itemDetails.jsp").forward(request, response);
 
-            if (isSuccess) {
-
-                response.sendRedirect("OrderListServlet");
-                return;
-            }
-
-            // INSERT失敗
-            response.sendRedirect("ShowMenuServlet");
             return;
         }
 
-        // ＋－ボタン処理
-        String productId = request.getParameter("productId");
-        String name = request.getParameter("productName");
-        String priceStr = request.getParameter("productPrice");
-        String category = request.getParameter("productCategory");
-
-        int price = 0;
-
-        if (priceStr != null && !priceStr.isEmpty()) {
-            price = Integer.parseInt(priceStr);
-        }
-
-        // トッピング取得
-        List<ItemDetailsInfo> tList =
-                new ToppingListDAO().findToppingList(category);
-
-        // 前回数量復元
-        if (!tList.isEmpty()) {
-
-            for (int i = 0; i < tList.size(); i++) {
-
-                String qtyStr =
-                        request.getParameter("oldQty_" + i);
-
-                if (qtyStr != null
-                        && !qtyStr.isEmpty()) {
-
-                    tList.get(i).setToppingQuantity(
-                            Integer.parseInt(qtyStr));
+        if ("追加".equals(buttonName)) {
+        	//product_details insert
+            boolean productSuccess = dao.insertProductDetail(productId);
+            if (productSuccess) {
+                int orderId = dao.getLastOrderId();
+                int toppingId = 0;
+                //order_details insert
+                dao.insertOrderDetail(orderId, 1, subTotal, 1, 0, 0, 0, productId, toppingId);
+                for (ItemDetailsInfo t : tList) {
+                    if (t.getToppingQuantity() > 0) {
+                        dao.insertMutipleToppings(t.getToppingId(), t.getToppingQuantity(), orderId);
+                    }
                 }
+                response.sendRedirect("OrderListServlet");
+                return;
             }
-
-            // + -
-            if (buttonName != null
-                    && (buttonName.startsWith("+")
-                    || buttonName.startsWith("-"))) {
-
-                ItemDetailsLogic logic =
-                        new ItemDetailsLogic();
-
-                String action =
-                        buttonName.startsWith("+")
-                        ? "plus"
-                        : "minus";
-
-                int index =
-                        Integer.parseInt(
-                                buttonName.substring(1));
-
-                logic.calcToppingQuantity(
-                        tList,
-                        index,
-                        action);
-            }
-
-            // 小計計算
-            int total =
-                    new ItemDetailsLogic()
-                    .calcSubTotal(price, tList);
-
-            request.setAttribute("subTotal", total);
-            request.setAttribute("toppingList", tList);
-
-        } else {
-
-            request.setAttribute("subTotal", price);
-            request.setAttribute("toppingList", null);
         }
-
-        // request保存
-        request.setAttribute("productId", productId);
-        request.setAttribute("selectedPName", name);
-        request.setAttribute("selectedPPrice", price);
-        request.setAttribute("currentCategory", category);
-
-        request.getRequestDispatcher("WEB-INF/jsp/itemDetails.jsp").forward(request, response);
+        response.sendRedirect("ShowMenuServlet");
     }
 }
