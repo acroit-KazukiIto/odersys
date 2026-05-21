@@ -20,15 +20,15 @@ public class OrderRemoveDAO {
 			
 			try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 				System.out.println("だおまできたお");
-				String sql = "DELETE FROM order_details WHERE order_id = ?"
-						+ "UNION"
-						+ "DELETE FROM product_details WHERE order_id = ?"
-						+ "UNION"
-						+ "DELETE FROM multiple_toppings WHERE order_id = ?";
+				String sql = "DELETE od, mt, pd FROM order_details AS od "
+						+ "LEFT JOIN multiple_toppings AS mt "
+						+ "ON od.order_id = mt.order_id "
+						+ "LEFT JOIN product_details AS pd "
+						+ "ON mt.order_id = pd.order_id "
+						+ "WHERE od.order_id = ? ";
+				
 				PreparedStatement ps = conn.prepareStatement(sql);
 				ps.setInt(1, num);
-				ps.setInt(2, num);
-				ps.setInt(3, num);
 				ps.executeUpdate();
 			}catch(SQLException e){
 				e.printStackTrace();

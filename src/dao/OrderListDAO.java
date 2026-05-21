@@ -35,7 +35,7 @@ public class OrderListDAO {
 			ResultSet rs = pStmt.executeQuery();
 			while(rs.next()) {
 				int orderId = rs.getInt("order_id");
-				int subTotal = rs.getInt("order_price");
+				int orderPrice = rs.getInt("order_price");
 				String productName = rs.getString("product_name");
 				String toppingName = rs.getString("topping_name");
 				int productPrice = rs.getInt("product_price");
@@ -43,17 +43,16 @@ public class OrderListDAO {
 				int toppingQuantity = rs.getInt("topping_quantity");
 				int productQuantity = rs.getInt("product_quantity");
 				int sessionId = rs.getInt("session_id");
-				OrderListInfo ol = new OrderListInfo(orderId, toppingName, productName, subTotal, productPrice, toppingPrice,
+				OrderListInfo ol = new OrderListInfo(orderId, toppingName, productName, orderPrice, productPrice, toppingPrice,
 						 toppingQuantity, productQuantity, sessionId);
 				ol.setOrderId(orderId);
-				ol.setSubTotal(subTotal);
-				ol.setProductName(productName);
 				ol.setToppingName(toppingName);
+				ol.setProductName(productName);
+				ol.setOrderPrice(orderPrice);
 				ol.setProductPrice(productPrice);
 				ol.setToppingPrice(toppingPrice);
 				ol.setProductQuantity(productQuantity);
 				ol.setToppingQuantity(toppingQuantity);
-				ol.setSessionId(sessionId);
 				olList.add(ol);
 				String pname = ol.getProductName();
 				System.out.println("DAOチェック" + pname);
@@ -61,6 +60,7 @@ public class OrderListDAO {
 			}
 
 		}catch(SQLException e){
+			System.out.println("失敗");
 			e.printStackTrace();
 			System.out.println("失敗");
 		}

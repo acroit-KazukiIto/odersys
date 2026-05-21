@@ -5,18 +5,18 @@ import java.io.Serializable;
 public class OrderListInfo implements Serializable{
 	//private int[] productToppingList;
 	private String productName, toppingName;
-	private int orderId, toppingPrice, subTotal, productPrice, toppingQuantity, orderQuantity, toppingStock, productStock, allOrderPrice, sessionId;
+	private int orderId, toppingPrice, subTotal, productPrice, toppingQuantity, orderQuantity, toppingStock, productStock, allOrderPrice, sessionId, orderPrice;
 	
 	
 	private int productQuantity;
 	
 	
 	public OrderListInfo() {}	
-	public OrderListInfo(int orderId, String toppingName, String productName, int subTotal, int productPrice, int toppingPrice,
+	public OrderListInfo(int orderId, String toppingName, String productName, int orderPrice, int productPrice, int toppingPrice,
 			int toppingQuantity, int productQuantity, int sessionId) {
 		this.toppingName = toppingName;
 		this.productName = productName;
-		this.subTotal = subTotal;
+		this.orderPrice = orderPrice;
 		this.productPrice = productPrice;
 		this.toppingPrice = toppingPrice;
 		this.toppingQuantity = toppingQuantity;
@@ -60,37 +60,7 @@ public class OrderListInfo implements Serializable{
 	}
 	public void setOrderQuantity(int orderQuantity) {
 		this.orderQuantity = orderQuantity;
-	}
-	private String productId, toppingId, productToppingId;
-	
-	
-	
-	public String getProductId() {
-		return productId;
-	}
-	public void setProductId(String productId) {
-		this.productId = productId;
-	}
-	public String getToppingId() {
-		return toppingId;
-	}
-	public void setToppingId(String toppingId) {
-		this.toppingId = toppingId;
-	}
-	public String getProductToppingId() {
-		return productToppingId;
-	}
-	public void setProductToppingId(String productToppingId) {
-		this.productToppingId = productToppingId;
-	}
-	/*
-	public int[] getProductToppingList() {
-		return productToppingList;
-	}
-	public void setProductToppingList(int[] productToppingList) {
-		this.productToppingList = productToppingList;
-	}
-	*/
+	}	
 	public String getProductName() {
 		return productName;
 	}
@@ -134,6 +104,12 @@ public class OrderListInfo implements Serializable{
 
 	public void setProductQuantity(int productQuantity) {
 		this.productQuantity = productQuantity;
+	}
+	public int getOrderPrice() {
+		return orderPrice;
+	}
+	public void setOrderPrice(int orderPrice) {
+		this.orderPrice = orderPrice;
 	}
 	
 }

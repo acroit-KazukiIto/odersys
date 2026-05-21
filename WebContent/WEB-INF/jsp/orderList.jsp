@@ -5,6 +5,7 @@
 <%
 List<OrderListInfo> olList = (List<OrderListInfo>) request.getAttribute("olList");
 int oid = olList.size();
+
 String tableNum = (String) session.getAttribute("tableNumber");
 %>
 
@@ -28,10 +29,7 @@ String tableNum = (String) session.getAttribute("tableNumber");
 		<input type="text" name="orderId">
 		<button type="submit" name="Button" value="削除">削除</button>
 	</form>
-
-	<%
-	for (OrderListInfo ol : olList) {
-	%>
+	<%for(OrderListInfo ol : olList) {%>
 	<ul><%=ol.getOrderId()%><%=ol.getProductName()%><%=ol.getProductPrice()%>
 		<form action="OrderListServlet" method="post">
 			<li></li>

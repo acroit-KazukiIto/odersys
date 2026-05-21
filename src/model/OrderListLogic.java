@@ -32,6 +32,7 @@ public class OrderListLogic {
 		//オーダーの商品数の計算
 		order = order + n;
 		toppingQuantity = toppingQuantity * order;
+		
 
 		try {
 			olDAO.updateOrderDetails(n);
@@ -42,8 +43,8 @@ public class OrderListLogic {
 
 
 	public void calcSubTotal() {
-		int subTotal = ol.getSubTotal();
-		subTotal = (productPrice + toppingPrice * toppingQuantity) * order;
+		int orderPrice = ol.getOrderPrice();
+		int subTotal = orderPrice * order;
 		ol.setSubTotal(subTotal);
 		calcAllOrderPrice(subTotal);
 	}

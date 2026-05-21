@@ -22,9 +22,10 @@ public class OrderListServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("サーブレットpostの1番うえ");
-
+		OrderListLogic logic = new OrderListLogic();
 		request.setCharacterEncoding("UTF-8");
 		OrderListDAO olDAO = new OrderListDAO();
+		
 		//データ取得処理
 		try {
 			List<OrderListInfo> olList = olDAO.findorderDetailsByorderFlag();
@@ -32,35 +33,10 @@ public class OrderListServlet extends HttpServlet {
 		} catch (SQLException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
-		}
-		/*
-		try {
-			olList = 
-			Integer oli = olList.size();
-			OrderListInfo oli2 = olList.get(2);
-			System.out.println("ol出力" + oli + oli2);
-
-			if(oli == 0) {
-				RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/orderListNull.jsp");
-				dispatcher.forward(request, response);
-			}
-			/*
-			for(OrderListInfo ol : olList) {
-				int debug = ol.getOrderId();
-
-				request.setAttribute("ol", ol);
-			}
-			*/
-
-
-		
+		}		
+		logic.calcSubTotal();
 		RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/orderList.jsp");
 		dispatcher.forward(request, response);
-		
-		
-		
-
-
 	}
 
 
@@ -69,7 +45,9 @@ public class OrderListServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		String Button = request.getParameter("Button");
 		OrderListDAO olDAO = new OrderListDAO();
+		OrderListLogic logic = new OrderListLogic();
 		
+
 		//イベント処理
 		if("追加".equals(Button)){
 			
@@ -81,9 +59,9 @@ public class OrderListServlet extends HttpServlet {
 				// TODO 自動生成された catch ブロック
 				e.printStackTrace();
 			}
+			logic.calcSubTotal();
 		}else if("+".equals(Button)) {
 			//プラス処理
-			OrderListLogic logic = new OrderListLogic();
 			logic.calcOrderQuantity(1);
 			//データ取得処理
 			try {
@@ -93,12 +71,12 @@ public class OrderListServlet extends HttpServlet {
 				// TODO 自動生成された catch ブロック
 				e.printStackTrace();
 			}
+			logic.calcSubTotal();
 			RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/orderList.jsp");
 			dispatcher.forward(request, response);
 
 		}else if("-".equals(Button)) {
 			//マイナス処理
-			OrderListLogic logic = new OrderListLogic();
 			logic.calcOrderQuantity(-1);
 			//データ取得処理
 			try {
@@ -108,33 +86,11 @@ public class OrderListServlet extends HttpServlet {
 				// TODO 自動生成された catch ブロック
 				e.printStackTrace();
 			}
+			logic.calcSubTotal();
 			RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/orderList.jsp");
 			dispatcher.forward(request, response);
-		}
-		
-		
-
-
-
-		/*
-		System.out.println(productName); 
-		System.out.println(toppingName);
-		System.out.println(productPrice);
-		System.out.println(toppingPrice);
-		System.out.println(toppingQuantity);
-		System.out.println(subTotal);
-		 */
-
-		//おそらくトッピング選択の段階で使われると思う。
-		//String productTopping  = request.getParameter("productTopping");
-
-
-		//ol.setOrderList(orderList);
-		//おそらくトッピング選択の段階で使われると思う。
-		//ol.setProductTopping(Integer.parseInt(productTopping)); 
-		//フォーワード
-
-
+		}		
+			
 	}
 
 }
