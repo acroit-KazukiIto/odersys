@@ -1,65 +1,58 @@
 package model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OrderHistoryInfo implements Serializable {
-	private int orderId;
-	private int orderFlag; // 0:未提供, 1:提供済
-	private String productName;
-	private String toppingName;
-	private int toppingQuantity;
-	private int orderQuantity;
-	private int orderPrice;
-	private int subTotal;
-	
-	public OrderHistoryInfo() {}
-	public OrderHistoryInfo(int orderId, int orderFlag, String productName, String toppingName, 
-			int toppingQuantity, int orderQuantity, int subTotal) {
-		this.orderFlag = orderFlag;
-		this.productName = productName;
-		this.toppingName = toppingName;
-		this.toppingQuantity = toppingQuantity;
-		this.orderQuantity = orderQuantity;
-		this.subTotal = subTotal;
-	}
+    private int orderId;
+    private int orderFlag; 
+    private String productName;
+    private int orderQuantity;
+    private int subTotal;
+    // トッピング情報を保持するリスト
+    private List<ToppingDetail> toppings = new ArrayList<>();
 
-	public int getOrderId() { return orderId; }
-	public void setOrderId(int orderId) {
-		this.orderId = orderId;
-	}
+    // トッピング情報の内部クラス
+    public static class ToppingDetail implements Serializable {
+        private String name;
+        private int quantity;
+        public ToppingDetail(String name, int quantity) {
+            this.name = name;
+            this.quantity = quantity;
+        }
+        public String getName() { return name; }
+        public int getQuantity() { return quantity; }
+    }
 
-	public int getOrderFlag() { return orderFlag; }
-	public void setOrderFlag(int orderFlag) {
-		this.orderFlag = orderFlag;
-	}
+    public OrderHistoryInfo() {}
 
-	public String getProductName() { return productName; }
-	public void setProductName(String productName) {
-		this.productName = productName;
-	}
+    public void addTopping(String name, int quantity) {
+        if (name != null) {
+            this.toppings.add(new ToppingDetail(name, quantity));
+        }
+    }
 
-	public String getToppingName() { return toppingName; }
-	public void setToppingName(String toppingName) {
-		this.toppingName = toppingName;
-	}
-
-	public int getToppingQuantity() { return toppingQuantity; }
-	public void setToppingQuantity(int toppingQuantity) {
-		this.toppingQuantity = toppingQuantity;
-	}
-
-	public int getOrderQuantity() { return orderQuantity; }
-	public void setOrderQuantity(int orderQuantity) {
-		this.orderQuantity = orderQuantity;
-	}
-	
-	public int getOrderPrice() { return orderPrice; }
-	public void setOrderPrice(int orderPrice) {
-		this.orderPrice = orderPrice;
-	}
-
-	public int getSubTotal() { return subTotal; }
-	public void setSubTotal(int subTotal) {
-		this.subTotal = subTotal;
-	}
+    // Getter / Setter
+    public int getOrderId() { return orderId; }
+    public void setOrderId(int orderId) {
+    	this.orderId = orderId;
+    	}
+    public int getOrderFlag() { return orderFlag; }
+    public void setOrderFlag(int orderFlag) {
+    	this.orderFlag = orderFlag;
+    	}
+    public String getProductName() { return productName; }
+    public void setProductName(String productName) {
+    	this.productName = productName;
+    	}
+    public int getOrderQuantity() { return orderQuantity; }
+    public void setOrderQuantity(int orderQuantity) {
+    	this.orderQuantity = orderQuantity;
+    	}
+    public int getSubTotal() { return subTotal; }
+    public void setSubTotal(int subTotal) {
+    	this.subTotal = subTotal;
+    	}
+    public List<ToppingDetail> getToppings() { return toppings; }
 }

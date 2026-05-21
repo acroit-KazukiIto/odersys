@@ -195,9 +195,9 @@
                 <tr>
                   <td>
                     <strong>${item.productName}</strong><br>
-                    <c:if test="${not empty item.toppingName}">
-                      <span style="color: #666; font-size: 0.9rem;">・${item.toppingName}✕${item.toppingQuantity}</span>
-                    </c:if>
+                    <c:forEach var="topping" items="${item.toppings}">
+                      <span style="color: #666; font-size: 0.9rem;">・${topping.name}✕${topping.quantity}</span><br>
+                    </c:forEach>
                   </td>
                   <td align="center">${item.orderQuantity}</td>
                   <td align="right">${item.subTotal}円</td>
