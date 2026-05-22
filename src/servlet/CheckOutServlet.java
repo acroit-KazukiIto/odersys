@@ -27,7 +27,6 @@ public class CheckOutServlet extends HttpServlet {
             dao.updateByOrderDetails(tableNumber);
             dao.updateByTableSession(tableNumber);
             dao.updateByTableMaster(tableNumber);
-			System.out.println("データベースの更新がされました");
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("✕");
