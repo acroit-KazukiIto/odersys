@@ -21,71 +21,90 @@ public class OrderListServlet extends HttpServlet {
 
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("サーブレットpostの1番うえ");
+		OrderListInfo ol = new OrderListInfo();
+		System.out.println("サーブレットgetの1番うえ");
 		OrderListLogic logic = new OrderListLogic();
 		request.setCharacterEncoding("UTF-8");
 		OrderListDAO olDAO = new OrderListDAO();
+		
 		
 		//データ取得処理
 		try {
 			List<OrderListInfo> olList = olDAO.findorderDetailsByorderFlag();
 			request.setAttribute("olList", olList);
+			OrderListInfo allOrderPrice = olDAO.findAllOrderPrice();
+			request.setAttribute("aop", allOrderPrice);
+			
+			
 		} catch (SQLException e) {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}		
-		logic.calcSubTotal();
+		//logic.calcSubTotal();
 		RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/orderList.jsp");
 		dispatcher.forward(request, response);
 	}
 
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("サーブレットgetの1番うえ");
+		System.out.println("サーブレットpostの1番うえ");
 		request.setCharacterEncoding("UTF-8");
 		String Button = request.getParameter("Button");
 		OrderListDAO olDAO = new OrderListDAO();
 		OrderListLogic logic = new OrderListLogic();
+		String stoid = request.getParameter("oid");
+		int oid = Integer.parseInt(stoid);
 		
 
 		//イベント処理
 		if("追加".equals(Button)){
-			
 			//データ取得処理
 			try {
 				List<OrderListInfo> olList = olDAO.findorderDetailsByorderFlag();
 				request.setAttribute("olList", olList);
+				OrderListInfo allOrderPrice = olDAO.findAllOrderPrice();
+				request.setAttribute("aop", allOrderPrice);
+				
+				
 			} catch (SQLException e) {
 				// TODO 自動生成された catch ブロック
 				e.printStackTrace();
-			}
+			}		
 			logic.calcSubTotal();
 		}else if("+".equals(Button)) {
 			//プラス処理
-			logic.calcOrderQuantity(1);
+			logic.calcOrderQuantity(1, oid);
 			//データ取得処理
 			try {
 				List<OrderListInfo> olList = olDAO.findorderDetailsByorderFlag();
 				request.setAttribute("olList", olList);
+				OrderListInfo allOrderPrice = olDAO.findAllOrderPrice();
+				request.setAttribute("aop", allOrderPrice);
+				
+				
 			} catch (SQLException e) {
 				// TODO 自動生成された catch ブロック
 				e.printStackTrace();
-			}
+			}		
 			logic.calcSubTotal();
 			RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/orderList.jsp");
 			dispatcher.forward(request, response);
 
 		}else if("-".equals(Button)) {
 			//マイナス処理
-			logic.calcOrderQuantity(-1);
+			logic.calcOrderQuantity(-1, oid);
 			//データ取得処理
 			try {
 				List<OrderListInfo> olList = olDAO.findorderDetailsByorderFlag();
 				request.setAttribute("olList", olList);
+				OrderListInfo allOrderPrice = olDAO.findAllOrderPrice();
+				request.setAttribute("aop", allOrderPrice);
+				
+				
 			} catch (SQLException e) {
 				// TODO 自動生成された catch ブロック
 				e.printStackTrace();
-			}
+			}		
 			logic.calcSubTotal();
 			RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/orderList.jsp");
 			dispatcher.forward(request, response);

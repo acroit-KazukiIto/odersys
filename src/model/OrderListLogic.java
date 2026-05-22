@@ -11,31 +11,43 @@ public class OrderListLogic {
 	int productStock = ol.getProductStock();
 	int order = ol.getOrderQuantity();
 	int toppingQuantity = ol.getToppingQuantity();
+	int orderPrice = ol.getOrderPrice();
 	int productPrice = ol.getProductPrice();
 	int toppingPrice = ol.getToppingPrice();
-
+	int subTotal = ol.getSubTotal();
 	int allOrderPrice = ol.getAllOrderPrice();
 
 	//public static void
-	public void calcOrderQuantity(int n) {
+	public void calcOrderQuantity(int n, int oid) {
 		System.out.println("ロジック呼び出されました。calcOrderQuantity");
 
 		//ストック上限の処理
 		if(order >= productStock) {
 			order = productStock;
-			ol.setOrderQuantity(order);
+			
 		}
 		if(toppingQuantity >= toppingStock){
 			order = productStock;
-			ol.setToppingQuantity(toppingQuantity);
+			
+		}
+		if(order == 1) {
+			order = 1;
 		}
 		//オーダーの商品数の計算
 		order = order + n;
 		toppingQuantity = toppingQuantity * order;
+		subTotal = orderPrice * order;
+		
+		
+		System.out.println(":order = " + order + ":orderPrice = "+ orderPrice + ":subTotal = " + subTotal);
+		
+		ol.setSubTotal(subTotal);
+		ol.setOrderQuantity(order);
+		ol.setToppingQuantity(toppingQuantity);
 		
 
 		try {
-			olDAO.updateOrderDetails(n);
+			olDAO.updateOrderDetails(n, oid);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

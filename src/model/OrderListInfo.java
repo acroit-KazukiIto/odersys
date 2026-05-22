@@ -11,9 +11,9 @@ public class OrderListInfo implements Serializable{
 	private int productQuantity;
 	
 	
-	public OrderListInfo() {}	
+	public OrderListInfo(int allOrderPrice) {this.allOrderPrice = allOrderPrice;}	
 	public OrderListInfo(int orderId, String toppingName, String productName, int orderPrice, int productPrice, int toppingPrice,
-			int toppingQuantity, int productQuantity, int sessionId) {
+			int toppingQuantity, int productQuantity, int sessionId, int subTotal) {
 		this.toppingName = toppingName;
 		this.productName = productName;
 		this.orderPrice = orderPrice;
@@ -22,8 +22,13 @@ public class OrderListInfo implements Serializable{
 		this.toppingQuantity = toppingQuantity;
 		this.productQuantity = productQuantity;
 		this.sessionId = sessionId;
+		this.subTotal = subTotal;
 	}
 
+	
+	public OrderListInfo() {
+		// TODO 自動生成されたコンストラクター・スタブ
+	}
 	
 	public int getSessionId() {
 		return sessionId;

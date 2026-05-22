@@ -4,7 +4,10 @@
 <%@ page import="model.OrderListInfo"%>
 <%
 List<OrderListInfo> olList = (List<OrderListInfo>) request.getAttribute("olList");
+//OrderListInfo aop = (OrderListInfo) request.getAttribute("allOrderPrice");
 int oid = olList.size();
+int oid2 = olList.size();
+System.out.println("リスト確認：" + oid);
 
 String tableNum = (String) session.getAttribute("tableNumber");
 %>
@@ -29,10 +32,13 @@ String tableNum = (String) session.getAttribute("tableNumber");
 		<input type="text" name="orderId">
 		<button type="submit" name="Button" value="削除">削除</button>
 	</form>
+	
 	<%for(OrderListInfo ol : olList) {%>
+	
 	<ul><%=ol.getOrderId()%><%=ol.getProductName()%><%=ol.getProductPrice()%>
 		<form action="OrderListServlet" method="post">
-			<li></li>
+			<input type="hidden" name="oid" value="<%=ol.getOrderId()%>">
+			<input type="hidden" name="oid" value="<%=ol.getSubTotal()%>">
 			<li><%=ol.getToppingName()%></li>
 			<li><%=ol.getToppingQuantity()%></li>
 			<li><%=ol.getToppingPrice()%></li>
@@ -40,8 +46,9 @@ String tableNum = (String) session.getAttribute("tableNumber");
 			<li><%=ol.getProductQuantity()%></li>
 			<li><button type="submit" name="Button" value="+">+</button></li>
 			<li><%=ol.getSubTotal()%></li>
+			<li></li>
 		</form>
-		<form action="ItemDetailsChangeServlet" method="post">
+		<form action="ItemDetailsChangeServlet" method="get">
 			<li><button type="submit" name="Button" value="変更">変更</button></li>
 		</form>
 
@@ -49,9 +56,11 @@ String tableNum = (String) session.getAttribute("tableNumber");
 	<%
 	}
 	%>
+	${aop.allOrderPrice}
 	<%
 	}
 	%>
+	
 
 </body>
 <footer>
