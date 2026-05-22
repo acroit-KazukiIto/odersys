@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>注文履歴</title>
   <link rel="stylesheet" href="./css/style.css">
+  <script src="./js/popupClose.js"></script>
 </head>
 <body>
   <div class="container">
@@ -102,19 +103,5 @@
       </div>
     </div>
   </c:if>
-
-  <script>
-    // ポップアップを閉じる関数
-    function closeModal() {
-      const modal = document.getElementById('modalOverlay');
-      if (modal) {
-        modal.style.opacity = '0';
-        setTimeout(() => {
-          modal.classList.remove('active');
-        }, 300);
-      }
-    }
-  </script>
-
 </body>
 </html>
