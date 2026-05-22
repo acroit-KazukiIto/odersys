@@ -11,7 +11,6 @@ public class ItemDetailsInfo implements Serializable {
     private int toppingStock;
     private int toppingQuantity;
     private String category;
-    private int sessionId;
     
 
     public ItemDetailsInfo() {}
