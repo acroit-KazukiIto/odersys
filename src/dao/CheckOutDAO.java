@@ -42,7 +42,7 @@ public class CheckOutDAO {
 		try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)) {
 			System.out.println("table_session DB◯");
 			String sql =
-					"UPDATE table_sessions SET session_status = 'inactive', guest_count = 0 "
+					"UPDATE table_sessions SET session_status = 'inactive', guest_count = 0, end_time = NOW() "
 					+ "WHERE session_id = ? AND session_status = 'active'";
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 			pStmt.setString(1, tableNumber);

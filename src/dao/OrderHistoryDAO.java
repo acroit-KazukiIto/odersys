@@ -34,11 +34,17 @@ public class OrderHistoryDAO {
                 + "t.topping_name, t.topping_price, "
                 + "mt.topping_quantity "
                 + "FROM order_details AS od "
-                + "LEFT JOIN product_details AS pd ON od.order_id = pd.order_id "
-                + "LEFT JOIN product AS p ON pd.product_id = p.product_id "
-                + "LEFT JOIN multiple_toppings AS mt ON od.order_id = mt.order_id "
-                + "LEFT JOIN topping AS t ON mt.topping_id = t.topping_id "
-                + "WHERE od.session_id = ? AND od.order_flag = 1 AND od.accounting_flag = 0 "
+                + "LEFT JOIN product_details AS pd "
+                + "ON od.order_id = pd.order_id "
+                + "LEFT JOIN product AS p "
+                + "ON pd.product_id = p.product_id "
+                + "LEFT JOIN multiple_toppings AS mt "
+                + "ON od.order_id = mt.order_id "
+                + "LEFT JOIN topping AS t "
+                + "ON mt.topping_id = t.topping_id "
+                + "WHERE od.session_id = ? "
+                + "AND od.order_flag = 1 "
+                + "AND od.accounting_flag = 0 "
                 + "ORDER BY od.order_id ASC";
         
         try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
