@@ -3,12 +3,14 @@ package servlet;
 import java.io.IOException;
 import java.util.List;
 
+import dao.OrderStartDAO;
 import dao.ToppingListDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.ItemDetailsInfo;
 import model.ItemDetailsLogic;
 
@@ -17,14 +19,12 @@ public class ItemDetailsServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-
         String productId = request.getParameter("productId");
         String name = request.getParameter("productName");
         String category = request.getParameter("productCategory");
         int price = (request.getParameter("productPrice") != null) ? Integer.parseInt(request.getParameter("productPrice")) : 0;
-        //dao
         ToppingListDAO dao = new ToppingListDAO();
-
+        //dao
         List<ItemDetailsInfo> tList = dao.findToppingList(category);
         //request
         request.setAttribute("productId", productId);
@@ -33,37 +33,48 @@ public class ItemDetailsServlet extends HttpServlet {
         request.setAttribute("currentCategory", category);
         request.setAttribute("subTotal", price);
         request.setAttribute("toppingList", tList);
+
         request.getRequestDispatcher("WEB-INF/jsp/itemDetails.jsp").forward(request, response);
     }
-
-    //イベント
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        String buttonName = request.getParameter("Button");
+        //卓番のためのsession
+        HttpSession session = request.getSession();
+        String button = request.getParameter("Button");
         String productIdStr = request.getParameter("productId");
         String name = request.getParameter("productName");
         String priceStr = request.getParameter("productPrice");
         String subTotalStr = request.getParameter("subTotal");
         String category = request.getParameter("productCategory");
-        
+
         int productId = Integer.parseInt(productIdStr);
         int price = Integer.parseInt(priceStr);
         int subTotal = Integer.parseInt(subTotalStr);
-        //dao
+
+        // tableNumber取得
+        String tableNumber = (String) session.getAttribute("tableNumber");
+        int tableId = 0;
+        if (tableNumber != null) {
+            tableId = Integer.parseInt(tableNumber);
+        }
+        // session_id取得
+        OrderStartDAO orderDao = new OrderStartDAO();
+        int sessionId = orderDao.findSessionId(tableId);
         ToppingListDAO dao = new ToppingListDAO();
+
         List<ItemDetailsInfo> tList = dao.findToppingList(category);
         for (int i = 0; i < tList.size(); i++) {
-            String qtyStr = request.getParameter("oldQty_" + i);
-            if (qtyStr != null) {
-                tList.get(i).setToppingQuantity(Integer.parseInt(qtyStr));
+            String qty = request.getParameter("oldQty_" + i);
+            if (qty != null) {
+                tList.get(i).setToppingQuantity(Integer.parseInt(qty));
             }
         }
-
-        //bottun 表示
-        if (buttonName.startsWith("+") || buttonName.startsWith("-")) {
+        
+        // ＋－ボタン
+        if (button.startsWith("+") || button.startsWith("-")) {
             ItemDetailsLogic logic = new ItemDetailsLogic();
-            String action = buttonName.startsWith("+") ? "plus" : "minus";
-            int index = Integer.parseInt(buttonName.substring(1));
+            String action = button.startsWith("+") ? "plus" : "minus";
+            int index = Integer.parseInt(button.substring(1));
             logic.calcToppingQuantity(tList, index, action);
             subTotal = logic.calcSubTotal(price, tList);
 
@@ -73,29 +84,30 @@ public class ItemDetailsServlet extends HttpServlet {
             request.setAttribute("currentCategory", category);
             request.setAttribute("subTotal", subTotal);
             request.setAttribute("toppingList", tList);
-
             request.getRequestDispatcher("WEB-INF/jsp/itemDetails.jsp").forward(request, response);
-
             return;
         }
 
-        if ("追加".equals(buttonName)) {
-        	//product_details insert
-            boolean productSuccess = dao.insertProductDetail(productId);
-            if (productSuccess) {
+        // 追加ボタン
+        if ("追加".equals(button)) {
+        	//product_detail
+            boolean ok = dao.insertProductDetail(productId);
+            if (ok) {
                 int orderId = dao.getLastOrderId();
-                int toppingId = 0;
-                //order_details insert
-                dao.insertOrderDetail(orderId, 1, subTotal, 1, 0, 0, 0, productId, toppingId);
+                // order_details
+                dao.insertOrderDetail(orderId, 1, subTotal, sessionId, 0, 0, 0, productId, 0);
+                // multiple_toppings
                 for (ItemDetailsInfo t : tList) {
                     if (t.getToppingQuantity() > 0) {
                         dao.insertMutipleToppings(t.getToppingId(), t.getToppingQuantity(), orderId);
                     }
                 }
+                //上手く行ったら
                 response.sendRedirect("OrderListServlet");
                 return;
             }
         }
+        //失敗だたら
         response.sendRedirect("ShowMenuServlet");
     }
 }
