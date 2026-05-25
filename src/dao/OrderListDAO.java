@@ -154,7 +154,7 @@ public class OrderListDAO {
 			throw new IllegalStateException("JDBCドライバを読み込めませんでしたあ");
 		}
 		try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
-			String sql = "SELECT od.order_id, od.product_quantity, od.order_price, od.session_id, od.order_flag, p.product_name, p.product_price, p.category_name, p.product_stock, t.topping_name, t.topping_price, t.topping_stock, mt.topping_quantity, (od.product_quantity * od.order_price) AS sub_total  FROM order_details AS od LEFT JOIN product_details AS pd ON od.order_id = pd.order_id LEFT JOIN product AS p ON pd.product_id = p.product_id LEFT JOIN multiple_toppings AS mt ON od.order_id = mt.order_id LEFT JOIN topping AS t ON mt.topping_id = t.topping_id WHERE order_flag = 0 AND od.order_id = ?";
+			String sql = "SELECT od.order_id,mt.topping_id, od.product_quantity, od.order_price, od.session_id, od.order_flag, p.product_name, p.product_price, p.category_name, p.product_stock, t.topping_name, t.topping_price, t.topping_stock, mt.topping_quantity, (od.product_quantity * od.order_price) AS sub_total  FROM order_details AS od LEFT JOIN product_details AS pd ON od.order_id = pd.order_id LEFT JOIN product AS p ON pd.product_id = p.product_id LEFT JOIN multiple_toppings AS mt ON od.order_id = mt.order_id LEFT JOIN topping AS t ON mt.topping_id = t.topping_id WHERE order_flag = 0 AND od.order_id = ?";
 			
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, oId);

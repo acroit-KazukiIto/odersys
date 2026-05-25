@@ -94,7 +94,9 @@ public class OrderHistoryDAO {
             throw new IllegalStateException("JDBCドライバを読み込めませんでした");
         }
         
-        String sql = "UPDATE order_details SET accounting_flag = 1 WHERE session_id = ?";
+        String sql = "UPDATE order_details "
+        		+ "SET accounting_flag = 1 "
+        		+ "WHERE session_id = ?";
         try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
              PreparedStatement pStmt = conn.prepareStatement(sql)) {
             pStmt.setInt(1, sessionId);

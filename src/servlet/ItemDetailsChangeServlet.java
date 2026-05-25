@@ -72,9 +72,7 @@ public class ItemDetailsChangeServlet extends HttpServlet {
 				tList
 				);*/
 
-		request.getRequestDispatcher(
-				"WEB-INF/jsp/itemDetailsChange.jsp"
-				).forward(request, response);
+		request.getRequestDispatcher("WEB-INF/jsp/itemDetailsChange.jsp").forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request,
