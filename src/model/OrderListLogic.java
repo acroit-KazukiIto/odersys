@@ -22,34 +22,33 @@ public class OrderListLogic {
 		System.out.println("ロジック呼び出されました。calcOrderQuantity");
 
 		//ストック上限の処理
-		if(order >= productStock) {
-			order = productStock;
+		if(order >= 5) {
+			order = 5;
+			System.out.println("商品在庫上限");
 			
-		}
-		if(toppingQuantity >= toppingStock){
-			order = productStock;
-			
-		}
-		if(order == 1) {
+		}else if(toppingQuantity >= 10){
+			order = 10;
+			System.out.println("トッピング在庫上限");
+		}else if(order <= 1) {
 			order = 1;
-		}
-		//オーダーの商品数の計算
-		order = order + n;
-		toppingQuantity = toppingQuantity * order;
-		subTotal = orderPrice * order;
-		
-		
-		System.out.println(":order = " + order + ":orderPrice = "+ orderPrice + ":subTotal = " + subTotal);
-		
-		ol.setSubTotal(subTotal);
-		ol.setOrderQuantity(order);
-		ol.setToppingQuantity(toppingQuantity);
-		
+			System.out.println("商品下限");
+		}else {
+			//オーダーの商品数の計算
+			order = order + n;
+			toppingQuantity = toppingQuantity * order;
+			subTotal = orderPrice * order;
+			
+			ol.setSubTotal(subTotal);
+			ol.setOrderQuantity(order);
+			ol.setToppingQuantity(toppingQuantity);
+			
 
-		try {
-			olDAO.updateOrderDetails(n, oid);
-		} catch (SQLException e) {
-			e.printStackTrace();
+			try {
+				olDAO.updateOrderDetails(n, oid);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			System.out.println("商品" + order +"分追加されました。");
 		}
 	}
 
