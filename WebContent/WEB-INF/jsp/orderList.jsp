@@ -26,79 +26,93 @@ String tableNum = (String) session.getAttribute("tableNumber");
 	%>
 	<h1>リストはからです。</h1>
 	<div = footer1>
-	<div="center"><%=tableNum%>卓
-	</div>
-	<div="left">
-		<form action="ShowMenuServlet" method="get">
-			<button type="submit" name="Button" value="メニュー">メニュー</button>
-		</form>
-	</div>
+		<div="center"><%=tableNum%>卓
+		</div>
+		<div="left">
+			<form action="ShowMenuServlet" method="get">
+				<button type="submit" name="Button" value="メニュー">メニュー</button>
+			</form>
+		</div>
 
-</footer>
-	<%
-	
-	} else {
-	%>
-	<form action="OrderRemoveServlet" method="post">
-		<h2>オーダ削除はこちらから</h2>
-		<input type="text" name="orderId">
-		<button type="submit" name="Button" value="削除">削除</button>
-	</form>
-	
-	<%for(OrderListInfo ol : olList) {%>
-	<form action="OrderListServlet" method="post">
-	<input type="hidden" name="oid" value="<%=ol.getOrderId()%>">
-	<input type="hidden" name="oid" value="<%=ol.getSubTotal()%>">
-	<table>
-	<tr>
-	<th><%=ol.getOrderId()%></th><th><%=ol.getProductName()%></th><th><%=ol.getProductPrice()%></th>
-	</tr>
-	<tr>
-	<td><%=ol.getToppingName()%></td><td><%=ol.getToppingQuantity()%></td><td><%=ol.getToppingPrice()%></td>
-	</tr>
-	<tr>
-	<td><button type="submit" name="Button" value="-">-</button></td>
-	</tr>
-	<tr>
-	<td><%=ol.getProductQuantity()%></td>
-	</tr>
-	<tr>
-	<td><button type="submit" name="Button" value="+">+</button></td>
-	</tr>
-	<tr>
-	<td><form action="ItemDetailsChangeServlet" method="get">
+		</footer>
+		<%
+		} else {
+		%>
+		<form action="OrderRemoveServlet" method="post">
+			<h2>オーダ削除はこちらから</h2>
+			<input type="text" name="orderId">
+			<button type="submit" name="Button" value="削除">削除</button>
+		</form>
+
+		<%
+		for (OrderListInfo ol : olList) {
+		%>
+		<form action="OrderListServlet" method="post">
+			
+			
+
+			<table>
+				<tr>
+					<th><%=ol.getOrderId()%></th>
+					<th><%=ol.getProductName()%></th>
+					<th><%=ol.getProductPrice()%></th>
+				</tr>
+				<tr>
+					<td><%=ol.getToppingName()%></td>
+					<td><%=ol.getToppingQuantity()%></td>
+					<td><%=ol.getToppingPrice()%></td>
+				</tr>
+				<tr>
+					<td><button type="submit" name="Button" value="-">-</button></td>
+				</tr>
+				<tr>
+					<td><%=ol.getProductQuantity()%></td>
+				</tr>
+				<tr>
+					<td><button type="submit" name="Button" value="+">+</button></td>
+				</tr>
+			</table>
+		</form>
+		<form action="ItemDetailsChangeServlet" method="get">
+		<input type="hidden" name="oid" value="<%=ol.getOrderId()%>">
+			<input type="hidden" name="oid" value="<%=ol.getOrderPrice()%>">
+			<input type="hidden" name="oid" value="<%=ol.getProductPrice()%>">
+			<input type="hidden" name="oid" value="<%=ol.getProductName()%>">
+			<input type="hidden" name="oid" value="<%=ol.getToppingQuantity()%>">
+			<input type="hidden" name="oid" value="<%=ol.getCategoryName()%>">
 			<button type="submit" name="Button" value="変更">変更</button>
-		</form></td><td><%=ol.getSubTotal()%></td>
-	</tr>
-	
-	
-	</table>
-		</form>
+		</form><%=ol.getSubTotal()%>
+
+
+
+
+
+
+
+		</ul>
+		<%
+		}
+		%>
+		${aop.allOrderPrice}
+
+		<div = footer2>
+
+			<div="right">
+				<form action="OrderCompleteServlet" method="get">
+					<button type="submit" name="Button" value="注文">注文</button>
+				</form>
+			</div>
+			<div="center"><%=tableNum%>卓
+			</div>
+			<div="left">
+				<form action="ShowMenuServlet" method="get">
+					<button type="submit" name="Button" value="メニュー">メニュー</button>
+				</form>
+			</div>
+			<%
+	}
+	%>
 		
-
-	</ul>
-	<%
-	}
-	%>
-	${aop.allOrderPrice}
-	
-	<div = footer2>
-
-	<div="right">
-		<form action="OrderCompleteServlet" method="get">
-			<button type="submit" name="Button" value="注文">注文</button>
-		</form>
-	</div>
-	<div="center"><%=tableNum%>卓
-	</div>
-	<div="left">
-		<form action="ShowMenuServlet" method="get">
-			<button type="submit" name="Button" value="メニュー">メニュー</button>
-		</form>
-	</div>
-	<%
-	}
-	%>
 </body>
 
 

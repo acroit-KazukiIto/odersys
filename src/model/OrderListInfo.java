@@ -4,18 +4,20 @@ import java.io.Serializable;
 
 public class OrderListInfo implements Serializable{
 	//private int[] productToppingList;
-	private String productName, toppingName;
-	private int orderId, toppingPrice, subTotal, productPrice, toppingQuantity, orderQuantity, toppingStock, productStock, allOrderPrice, sessionId, orderPrice;
+	private String productName, toppingName, categoryName;
+	private int orderId,toppingId, toppingPrice, subTotal, productPrice, toppingQuantity, orderQuantity, toppingStock, productStock, allOrderPrice, sessionId, orderPrice;
 	
 	
 	private int productQuantity;
 	
 	
 	public OrderListInfo(int allOrderPrice) {this.allOrderPrice = allOrderPrice;}	
-	public OrderListInfo(int orderId, String toppingName, String productName, int orderPrice, int productPrice, int toppingPrice,
+	public OrderListInfo(int orderId, int toppingId ,String toppingName, String productName, String categoryName, int orderPrice, int productPrice, int toppingPrice,
 			int toppingQuantity, int productQuantity, int sessionId, int subTotal) {
 		this.toppingName = toppingName;
+		this.toppingId = toppingId;
 		this.productName = productName;
+		this.categoryName = categoryName;
 		this.orderPrice = orderPrice;
 		this.productPrice = productPrice;
 		this.toppingPrice = toppingPrice;
@@ -23,6 +25,7 @@ public class OrderListInfo implements Serializable{
 		this.productQuantity = productQuantity;
 		this.sessionId = sessionId;
 		this.subTotal = subTotal;
+		
 	}
 
 	
@@ -115,6 +118,18 @@ public class OrderListInfo implements Serializable{
 	}
 	public void setOrderPrice(int orderPrice) {
 		this.orderPrice = orderPrice;
+	}
+	public String getCategoryName() {
+		return categoryName;
+	}
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+	public int getToppingId() {
+		return toppingId;
+	}
+	public void setToppingId(int toppingId) {
+		this.toppingId = toppingId;
 	}
 	
 }
