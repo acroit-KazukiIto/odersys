@@ -9,8 +9,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="UTF-8">
   <title>会計完了</title>
+  <script src="./js/windowScaler.js"></script>
 </head>
 <body bgcolor="#FDF5E6">
   <center>

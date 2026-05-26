@@ -8,14 +8,15 @@
   <title>注文履歴</title>
   <link rel="stylesheet" href="./css/style.css">
   <script src="./js/popupClose.js"></script>
+  <script src="./js/windowScaler.js"></script>
 </head>
 <body>
   <div class="container">
     <div class="content">
       <c:choose>
         <c:when test="${empty orderHistoryList}">
-          <div style="padding: 250px 30px; text-align: center;">
-            <div style="background: #FFD700; padding: 110px; border-radius: 15px; font-size: 1.5rem; font-weight: bold;">
+          <div style="padding: 10px 10px; text-align: center;">
+            <div style="background: #FFD700; padding: 110px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">
               注文履歴がありません
             </div>
           </div>

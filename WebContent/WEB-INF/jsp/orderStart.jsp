@@ -7,17 +7,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>注文開始</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>注文開始</title>
+  <script src="./js/windowScaler.js"></script>
 </head>
 <body bgcolor="#FDF5E6">
   <center>
-    <table width="400" border="0" cellpadding="0" cellspacing="0" style="background-color: #FDF5E6;">
+    <table width="300" border="0" cellpadding="0" cellspacing="0" style="background-color: #FDF5E6;">
       
       <!-- 卓番号の表示 -->
       <tr>
         <td align="center">
-          <div style="background-color: #FFD700; width: 450px; padding: 50px 0; border-radius: 15px;">
+          <div style="background-color: #FFD700; width: 250px; padding: 50px 0; border-radius: 15px;">
             <font size="6"><b><%= tableNumber %>卓</b></font>
           </div>
         </td>
