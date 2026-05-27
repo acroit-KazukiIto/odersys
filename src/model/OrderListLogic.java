@@ -35,7 +35,7 @@ public class OrderListLogic {
 		}else {*/
 			//オーダーの商品数の計算
 			order = order + n;
-			//toppingQuantity = toppingQuantity * order;
+			//toppingQuantity = toppingQuantity * order;k
 			subTotal = orderPrice * order;
 			
 			ol.setSubTotal(subTotal);

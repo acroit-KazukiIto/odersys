@@ -27,7 +27,7 @@ public class OrderListDAO {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 		}catch(ClassNotFoundException e){
-			throw new IllegalStateException("JDBCドライバを読み込めませんでしたあ");
+			throw new IllegalStateException("JDBCドライバを読み込めませんでしたあ♡");
 		}
 
 		try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
