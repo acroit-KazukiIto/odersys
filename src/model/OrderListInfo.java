@@ -1,34 +1,34 @@
 package model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class OrderListInfo implements Serializable{
 	//private int[] productToppingList;
 	private String productName, toppingName;
-	private int orderId, toppingPrice, subTotal, productPrice, toppingQuantity, orderQuantity, toppingStock, productStock, allOrderPrice, sessionId, orderPrice;
-	
+	private int orderId, toppingQuantity, toppingPrice, subTotal, productPrice,  orderQuantity, toppingStock, productStock, allOrderPrice, sessionId, orderPrice, orderFlag;
 	
 	private int productQuantity;
 	
+	private List<ToppingList> toppings = new ArrayList<>();
+
+	    // トッピング情報の内部クラス
+	    public static class ToppingList implements Serializable {
+	        private String name;
+	        private int quantity;
+	        public ToppingList(String name, int quantity) {
+	            this.name = name;
+	            this.quantity = quantity;
+	        }
+	        public String getName() { return name; }
+	        public int getQuantity() { return quantity; }
+	    }
 	
 	public OrderListInfo(int allOrderPrice) {this.allOrderPrice = allOrderPrice;}	
-	public OrderListInfo(int orderId, String toppingName, String productName, int orderPrice, int productPrice, int toppingPrice,
-			int toppingQuantity, int productQuantity, int sessionId, int subTotal) {
-		this.toppingName = toppingName;
-		this.productName = productName;
-		this.orderPrice = orderPrice;
-		this.productPrice = productPrice;
-		this.toppingPrice = toppingPrice;
-		this.toppingQuantity = toppingQuantity;
-		this.productQuantity = productQuantity;
-		this.sessionId = sessionId;
-		this.subTotal = subTotal;
-	}
-
-	
-	public OrderListInfo() {
-		// TODO 自動生成されたコンストラクター・スタブ
-	}
+		
+	public OrderListInfo() {}
 	
 	public int getSessionId() {
 		return sessionId;
@@ -115,6 +115,20 @@ public class OrderListInfo implements Serializable{
 	}
 	public void setOrderPrice(int orderPrice) {
 		this.orderPrice = orderPrice;
+	}
+	public List<ToppingList> getToppings() { return toppings; }
+	public void addTopping(String name, int quantity) {
+		if (name != null) {
+            this.toppings.add(new ToppingList(name, quantity));
+		}	
+	}
+
+	public int getOrderFlag() {
+		return orderFlag;
+	}
+
+	public void setOrderFlag(int orderFlag) {
+		this.orderFlag = orderFlag;
 	}
 	
 }

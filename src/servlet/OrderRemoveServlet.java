@@ -23,8 +23,8 @@ public class OrderRemoveServlet extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
-		String text = request.getParameter("orderId");
-		int num = Integer.parseInt(text);
+		String oid = request.getParameter("oid");
+		int num = Integer.parseInt(oid);
 		OrderRemoveInfo orInfo = new OrderRemoveInfo();
 		OrderRemoveDAO orDAO = new OrderRemoveDAO();
 		orDAO.deleteOrderDetails(num);

@@ -10,10 +10,10 @@ public class OrderListLogic {
 	int toppingStock = ol.getToppingStock();
 	int productStock = ol.getProductStock();
 	int order = ol.getOrderQuantity();
-	int toppingQuantity = ol.getToppingQuantity();
+	//String toppingQuantity = ol.getToppingQuantity();
 	int orderPrice = ol.getOrderPrice();
 	int productPrice = ol.getProductPrice();
-	int toppingPrice = ol.getToppingPrice();
+	//String toppingPrice = ol.getToppingPrice();
 	int subTotal = ol.getSubTotal();
 	int allOrderPrice = ol.getAllOrderPrice();
 
@@ -21,7 +21,7 @@ public class OrderListLogic {
 	public void calcOrderQuantity(int n, int oid) {
 		System.out.println("ロジック呼び出されました。calcOrderQuantity");
 
-		//ストック上限の処理
+		/*//ストック上限の処理
 		if(order >= 5) {
 			order = 5;
 			System.out.println("商品在庫上限");
@@ -32,15 +32,15 @@ public class OrderListLogic {
 		}else if(order <= 1) {
 			order = 1;
 			System.out.println("商品下限");
-		}else {
+		}else {*/
 			//オーダーの商品数の計算
 			order = order + n;
-			toppingQuantity = toppingQuantity * order;
+			//toppingQuantity = toppingQuantity * order;
 			subTotal = orderPrice * order;
 			
 			ol.setSubTotal(subTotal);
 			ol.setOrderQuantity(order);
-			ol.setToppingQuantity(toppingQuantity);
+			//ol.setToppingQuantity(toppingQuantity);
 			
 
 			try {
@@ -49,7 +49,7 @@ public class OrderListLogic {
 				e.printStackTrace();
 			}
 			System.out.println("商品" + order +"分追加されました。");
-		}
+		//}
 	}
 
 
@@ -59,6 +59,7 @@ public class OrderListLogic {
 		ol.setSubTotal(subTotal);
 		calcAllOrderPrice(subTotal);
 	}
+	
 	public void calcAllOrderPrice(int subTotal) {
 		int num = ol.getAllOrderPrice();
 		int aop = num + subTotal;
