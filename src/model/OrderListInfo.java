@@ -13,7 +13,7 @@ public class OrderListInfo implements Serializable{
 	private int productQuantity;
 	
 	private List<ToppingList> toppings = new ArrayList<>();
-
+		
 	    // トッピング情報の内部クラス
 	    public static class ToppingList implements Serializable {
 	        private String name;
@@ -21,13 +21,13 @@ public class OrderListInfo implements Serializable{
 	        public ToppingList(String name, int quantity) {
 	            this.name = name;
 	            this.quantity = quantity;
-	        }
+	}
 	        public String getName() { return name; }
 	        public int getQuantity() { return quantity; }
 	    }
-	
+
 	public OrderListInfo(int allOrderPrice) {this.allOrderPrice = allOrderPrice;}	
-		
+	
 	public OrderListInfo() {}
 	
 	public int getSessionId() {
@@ -116,19 +116,17 @@ public class OrderListInfo implements Serializable{
 	public void setOrderPrice(int orderPrice) {
 		this.orderPrice = orderPrice;
 	}
-	public List<ToppingList> getToppings() { return toppings; }
-	public void addTopping(String name, int quantity) {
-		if (name != null) {
-            this.toppings.add(new ToppingList(name, quantity));
-		}	
+	public String getCategoryName() {
+		return categoryName;
 	}
-
-	public int getOrderFlag() {
-		return orderFlag;
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
 	}
-
-	public void setOrderFlag(int orderFlag) {
-		this.orderFlag = orderFlag;
+	public int getToppingId() {
+		return toppingId;
+	}
+	public void setToppingId(int toppingId) {
+		this.toppingId = toppingId;
 	}
 	
 }

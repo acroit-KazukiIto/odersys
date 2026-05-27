@@ -1,138 +1,116 @@
 package servlet;
 
 import java.io.IOException;
+import java.util.List;
 
-import dao.OrderListDAO;
+import dao.ToppingDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import model.ItemDetailsChangeLogic;
+import model.ItemDetailsInfo;
 import model.OrderListInfo;
 
 @WebServlet("/ItemDetailsChangeServlet")
 public class ItemDetailsChangeServlet extends HttpServlet {
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response)
+            throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        String orderIdStr = request.getParameter("orderId");
+        if (orderIdStr == null) {
+            orderIdStr = request.getParameter("oid");
+        }
+        if (orderIdStr == null || orderIdStr.isEmpty()) {
+            response.sendRedirect("OrderListServlet");
+            return;
+        }
+        int orderId = Integer.parseInt(orderIdStr);
+        ToppingDAO dao = new ToppingDAO();
+        OrderListInfo ol = dao.findOrderInfo(orderId);
+        List<ItemDetailsInfo> toppingList = dao.findToppingListByOrderId(orderId);
+        ItemDetailsChangeLogic logic = new ItemDetailsChangeLogic();
+        int subTotal = logic.calcSubTotal(ol.getProductPrice(), toppingList);
 
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response)
-					throws ServletException, IOException {
-		OrderListDAO olDAO = new OrderListDAO();
-		String orderId =
-				request.getParameter("oid");
-		System.out.println("おーだーあいでぃーーー" + orderId);
-		int oId = Integer.parseInt(orderId);
+        request.setAttribute("ol", ol);
+        request.setAttribute("toppingList", toppingList);
+        request.setAttribute("subTotal", subTotal);
+        request.getRequestDispatcher("/WEB-INF/jsp/itemDetailsChange.jsp")
+                .forward(request, response);
+    }
 
-		OrderListInfo ol = olDAO.findorderDetailsByorderFlag2(oId);
-		request.setAttribute("ol", ol);
+    //イベント
+    protected void doPost(HttpServletRequest request,
+                          HttpServletResponse response)
+            throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        String orderIdStr = request.getParameter("orderId");
+        if (orderIdStr == null) {
+            orderIdStr = request.getParameter("oid");
+        }
+        if (orderIdStr == null || orderIdStr.isEmpty()) {
+            response.sendRedirect("OrderListServlet");
+            return;
+        }
+        int orderId = Integer.parseInt(orderIdStr);
 
+        String button = request.getParameter("Button");
+        String mode = request.getParameter("mode");
 
-		/*List<ItemDetailsInfo> tList =
-				dao.findToppingList(category);
+        ToppingDAO dao = new ToppingDAO();
+        OrderListInfo ol = dao.findOrderInfo(orderId);
+        List<ItemDetailsInfo> toppingList = dao.findToppingListByOrderId(orderId);
 
-		ItemDetailsLogic logic =
-				new ItemDetailsLogic();
+        for (int i = 0; i < toppingList.size(); i++) {
+            String qty = request.getParameter("oldQty_" + i);
+            if (qty != null && !qty.isEmpty()) {
+                toppingList.get(i).setToppingQuantity(Integer.parseInt(qty));
+            }
+        }
 
-		int subTotal =
-				logic.calcSubTotal(price, tList);
+        ItemDetailsChangeLogic logic = new ItemDetailsChangeLogic();
 
-		request.setAttribute(
-				"productId",
-				productId
-				);
-
-		request.setAttribute(
-				"selectedPName",
-				name
-				);
-
-		request.setAttribute(
-				"selectedPPrice",
-				price
-				);
-
-		request.setAttribute(
-				"currentCategory",
-				category
-				);
-
-		request.setAttribute(
-				"orderId",
-				orderId
-				);
-
-		request.setAttribute(
-				"subTotal",
-				subTotal
-				);
-
-		request.setAttribute(
-				"toppingList",
-				tList
-				);*/
-
-		request.getRequestDispatcher("WEB-INF/jsp/itemDetailsChange.jsp").forward(request, response);
-	}
-
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response)
-					throws ServletException, IOException {
-
-		request.setCharacterEncoding("UTF-8");
-		OrderListDAO dao = new OrderListDAO();
-		ItemDetailsChangeLogic logic = new ItemDetailsChangeLogic();
-
-		HttpSession session =
-				request.getSession();
-
-		String Button =
-				request.getParameter("Button");
-		
-		String Oid = request.getParameter("oid");
-		int oid = Integer.parseInt(Oid);
-		
-		String Op = request.getParameter("op");
-		int op = Integer.parseInt(Op);
-		
-		String Pp = request.getParameter("pp");
-		int pp = Integer.parseInt(Pp);
-		
-		String Pn = request.getParameter("pn");
-		int pn = Integer.parseInt(Pn);
-		
-		String Tq = request.getParameter("tq");
-		int tq = Integer.parseInt(Tq);
-		
-		String Cn = request.getParameter("cn");
-		int cn = Integer.parseInt(Cn);
-		
-		String Tid = request.getParameter("tid");
-		int tid = Integer.parseInt(Tid);
-		
+        // ＋－ボタン
+        if (button != null && (button.startsWith("+") || button.startsWith("-"))) {
+            int index = Integer.parseInt(button.substring(1));
+            String action = button.startsWith("+") ? "plus" : "minus";
+            logic.calcToppingQuantity(toppingList, index, action);
+            ItemDetailsInfo t = toppingList.get(index);
+            int qty = t.getToppingQuantity();
 
 
+            // ★DB反映
+            // 0ならdelte
+            if (qty <= 0) {
+                dao.deleteTopping(orderId, t.getToppingId());
+            // 1以上update
+            } else {
+                dao.updateToppingQuantity(orderId, t.getToppingId(), qty);
+            }
+            int subTotal = logic.calcSubTotal(ol.getProductPrice(), toppingList);
+            request.setAttribute("ol", ol);
+            request.setAttribute("toppingList", toppingList);
+            request.setAttribute("subTotal", subTotal);
+            request.getRequestDispatcher("/WEB-INF/jsp/itemDetailsChange.jsp")
+                    .forward(request, response);
+            return;
+        }
 
-
-		//イベント処理
-		if("minus".equals(Button)){
-			if(tq == 0) {
-				}else if(tq == 1) {
-					dao.deteleTopping(oid);
-				}else {
-					dao.updateTopping(-1, oid, tid);
-				}
-			
-		}else if("plus".equals(Button)) {
-			//プラス処理
-			if(tq == 0) {
-				dao.insertTopping(tid, oid);
-				}else if(tq == 1 ) {
-					dao.updateTopping(1, oid, tid);
-				}else if(tq == 20) {
-					tq = 20;
-				}
-			
-		}
-	}
-	}
+        // updateボタン
+        if ("update".equals(mode)) {
+            for (ItemDetailsInfo t : toppingList) {
+                int qty = t.getToppingQuantity();
+                if (qty <= 0) {
+                    dao.deleteTopping(orderId, t.getToppingId());
+                } else {
+                    dao.updateToppingQuantity(orderId, t.getToppingId(), qty);
+                }
+            }
+            response.sendRedirect("OrderListServlet");
+            return;
+        }
+        response.sendRedirect("OrderListServlet");
+    }
+}
