@@ -4,18 +4,16 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 見ている画面の範囲 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>注文履歴</title>
-  <link rel="stylesheet" href="./css/style.css"> <!-- 画面のボタンやポップアップなどの見た目のCSS -->
-  <script src="./js/popupClose.js"></script> <!-- ポップアップを閉じるためのjavaScript -->
-  <script src="./js/windowScaler.js"></script> <!-- ウィンドウサイズの調整用javaScript -->
+  <link rel="stylesheet" href="./css/style.css">
+  <script src="./js/popupClose.js"></script>
+  <script src="./js/windowScaler.js"></script>
 </head>
 <body>
   <div class="container">
     <div class="content">
       <c:choose>
-      
-        <!-- 注文しているものがなかった場合の表示 -->
         <c:when test="${empty orderHistoryList}">
           <div style="padding: 10px 10px; text-align: center;">
             <div style="background: #FFD700; padding: 110px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">
@@ -23,11 +21,8 @@
             </div>
           </div>
         </c:when>
-        
         <c:otherwise>
           <table class="order-table">
-          
-            <!-- 注文しているものがある場合の表示 -->
             <thead>
               <tr>
                 <th>商品名</th>
@@ -39,20 +34,20 @@
               <c:forEach var="item" items="${orderHistoryList}">
                 <tr>
                   <td>
-                    <strong>${item.productName}</strong><br> <!-- 商品名表示 -->
+                    <strong>${item.productName}</strong><br>
                     <c:forEach var="topping" items="${item.toppings}">
-                      <span style="color: #666; font-size: 0.9rem;">・${topping.name}✕${topping.quantity}</span><br> <!-- 各トッピング名と各トッピングの数量を表示 -->
+                      <span style="color: #666; font-size: 0.9rem;">・${topping.name}✕${topping.quantity}</span><br>
                     </c:forEach>
                   </td>
-                  <td align="center">${item.orderQuantity}</td> <!-- 商品の個数表示 -->
-                  <td align="right">${item.subTotal}円</td> <!-- トッピングを含む各商品の小計 -->
+                  <td align="center">${item.orderQuantity}</td>
+                  <td align="right">${item.subTotal}円</td>
                 </tr>
               </c:forEach>
             </tbody>
           </table>
           <div class="total-area">
-            <u>${totalOrderQuantity}点</u><br> <!-- 注文した商品の個数表示 -->
-            <span class="total-price">${totalOrderPrice}円(税込)</span> <!-- 注文した商品の合計金額表示 -->
+            <u>${totalOrderQuantity}点</u><br>
+            <span class="total-price">${totalOrderPrice}円(税込)</span>
           </div>
         </c:otherwise>
       </c:choose>
@@ -60,16 +55,13 @@
 
     <!-- フッター -->
     <div class="footer">
-      <!-- メニューボタン表示 -->
       <div class="footer-btn btn-menu" onclick="location.href='ShowMenuServlet'">
         <span style="font-size: 2rem;">↩</span>
         <strong>メニュー</strong>
       </div>
 
-      <!-- 卓番号表示 -->
       <div class="table-num">${tableNumber}卓</div>
 
-      <!-- 注文している商品があれば、お会計ボタン表示 -->
       <div style="flex: 1; border-left: 1px solid #ccc;">
         <c:if test="${not empty orderHistoryList}">
           <form action="OrderHistoryServlet" method="post" style="height:100%;">
