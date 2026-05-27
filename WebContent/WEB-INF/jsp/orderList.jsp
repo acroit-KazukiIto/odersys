@@ -1,7 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page import="java.util.List"%>
+<%@ page import="model.OrderListInfo"%>
 <%
+List<OrderListInfo> olList = (List<OrderListInfo>) request.getAttribute("olList");
+//OrderListInfo aop = (OrderListInfo) request.getAttribute("allOrderPrice");
+int oid = olList.size();
+int oid2 = olList.size();
+System.out.println("リスト確認：" + oid);
+
 String tableNum = (String) session.getAttribute("tableNumber");
 %>
 
@@ -9,110 +16,103 @@ String tableNum = (String) session.getAttribute("tableNumber");
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>注文リスト画面</title>
 <link rel="stylesheet" href="./css/style.css">
 </head>
+
 <body>
-	<div class="container">
-		<div class="content">
-			<c:choose>
-				<c:when test="${empty olList}">
-					<h1>リストはからです。</h1>
-					<div = footer1>
-						<div="center"><%=tableNum%>卓
-						</div>
-						<div="left">
-							<form action="ShowMenuServlet" method="get">
-								<button type="submit" name="Button" value="メニュー">メニュー</button>
-							</form>
-						</div>
-
-						</footer>
-				</c:when>
-				<c:otherwise>
-
-					<c:forEach var="item" items="${olList}">
-
-						<input type="hidden" name="oid" value="${item.orderId}">
-						<input type="hidden" name="oid" value="${item.subTotal}">
-						<table 　class="order-table">
-							<tr>
-								<th>${item.orderId}</th>
-								<th>${item.productName}</th>
-								<th>${item.productPrice}</th>
-							</tr>
-							<c:if test="${!empty item.toppings}">
-								<c:forEach var="t" items="${item.toppings }">
-									<tr>
-										<td>・${t.name}✕${t.quantity}</td>
-									</tr>
-								</c:forEach>
-								<tr>
-									<form action="ItemDetailsChangeServlet" method="get">
-										<input type="hidden" name="oid" value="${item.orderId}">
-										<td><button type="submit" name="Button" value="変更">変更</button>
-										</td>
-									</form>
-								</tr>
-							</c:if>
-							<tr>
-								<c:if test="${item.orderQuantity == 1}">
-									<form action="OrderRemoveServlet" method="post">
-										<input type="hidden" name="oid" value="${item.orderId}">
-										<td><button type="submit" name="Button" value="削除">削除</button>
-										</td>
-									</form>
-								</c:if>
-								<c:if test="${item.orderQuantity > 1}">
-									<form action="OrderListServlet" method="post">
-										<input type="hidden" name="oid" value="${item.orderId}">
-										<td><button type="submit" name="Button" value="-">-</button>
-										</td>
-									</form>
-								</c:if>
-								<td>${item.orderQuantity}</td>
-								<c:if test="${item.orderQuantity <10}">
-									<form action="OrderListServlet" method="post">
-										<input type="hidden" name="oid" value="${item.orderId}">
-										<td><button type="submit" name="Button" value="+">+</button>
-										</td>
-									</form>
-								</c:if>
-								<c:if test="${item.orderQuantity == 10}">
-									<td>注文上限です</td>
-								</c:if>
-
-
-							</tr>
-							<tr>
-								<td>小計：${item.subTotal}</td>
-							</tr>
-
-
-						</table>
-						</form>
-					</c:forEach>
-				</c:otherwise>
-			</c:choose>
-			合計：${aop.allOrderPrice}
-
-			<div = footer2>
-
-				<div="right">
-					<form action="OrderCompleteServlet" method="get">
-						<button type="submit" name="Button" value="注文">注文</button>
-					</form>
-				</div>
-				<div="center"><%=tableNum%>卓
-				</div>
-				<div="left">
-					<form action="ShowMenuServlet" method="get">
-						<button type="submit" name="Button" value="メニュー">メニュー</button>
-					</form>
-				</div>
-			</div>
+	<%
+	if (oid == 0) {
+	%>
+	<h1>リストはからです。</h1>
+	<div = footer1>
+		<div="center"><%=tableNum%>卓
 		</div>
+		<div="left">
+			<form action="ShowMenuServlet" method="get">
+				<button type="submit" name="Button" value="メニュー">メニュー</button>
+			</form>
+		</div>
+
+		</footer>
+		<%
+		} else {
+		%>
+		<form action="OrderRemoveServlet" method="post">
+			<h2>オーダ削除はこちらから</h2>
+			<input type="text" name="orderId">
+			<button type="submit" name="Button" value="削除">削除</button>
+		</form>
+
+		<%
+		for (OrderListInfo ol : olList) {
+		%>
+		<form action="OrderListServlet" method="post">
+			
+			
+
+			<table>
+				<tr>
+					<th><%=ol.getOrderId()%></th>
+					<th><%=ol.getProductName()%></th>
+					<th><%=ol.getProductPrice()%></th>
+				</tr>
+				<tr>
+					<td><%=ol.getToppingName()%></td>
+					<td><%=ol.getToppingQuantity()%></td>
+					<td><%=ol.getToppingPrice()%></td>
+				</tr>
+				<tr>
+					<td><button type="submit" name="Button" value="-">-</button></td>
+				</tr>
+				<tr>
+					<td><%=ol.getProductQuantity()%></td>
+				</tr>
+				<tr>
+					<td><button type="submit" name="Button" value="+">+</button></td>
+				</tr>
+			</table>
+		</form>
+		<form action="ItemDetailsChangeServlet" method="get">
+		<input type="hidden" name="oid" value="<%=ol.getOrderId()%>">
+			<input type="hidden" name="oid" value="<%=ol.getOrderPrice()%>">
+			<input type="hidden" name="oid" value="<%=ol.getProductPrice()%>">
+			<input type="hidden" name="oid" value="<%=ol.getProductName()%>">
+			<input type="hidden" name="oid" value="<%=ol.getToppingQuantity()%>">
+			<input type="hidden" name="oid" value="<%=ol.getCategoryName()%>">
+			<button type="submit" name="Button" value="変更">変更</button>
+		</form><%=ol.getSubTotal()%>
+
+
+
+
+
+
+
+		</ul>
+		<%
+		}
+		%>
+		${aop.allOrderPrice}
+
+		<div = footer2>
+
+			<div="right">
+				<form action="OrderCompleteServlet" method="get">
+					<button type="submit" name="Button" value="注文">注文</button>
+				</form>
+			</div>
+			<div="center"><%=tableNum%>卓
+			</div>
+			<div="left">
+				<form action="ShowMenuServlet" method="get">
+					<button type="submit" name="Button" value="メニュー">メニュー</button>
+				</form>
+			</div>
+			<%
+	}
+	%>
+		
 </body>
 
 

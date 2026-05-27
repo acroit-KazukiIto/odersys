@@ -22,20 +22,33 @@ public class OrderStartDAO {
             conn.setAutoCommit(false);
 
             try {
-                String sql1 = "UPDATE table_master "
-                            + "SET table_status = 'active', updated_at = NOW() "
-                            + "WHERE table_id = ?";
+                String tmSql = 
+                		"UPDATE table_master "
+                		+ "SET table_status = 'active', updated_at = NOW() "
+                		+ "WHERE table_id = ?";
                 
-                try (PreparedStatement pStmt1 = conn.prepareStatement(sql1)) {
+                try (PreparedStatement pStmt1 = conn.prepareStatement(tmSql)) {
                     pStmt1.setInt(1, tableId);
                     pStmt1.executeUpdate();
                 }
 
-                String sql2 = "UPDATE table_sessions "
-                            + "SET session_status = 'active', start_time = NOW(), guest_count = ? "
-                            + "WHERE table_id = ?";
+                String tsSql = 
+                		"UPDATE table_sessions "
+                		+ "SET session_status = CASE "
+                		+ "WHEN session_status = 'inactive' THEN 'active' "
+                		+ "ELSE session_status "
+                		+ "END, "
+                		+ "start_time = CASE "
+                		+ "WHEN start_time IS NULL THEN NOW() "
+                		+ "ELSE start_time "
+                		+ "END, "
+                		+ "guest_count = CASE "
+                		+ "WHEN guest_count = 0 THEN ? "
+                		+ "ELSE guest_count "
+                		+ "END "
+                		+ "WHERE table_id = ?";
                 
-                try (PreparedStatement pStmt2 = conn.prepareStatement(sql2)) {
+                try (PreparedStatement pStmt2 = conn.prepareStatement(tsSql)) {
                     pStmt2.setInt(1, guestCount);
                     pStmt2.setInt(2, tableId);
                     pStmt2.executeUpdate();
@@ -59,9 +72,9 @@ public class OrderStartDAO {
         }
 
         int sessionId = 0;
-        String sql = "SELECT session_id "
+        String sql = "SELECT table_id "
                    + "FROM table_sessions "
-                   + "WHERE table_id = ? "
+                   + "WHERE session_id = ? "
                    + "AND session_status = 'active'";
         
         try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
@@ -70,7 +83,7 @@ public class OrderStartDAO {
             pStmt.setInt(1, tableId);
             try (ResultSet rs = pStmt.executeQuery()) {
                 if (rs.next()) {
-                    sessionId = rs.getInt("session_id");
+                    sessionId = rs.getInt("table_id");
                 }
             }
         } catch (SQLException e) {

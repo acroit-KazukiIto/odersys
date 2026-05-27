@@ -15,21 +15,22 @@ import model.CheckOutInfo;
 public class CheckOutServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, 
+    		HttpServletResponse response) 
+    				throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        
         // 入力データの取得
         String tableNumber = request.getParameter("tableNumber");
         String totalPriceStr = request.getParameter("totalOrderPrice");
-        int totalOrderPrice = Integer.parseInt(totalPriceStr);
+        int totalOrderPrice = (totalPriceStr != null) ? Integer.parseInt(totalPriceStr) : 0;
 
-        // データベースの更新
+        // データベースの更新実行
         CheckOutDAO dao = new CheckOutDAO();
         try {
-            dao.updateByOrderDetails(tableNumber);
-            dao.updateByTableSession(tableNumber);
-            dao.updateByTableMaster(tableNumber);
+            dao.executeCheckout(tableNumber);
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("✕");
         }
 
         // jspへの出力データのセット
@@ -40,8 +41,8 @@ public class CheckOutServlet extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/jsp/checkOut.jsp").forward(request, response);
     }
 
-    protected void doGet(HttpServletRequest request,
-    		HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, 
+    		HttpServletResponse response) 
     				throws ServletException, IOException {
         doPost(request, response);
     }
