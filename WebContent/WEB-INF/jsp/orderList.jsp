@@ -88,6 +88,7 @@ String tableNum = (String) session.getAttribute("tableNumber");
 							<tr>
 								<td>小計：${item.subTotal}</td>
 							</tr>
+							----------------------------------------------------------
 
 
 						</table>
