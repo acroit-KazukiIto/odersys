@@ -1,37 +1,34 @@
 package model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class OrderListInfo implements Serializable{
 	//private int[] productToppingList;
-	private String productName, toppingName, categoryName;
-	private int orderId,toppingId, toppingPrice, subTotal, productPrice, toppingQuantity, orderQuantity, toppingStock, productStock, allOrderPrice, sessionId, orderPrice;
-	
+	private String productName, toppingName;
+	private int orderId, toppingQuantity, toppingPrice, subTotal, productPrice,  orderQuantity, toppingStock, productStock, allOrderPrice, sessionId, orderPrice, orderFlag;
 	
 	private int productQuantity;
 	
+	private List<ToppingList> toppings = new ArrayList<>();
+
+	    // トッピング情報の内部クラス
+	    public static class ToppingList implements Serializable {
+	        private String name;
+	        private int quantity;
+	        public ToppingList(String name, int quantity) {
+	            this.name = name;
+	            this.quantity = quantity;
+	        }
+	        public String getName() { return name; }
+	        public int getQuantity() { return quantity; }
+	    }
 	
 	public OrderListInfo(int allOrderPrice) {this.allOrderPrice = allOrderPrice;}	
-	public OrderListInfo(int orderId, int toppingId ,String toppingName, String productName, String categoryName, int orderPrice, int productPrice, int toppingPrice,
-			int toppingQuantity, int productQuantity, int sessionId, int subTotal) {
-		this.toppingName = toppingName;
-		this.toppingId = toppingId;
-		this.productName = productName;
-		this.categoryName = categoryName;
-		this.orderPrice = orderPrice;
-		this.productPrice = productPrice;
-		this.toppingPrice = toppingPrice;
-		this.toppingQuantity = toppingQuantity;
-		this.productQuantity = productQuantity;
-		this.sessionId = sessionId;
-		this.subTotal = subTotal;
 		
-	}
-
-	
-	public OrderListInfo() {
-		// TODO 自動生成されたコンストラクター・スタブ
-	}
+	public OrderListInfo() {}
 	
 	public int getSessionId() {
 		return sessionId;
@@ -119,17 +116,19 @@ public class OrderListInfo implements Serializable{
 	public void setOrderPrice(int orderPrice) {
 		this.orderPrice = orderPrice;
 	}
-	public String getCategoryName() {
-		return categoryName;
+	public List<ToppingList> getToppings() { return toppings; }
+	public void addTopping(String name, int quantity) {
+		if (name != null) {
+            this.toppings.add(new ToppingList(name, quantity));
+		}	
 	}
-	public void setCategoryName(String categoryName) {
-		this.categoryName = categoryName;
+
+	public int getOrderFlag() {
+		return orderFlag;
 	}
-	public int getToppingId() {
-		return toppingId;
-	}
-	public void setToppingId(int toppingId) {
-		this.toppingId = toppingId;
+
+	public void setOrderFlag(int orderFlag) {
+		this.orderFlag = orderFlag;
 	}
 	
 }
