@@ -8,15 +8,15 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"> <!-- 見ている画面の範囲 -->
   <title>注文開始</title>
-  <script src="./js/windowScaler.js"></script>
+  <script src="./js/windowScaler.js"></script> <!-- ウィンドウサイズの調整用JavaScript -->
 </head>
 <body bgcolor="#FDF5E6">
   <center>
     <table width="300" border="0" cellpadding="0" cellspacing="0" style="background-color: #FDF5E6;">
       
-      <!-- 卓番号の表示 -->
+      <!-- 卓番号と挨拶テキストの表示 -->
       <tr>
         <td align="center">
           <div style="background-color: #FFD700; width: 250px; padding: 50px 0; border-radius: 15px;">
