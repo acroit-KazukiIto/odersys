@@ -14,6 +14,7 @@
   <div class="container">
     <div class="content">
       <c:choose>
+        <%-- 注文していない場合表示 --%>
         <c:when test="${empty orderHistoryList}">
           <div style="padding: 10px 10px; text-align: center;">
             <div style="background: #FFD700; padding: 110px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">
@@ -21,6 +22,7 @@
             </div>
           </div>
         </c:when>
+        <%-- 注文している商品がある時表示 --%>
         <c:otherwise>
           <table class="order-table">
             <thead>
@@ -36,18 +38,18 @@
                   <td>
                     <strong>${item.productName}</strong><br>
                     <c:forEach var="topping" items="${item.toppings}">
-                      <span style="color: #666; font-size: 0.9rem;">・${topping.name}✕${topping.quantity}</span><br>
+                      <span style="color: #666; font-size: 0.9rem;">・${topping.name}✕${topping.quantity}</span><br><!-- 各トッピング名と各トッピング個数表示 -->
                     </c:forEach>
                   </td>
-                  <td align="center">${item.orderQuantity}</td>
-                  <td align="right">${item.subTotal}円</td>
+                  <td align="center">${item.orderQuantity}</td><%-- 各商品個数表示 --%>
+                  <td align="right">${item.subTotal}円</td><%-- 各商品の小計 --%>
                 </tr>
               </c:forEach>
             </tbody>
           </table>
           <div class="total-area">
-            <u>${totalOrderQuantity}点</u><br>
-            <span class="total-price">${totalOrderPrice}円(税込)</span>
+            <u>${totalOrderQuantity}点</u><br><%-- 注文した商品の合計数表示 --%>
+            <span class="total-price">${totalOrderPrice}円(税込)</span><%-- 注文した商品の合計金額表示 --%>
           </div>
         </c:otherwise>
       </c:choose>
@@ -55,13 +57,16 @@
 
     <!-- フッター -->
     <div class="footer">
+      <!-- メニューボタン -->
       <div class="footer-btn btn-menu" onclick="location.href='ShowMenuServlet'">
         <span style="font-size: 2rem;">↩</span>
         <strong>メニュー</strong>
       </div>
 
+      <!-- 卓番号 -->
       <div class="table-num">${tableNumber}卓</div>
 
+      <!-- お会計ボタン -->
       <div style="flex: 1; border-left: 1px solid #ccc;">
         <c:if test="${not empty orderHistoryList}">
           <form action="OrderHistoryServlet" method="post" style="height:100%;">

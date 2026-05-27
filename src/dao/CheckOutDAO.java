@@ -29,10 +29,10 @@ public class CheckOutDAO {
             // order_detailsの会計フラグを更新
             updateOrderDetails(conn, tableNumber);
 
-            // 現在のセッションを closed にする
+            // 現在のセッションを closed に更新
             closeCurrentSession(conn, tableNumber);
 
-            // 次回用の新しいセッション（url_token）を作成して挿入
+            // 次回用の新しいセッション（トークン）を作成して挿入
             createNewSession(conn, tableNumber);
 
             // table_masterのステータスを更新
