@@ -9,29 +9,44 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.ItemDetailsInfo;
 import model.ItemDetailsLogic;
 
 @WebServlet("/ItemDetailsServlet")
 public class ItemDetailsServlet extends HttpServlet {
 
+    // =========================
+    // 画面表示
+    // =========================
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         request.setCharacterEncoding("UTF-8");
 
-        String productId = request.getParameter("productId");
-        String name = request.getParameter("productName");
+        String productIdStr = request.getParameter("productId");
+        String productName = request.getParameter("productName");
         String category = request.getParameter("productCategory");
         String priceStr = request.getParameter("productPrice");
+        String tableStr = request.getParameter("tableNumber");
 
+        HttpSession session = request.getSession();
+
+        if (tableStr != null && !tableStr.isEmpty()) {
+            session.setAttribute("tableNumber", tableStr);
+        }
+
+        int productId = (productIdStr != null) ? Integer.parseInt(productIdStr) : 0;
         int price = (priceStr != null) ? Integer.parseInt(priceStr) : 0;
 
         ToppingListDAO dao = new ToppingListDAO();
-        List<ItemDetailsInfo> tList = dao.findToppingList(category);
+
+        // ★修正：DAOに合わせる（必ずこれだけ使う）
+        List<ItemDetailsInfo> tList =
+                dao.findToppingListByOrderId(0);
 
         request.setAttribute("productId", productId);
-        request.setAttribute("selectedPName", name);
+        request.setAttribute("selectedPName", productName);
         request.setAttribute("selectedPPrice", price);
         request.setAttribute("currentCategory", category);
         request.setAttribute("subTotal", price);
@@ -41,6 +56,9 @@ public class ItemDetailsServlet extends HttpServlet {
                 .forward(request, response);
     }
 
+    // =========================
+    // 操作
+    // =========================
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -50,12 +68,11 @@ public class ItemDetailsServlet extends HttpServlet {
         String mode = request.getParameter("mode");
 
         String productIdStr = request.getParameter("productId");
-        String name = request.getParameter("productName");
+        String productName = request.getParameter("productName");
         String priceStr = request.getParameter("productPrice");
         String subTotalStr = request.getParameter("subTotal");
         String category = request.getParameter("productCategory");
 
-        // 🔥 null防止
         if (productIdStr == null || priceStr == null || subTotalStr == null) {
             response.sendRedirect("ShowMenuServlet");
             return;
@@ -65,19 +82,30 @@ public class ItemDetailsServlet extends HttpServlet {
         int price = Integer.parseInt(priceStr);
         int subTotal = Integer.parseInt(subTotalStr);
 
-        ToppingListDAO dao = new ToppingListDAO();
-        List<ItemDetailsInfo> tList = dao.findToppingList(category);
+        HttpSession session = request.getSession();
 
-        // トッピング数量復元
+        int sessionId = 0;
+        Object tableObj = session.getAttribute("tableNumber");
+        if (tableObj != null) {
+            sessionId = Integer.parseInt(tableObj.toString());
+        }
+
+        // ★DAOは1回だけ
+        ToppingListDAO dao = new ToppingListDAO();
+
+        List<ItemDetailsInfo> tList =
+                dao.findToppingListByOrderId(0);
+
+        // 数量復元
         for (int i = 0; i < tList.size(); i++) {
-            String qtyStr = request.getParameter("oldQty_" + i);
-            if (qtyStr != null) {
-                tList.get(i).setToppingQuantity(Integer.parseInt(qtyStr));
+            String qty = request.getParameter("oldQty_" + i);
+            if (qty != null) {
+                tList.get(i).setToppingQuantity(Integer.parseInt(qty));
             }
         }
 
         // =========================
-        // ＋ / － ボタン処理
+        // ＋ / −
         // =========================
         if (button != null && (button.startsWith("+") || button.startsWith("-"))) {
 
@@ -89,8 +117,8 @@ public class ItemDetailsServlet extends HttpServlet {
             logic.calcToppingQuantity(tList, index, action);
             subTotal = logic.calcSubTotal(price, tList);
 
-            request.setAttribute("productId", productIdStr);
-            request.setAttribute("selectedPName", name);
+            request.setAttribute("productId", productId);
+            request.setAttribute("selectedPName", productName);
             request.setAttribute("selectedPPrice", price);
             request.setAttribute("currentCategory", category);
             request.setAttribute("subTotal", subTotal);
@@ -102,19 +130,33 @@ public class ItemDetailsServlet extends HttpServlet {
         }
 
         // =========================
-        // 追加処理（mode）
+        // 追加
         // =========================
         if ("add".equals(mode)) {
 
             boolean ok = dao.insertProductDetail(productId);
 
             if (ok) {
+
                 int orderId = dao.getLastOrderId();
 
-                dao.insertOrderDetail(orderId, 1, subTotal, 1, 0, 0, 0, productId, 0);
+                // ★重要：DAOの9引数に合わせる
+                dao.insertOrderDetail(
+                        orderId,
+                        1,
+                        subTotal,
+                        sessionId,
+                        0,
+                        0,
+                        0,
+                        productId,
+                        0
+                );
 
                 for (ItemDetailsInfo t : tList) {
+
                     if (t.getToppingQuantity() > 0) {
+
                         dao.insertMutipleToppings(
                                 t.getToppingId(),
                                 t.getToppingQuantity(),

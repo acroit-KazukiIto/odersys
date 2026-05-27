@@ -6,14 +6,9 @@ pageEncoding="UTF-8"%>
 <%@ page import="java.util.Set" %>
 
 <%
-String productId =
-        (String)request.getAttribute("productId");
-
-String pName =
-        (String)request.getAttribute("selectedPName");
-
-Integer pPrice =
-        (Integer)request.getAttribute("selectedPPrice");
+String productId = String.valueOf(request.getAttribute("productId"));
+String pName = String.valueOf(request.getAttribute("selectedPName"));
+Integer pPrice = (Integer)request.getAttribute("selectedPPrice");
 
 List<ItemDetailsInfo> toppingList =
 (List<ItemDetailsInfo>)request.getAttribute("toppingList");

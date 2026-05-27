@@ -5,14 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
 public class OrderListInfo implements Serializable{
 	//private int[] productToppingList;
 	private String productName, toppingName;
-	private int orderId, toppingQuantity, toppingPrice, subTotal, productPrice,  orderQuantity, toppingStock, productStock, allOrderPrice, sessionId, orderPrice, orderFlag;
+	private int orderId, toppingQuantity, toppingPrice, subTotal, productPrice,orderQuantity, toppingStock, productStock, allOrderPrice, sessionId, orderPrice, orderFlag;
 	
 	private int productQuantity;
 	
 	private List<ToppingList> toppings = new ArrayList<>();
+
 
 	    // トッピング情報の内部クラスdes
 	    public static class ToppingList implements Serializable {
@@ -119,7 +121,7 @@ public class OrderListInfo implements Serializable{
 	public List<ToppingList> getToppings() { return toppings; }
 	public void addTopping(String name, int quantity) {
 		if (name != null) {
-            this.toppings.add(new ToppingList(name, quantity));
+			this.toppings.add(new ToppingList(name, quantity));
 		}	
 	}
 
