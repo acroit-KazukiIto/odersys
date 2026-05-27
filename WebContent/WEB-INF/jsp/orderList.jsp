@@ -38,9 +38,9 @@ String tableNum = (String) session.getAttribute("tableNumber");
 						<input type="hidden" name="oid" value="${item.subTotal}">
 						<table 　class="order-table">
 							<tr>
-								<th>${item.orderId}</th>
-								<th>${item.productName}</th>
-								<th>${item.productPrice}</th>
+								<th>${item.orderId}${item.productName}${item.productPrice}</th>
+								<th></th>
+								<th></th>
 							</tr>
 							<c:if test="${!empty item.toppings}">
 								<c:forEach var="t" items="${item.toppings }">
@@ -88,11 +88,11 @@ String tableNum = (String) session.getAttribute("tableNumber");
 							<tr>
 								<td>小計：${item.subTotal}</td>
 							</tr>
-							----------------------------------------------------------
+
 
 
 						</table>
-						</form>
+						<p>----------------------------------------------------------</p><br>
 					</c:forEach>
 				</c:otherwise>
 			</c:choose>

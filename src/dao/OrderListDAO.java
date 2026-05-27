@@ -122,7 +122,7 @@ public class OrderListDAO {
 			}
 		}
 
-		public OrderListInfo findAllOrderPrice()throws SQLException{
+		public OrderListInfo findAllOrderPrice(int sid)throws SQLException{
 			OrderListInfo ol2 = null;
 			//JDBCドライバを読み込む
 			
@@ -134,9 +134,10 @@ public class OrderListDAO {
 
 			//DB接続
 			try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
-				String sql = "SELECT SUM(od.product_quantity * od.order_price) AS all_order_price FROM order_details AS od LEFT JOIN product_details AS pd ON od.order_id = pd.order_id LEFT JOIN product AS p ON pd.product_id = p.product_id LEFT JOIN multiple_toppings AS mt ON od.order_id = mt.order_id LEFT JOIN topping AS t ON mt.topping_id = t.topping_id WHERE order_flag = 0";
+				String sql = "SELECT SUM(od.product_quantity * od.order_price) AS all_order_price FROM order_details AS od LEFT JOIN product_details AS pd ON od.order_id = pd.order_id LEFT JOIN product AS p ON pd.product_id = p.product_id LEFT JOIN multiple_toppings AS mt ON od.order_id = mt.order_id LEFT JOIN topping AS t ON mt.topping_id = t.topping_id WHERE order_flag = 0 AND session_id = ?";
 
 				PreparedStatement pStmt = conn.prepareStatement(sql);
+				pStmt.setInt(1, sid);
 				ResultSet rs = pStmt.executeQuery();
 				if(rs.next()) {
 					int allOrderPrice = rs.getInt("all_order_price");

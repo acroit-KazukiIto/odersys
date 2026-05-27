@@ -14,7 +14,7 @@ public class OrderListInfo implements Serializable{
 	
 	private List<ToppingList> toppings = new ArrayList<>();
 
-	    // トッピング情報の内部クラス
+	    // トッピング情報の内部クラスdes
 	    public static class ToppingList implements Serializable {
 	        private String name;
 	        private int quantity;
