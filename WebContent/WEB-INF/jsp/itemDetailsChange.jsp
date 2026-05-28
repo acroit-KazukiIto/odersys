@@ -1,9 +1,11 @@
 <%@ page language="java"
 contentType="text/html; charset=UTF-8"
 pageEncoding="UTF-8"%>
+
 <%@ page import="java.util.List" %>
 <%@ page import="model.ItemDetailsInfo" %>
 <%@ page import="model.OrderListInfo" %>
+
 <%
 OrderListInfo ol = (OrderListInfo)request.getAttribute("ol");
 if (ol == null) {
@@ -15,8 +17,10 @@ String productName = ol.getProductName();
 int productPrice = ol.getProductPrice();
 String tableNum =
 (String)session.getAttribute("tableNumber");
-List<ItemDetailsInfo> toppingList =(List<ItemDetailsInfo>)request.getAttribute("toppingList");
-Integer subTotal =(Integer)request.getAttribute("subTotal");
+List<ItemDetailsInfo> toppingList =
+(List<ItemDetailsInfo>)request.getAttribute("toppingList");
+Integer subTotal =
+(Integer)request.getAttribute("subTotal");
 if (subTotal == null) {
     subTotal = productPrice;
 }
@@ -35,27 +39,21 @@ if (subTotal == null) {
 <table width="100%">
 <tr>
 <td align="left">
-<strong style="font-size:22px;">
-<%= productName %>
-</strong>
+<strong style="font-size:22px;"><%= productName %></strong>
 </td>
-<td align="right">
-<%= productPrice %>円
-</td>
+<td align="right"><%= productPrice %>円</td>
 </tr>
 </table>
 </div>
 
-<!--toppingの取得 -->
+<!-- トッピング -->
 <div style="padding:10px;">
 <table width="100%" cellpadding="10">
-
 <%
 if (toppingList != null) {
 for (int i = 0; i < toppingList.size(); i++) {
 ItemDetailsInfo t = toppingList.get(i);
 %>
-
 <tr>
 <td width="60%">
 <b><%= t.getToppingName() %></b><br>
@@ -64,6 +62,8 @@ ItemDetailsInfo t = toppingList.get(i);
 <td width="40%" align="right">
 <form action="ItemDetailsChangeServlet" method="post" style="display:inline;">
 <input type="hidden" name="orderId" value="<%= orderId %>">
+
+<!-- 全数量保持 -->
 <%
 for (int j = 0; j < toppingList.size(); j++) {
 %>
@@ -74,7 +74,7 @@ for (int j = 0; j < toppingList.size(); j++) {
 }
 %>
 
-<!-- マイナス -->
+<!-- − -->
 <button type="submit"
         name="Button"
         value="-<%= i %>"
@@ -82,12 +82,13 @@ for (int j = 0; j < toppingList.size(); j++) {
         <%= (t.getToppingQuantity() <= 0) ? "disabled" : "" %>>
 －
 </button>
-<!-- 個数 -->
+
+<!-- 数量 -->
 <span style="display:inline-block; width:25px; text-align:center; font-weight:bold;">
 <%= t.getToppingQuantity() %>
 </span>
 
-<!-- プラス -->
+<!-- ＋ -->
 <button type="submit"
         name="Button"
         value="+<%= i %>"
@@ -123,28 +124,39 @@ for (int j = 0; j < toppingList.size(); j++) {
 <!-- 戻る -->
 <td align="center">
 <form action="OrderListServlet" method="get">
-<input type="submit"
-       value="注文リスト"
+<input type="submit" value="注文リスト"
        style="width:90%; height:50px;">
 </form>
 </td>
 
 <!-- 卓番号 -->
 <td align="center">
-<strong style="font-size:1.5em;">
-<%= tableNum %>卓
-</strong>
+<strong style="font-size:1.5em;"><%= tableNum %>卓</strong>
 </td>
 
-<!-- 更新 -->
+<!-- ⭐ここが重要：更新（DB反映） -->
 <td align="center">
+
 <form action="ItemDetailsChangeServlet" method="post">
+
 <input type="hidden" name="mode" value="update">
 <input type="hidden" name="orderId" value="<%= orderId %>">
+
+<!-- 現在の数量 -->
+<%
+for (int j = 0; j < toppingList.size(); j++) {
+%>
+<input type="hidden"
+       name="oldQty_<%= j %>"
+       value="<%= toppingList.get(j).getToppingQuantity() %>">
+<%
+}
+%>
+
 <input type="submit"
-       name="Button"
        value="更新"
        style="width:90%; height:50px; background:orange; color:white; border:none; font-weight:bold;">
+
 </form>
 </td>
 </tr>
