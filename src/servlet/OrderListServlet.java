@@ -134,7 +134,13 @@ public class OrderListServlet extends HttpServlet {
 			logic.calcSubTotal();
 			RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/orderList.jsp");
 			dispatcher.forward(request, response);
-		}		
+		}else if("削除".equals(Button)) {
+			 // リダイレクト先のサーブレットパス（URL）を指定
+	        String targetUrl = "OrderRemoveServlet"; 
+	        
+	        // リダイレクトの実行
+	        response.sendRedirect(targetUrl);
+		}
 
 	}
 

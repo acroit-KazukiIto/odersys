@@ -11,7 +11,7 @@ String tableNum = (String) session.getAttribute("tableNumber");
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>注文リスト画面</title>
-<link rel="stylesheet" href="./css/style.css">
+<link rel="stylesheet" href="./css/orderList.css">
 <script src="./js/windowScaler.js"></script>
 </head>
 <body>
@@ -28,19 +28,19 @@ String tableNum = (String) session.getAttribute("tableNumber");
 								<button type="submit" name="Button" value="メニュー">メニュー</button>
 							</form>
 						</div>
-
-						</footer>
 				</c:when>
 				<c:otherwise>
 
 					<c:forEach var="item" items="${olList}">
 
 						<input type="hidden" name="oid" value="${item.orderId}">
-						<input type="hidden" name="oid" value="${item.subTotal}">
-						<table class="order-table">
+						<input type="hidden" name="subTotal" value="${item.subTotal}">
+						<table class="ol-table">
 							<tr>
-								<th>${item.productName}</th>
-								<th colspan="2" align="right">${item.productPrice}円</th>
+								<td>${item.productName}
+								</th>
+								<td>${item.productPrice}円
+								</th>
 							</tr>
 							<c:if test="${!empty item.toppings}">
 								<c:forEach var="t" items="${item.toppings }">
@@ -50,43 +50,61 @@ String tableNum = (String) session.getAttribute("tableNumber");
 								</c:forEach>
 							</c:if>
 							<tr>
+								<c:if
+									test="${item.categoryName == 'お好み焼き' or item.categoryName == 'もんじゃ焼き'}">
+									<form action="ItemDetailsChangeServlet" method="get">
+										<input type="hidden" name="oid" value="${item.orderId}">
+										<td><button type="submit" name="Button" value="変更">変更</button>
+										</td>
+									</form>
+								</c:if>
 								<c:if test="${item.orderQuantity == 1}">
-									<form action="OrderRemoveServlet" method="post">
-										<input type="hidden" name="oid" value="${item.orderId}">
-										<td><button type="submit" name="Button" value="削除">削除</button>
-										</td>
-									</form>
+
+									<td style="text-align: right;">
+										<form action="OrderRemoveServlet" method="post">
+											<input type="hidden" name="oid" value="${item.orderId}">
+											<button type="submit" name="Button" value="削除">削除</button>${item.orderQuantity}
+										</form>
+									</td>
+									<td><form action="OrderListServlet" method="post">
+											<input type="hidden" name="oid" value="${item.orderId}">
+											<button type="submit" name="Button" value="+">+</button>
+										</form></td>
+
 								</c:if>
-								<c:if test="${item.orderQuantity > 1}">
-									<form action="OrderListServlet" method="post">
-										<input type="hidden" name="oid" value="${item.orderId}">
-										<td><button type="submit" name="Button" value="-">-</button>
-										</td>
-									</form>
-								</c:if>
-								<td>${item.orderQuantity}</td>
-								<c:if test="${item.orderQuantity <10}">
-									<form action="OrderListServlet" method="post">
-										<input type="hidden" name="oid" value="${item.orderId}">
-										<td><button type="submit" name="Button" value="+">+</button>
-										</td>
+								<c:if
+									test="${item.orderQuantity < 10 and item.orderQuantity > 1}">
+
+									<td style="text-align: right;">
+										<form action="OrderListServlet" method="post">
+											<input type="hidden" name="oid" value="${item.orderId}">
+											<button type="submit" name="Button" value="-">-</button>
+											${item.orderQuantity}
+										</form>
+									</td>
+									<td>
+										<form action="OrderListServlet" method="post">
+											<input type="hidden" name="oid" value="${item.orderId}">
+											<button type="submit" name="Button" value="+">+</button>
+										</form>
+									</td>
 									</form>
 								</c:if>
 								<c:if test="${item.orderQuantity == 10}">
-									<td>注文上限です</td>
+
+									<td style="text-align: right;">
+										<form action="OrderListServlet" method="post">
+											<input type="hidden" name="oid" value="${item.orderId}">
+											<button type="submit" name="Button" value="-">-</button>
+											${item.orderQuantity}
+										</form>
+									</td>
+									<td>上限</td>
+
 								</c:if>
-
-
 							</tr>
 							<tr>
-							<c:if test="${item.categoryName == 'お好み焼き' or item.categoryName == 'もんじゃ焼き'}">
-								<form action="ItemDetailsChangeServlet" method="get">
-									<input type="hidden" name="oid" value="${item.orderId}">
-									<td><button type="submit" name="Button" value="変更">変更</button>
-									</td>
-								</form>
-							</c:if>
-								<td colspan="3" align="right">小計：${item.subTotal}円</td>
+								<td>小計：${item.subTotal}円</td>
 							</tr>
 
 
@@ -108,10 +126,10 @@ String tableNum = (String) session.getAttribute("tableNumber");
 			</div>
 			<div class="table-num"><%=tableNum%>卓
 			</div>
-			<form action="OrderCompleteServlet" method="get">
-				<td><button type="submit" name="Button" value="注文">注文</button>
-				</td>
-			</form>
+			<div class="footer-btn btn-order"
+				onclick="location.href='OrderCompleteServlet'">
+				<span style="font-size: 2rem;">↩</span> <strong>注文する</strong>
+			</div>
 		</div>
 		</c:otherwise>
 		</c:choose>

@@ -6,23 +6,22 @@
 <head>
 <meta charset="UTF-8">
 <title>注文完了画面</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./css/style.css">
+  <script src="./js/popupClose.js"></script>
+  <script src="./js/windowScaler.js"></script>
 </head>
 <body>
 
-	<div= "main">
-		<h3>ご注文いただきありがとうございます。</h3>
-	</div>
-
-	<h3>
+		<h1 align ="center">ご注文いただき<br>ありがとうございます。</h1>
+	<h2 align ="center">
 		お料理を準備いたしますので<br>しばらくお待ちください
-	</h3>
+	</h2>
 </body>
-<footer>
+<div class ="footer">
 	<form action="ShowMenuServlet" method="get">
-		<div="left">
-			<button type="submit" name="Button" value="メニュー">メニュー</button>
-		</div>
-		<div="center">卓</div>
+			<button type="submit" name="Button" value="メニュー" class ="btn-menu">メニュー</button>
+		<div class="table-num">${tableNumber}卓</div>
 	</form>
 </footer>
 </html>
