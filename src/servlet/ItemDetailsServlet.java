@@ -15,13 +15,8 @@ import model.ItemDetailsLogic;
 
 @WebServlet("/ItemDetailsServlet")
 public class ItemDetailsServlet extends HttpServlet {
-
-    // =========================
-    // 画面表示
-    // =========================
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         request.setCharacterEncoding("UTF-8");
 
         String productIdStr = request.getParameter("productId");
@@ -29,44 +24,32 @@ public class ItemDetailsServlet extends HttpServlet {
         String category = request.getParameter("productCategory");
         String priceStr = request.getParameter("productPrice");
         String tableStr = request.getParameter("tableNumber");
-
         HttpSession session = request.getSession();
-
         if (tableStr != null && !tableStr.isEmpty()) {
             session.setAttribute("tableNumber", tableStr);
         }
-
         int productId = (productIdStr != null) ? Integer.parseInt(productIdStr) : 0;
         int price = (priceStr != null) ? Integer.parseInt(priceStr) : 0;
 
         ToppingListDAO dao = new ToppingListDAO();
-
-        // ★修正：DAOに合わせる（必ずこれだけ使う）
         List<ItemDetailsInfo> tList =
                 dao.findToppingListByOrderId(0);
-
         request.setAttribute("productId", productId);
         request.setAttribute("selectedPName", productName);
         request.setAttribute("selectedPPrice", price);
         request.setAttribute("currentCategory", category);
         request.setAttribute("subTotal", price);
         request.setAttribute("toppingList", tList);
-
         request.getRequestDispatcher("WEB-INF/jsp/itemDetails.jsp")
                 .forward(request, response);
     }
 
-    // =========================
-    // 操作
-    // =========================
+    //イベント
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         request.setCharacterEncoding("UTF-8");
-
         String button = request.getParameter("Button");
         String mode = request.getParameter("mode");
-
         String productIdStr = request.getParameter("productId");
         String productName = request.getParameter("productName");
         String priceStr = request.getParameter("productPrice");
@@ -81,18 +64,15 @@ public class ItemDetailsServlet extends HttpServlet {
         int productId = Integer.parseInt(productIdStr);
         int price = Integer.parseInt(priceStr);
         int subTotal = Integer.parseInt(subTotalStr);
-
         HttpSession session = request.getSession();
-
         int sessionId = 0;
         Object tableObj = session.getAttribute("tableNumber");
         if (tableObj != null) {
             sessionId = Integer.parseInt(tableObj.toString());
         }
 
-        // ★DAOは1回だけ
-        ToppingListDAO dao = new ToppingListDAO();
 
+        ToppingListDAO dao = new ToppingListDAO();
         List<ItemDetailsInfo> tList =
                 dao.findToppingListByOrderId(0);
 
@@ -104,43 +84,29 @@ public class ItemDetailsServlet extends HttpServlet {
             }
         }
 
-        // =========================
         // ＋ / −
-        // =========================
         if (button != null && (button.startsWith("+") || button.startsWith("-"))) {
-
             ItemDetailsLogic logic = new ItemDetailsLogic();
-
             String action = button.startsWith("+") ? "plus" : "minus";
             int index = Integer.parseInt(button.substring(1));
-
             logic.calcToppingQuantity(tList, index, action);
             subTotal = logic.calcSubTotal(price, tList);
-
             request.setAttribute("productId", productId);
             request.setAttribute("selectedPName", productName);
             request.setAttribute("selectedPPrice", price);
             request.setAttribute("currentCategory", category);
             request.setAttribute("subTotal", subTotal);
             request.setAttribute("toppingList", tList);
-
             request.getRequestDispatcher("WEB-INF/jsp/itemDetails.jsp")
                     .forward(request, response);
             return;
         }
 
-        // =========================
         // 追加
-        // =========================
         if ("add".equals(mode)) {
-
             boolean ok = dao.insertProductDetail(productId);
-
             if (ok) {
-
                 int orderId = dao.getLastOrderId();
-
-                // ★重要：DAOの9引数に合わせる
                 dao.insertOrderDetail(
                         orderId,
                         1,
@@ -154,9 +120,7 @@ public class ItemDetailsServlet extends HttpServlet {
                 );
 
                 for (ItemDetailsInfo t : tList) {
-
                     if (t.getToppingQuantity() > 0) {
-
                         dao.insertMutipleToppings(
                                 t.getToppingId(),
                                 t.getToppingQuantity(),
@@ -164,12 +128,10 @@ public class ItemDetailsServlet extends HttpServlet {
                         );
                     }
                 }
-
                 response.sendRedirect("OrderListServlet");
                 return;
             }
         }
-
         response.sendRedirect("ShowMenuServlet");
     }
 }
