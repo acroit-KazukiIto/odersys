@@ -15,33 +15,37 @@ import model.ProductInfo;
 
 @WebServlet("/ShowMenuServlet")
 public class ShowMenuServlet extends HttpServlet {
-
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         HttpSession session = request.getSession();
-
         String tableId = request.getParameter("tableId");
-        
         if (tableId != null && !tableId.isEmpty()) {
             session.setAttribute("tableNumber", tableId);
         }
 
-        // 3. 商品取得
+        String sessionId = (String) session.getAttribute("tableNumber");
         ShowMenuDAO dao = new ShowMenuDAO();
+        // order_flag=0 の件数
+        int items = 0;
+        if (sessionId != null) {
+            items = dao.getOrderItemCount(sessionId);
+        }
+        session.setAttribute("items", items);
+        // 商品
         List<ProductInfo> productList = dao.findProductTable();
         session.setAttribute("productList", productList);
-
+        // カテゴリ
         String category = request.getParameter("category");
         if (category == null) {
-            category = "お好み焼き"; 
+            category = "お好み焼き";
         }
         request.setAttribute("currentCategory", category);
-
-        RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/jsp/showMenu.jsp");
-        dispatcher.forward(request, response);
+        RequestDispatcher rd =
+            request.getRequestDispatcher("WEB-INF/jsp/showMenu.jsp");
+        rd.forward(request, response);
     }
-
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8"); 
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         doGet(request, response);
     }
 }
