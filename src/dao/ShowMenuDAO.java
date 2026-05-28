@@ -47,10 +47,9 @@ public class ShowMenuDAO {
     // 🔥 修正版：session_id + order_flag=0 件数取得
     public int getOrderItemCount(String sessionId) {
         int count = 0;
-        String sql =
-            "SELECT COUNT(*) AS cnt " +
-            "FROM order_details " +
-            "WHERE session_id = ? AND order_flag = 0";
+        String sql = "SELECT SUM(product_quantity) AS cnt "
+        		+ "FROM order_details "
+        		+ "WHERE session_id = ? AND order_flag = 0";
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             try (Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
