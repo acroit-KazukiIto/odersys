@@ -169,7 +169,7 @@ if(productList != null){
 <% if(items > 0){ %>
 
 <input type="submit"
-       value="注文リスト🛒👅<%= items %>"
+       value="注文リスト🛒<%= items %>"
        class="btn-order-list"
        style="width:100%; height:80px;">
 
