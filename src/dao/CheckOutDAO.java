@@ -3,6 +3,7 @@ package dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class CheckOutDAO {
@@ -10,7 +11,6 @@ public class CheckOutDAO {
     private final String DB_USER = "order";
     private final String DB_PASS = "1234";
 
-    // データベース接続を取得するメソッド
     private Connection getConnection() throws SQLException {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -26,13 +26,18 @@ public class CheckOutDAO {
             conn = getConnection();
             conn.setAutoCommit(false);
 
-            // order_detailsの会計フラグを更新
-            updateOrderDetails(conn, tableNumber);
+            // 現在の有効なセッションIDを取得する
+            int sessionId = getCurrentSessionId(conn, tableNumber);
 
-            // 現在のセッションを closed に更新
-            closeCurrentSession(conn, tableNumber);
+            if (sessionId != -1) {
+                // order_detailsの会計フラグを更新（取得したsession_idを使用）
+                updateOrderDetails(conn, sessionId);
 
-            // 次回用の新しいセッション（トークン）を作成して挿入
+                // 現在のセッションを closed に更新（取得したsession_idを使用）
+                closeCurrentSession(conn, sessionId);
+            }
+
+            // 次回用の新しいセッションを作成（ここは卓番号 table_id でOK）
             createNewSession(conn, tableNumber);
 
             // table_masterのステータスを更新
@@ -47,8 +52,27 @@ public class CheckOutDAO {
         }
     }
 
-    private void updateOrderDetails(Connection conn, String tableNumber) throws SQLException {
-    	System.out.println("会計フラグを立てます");
+    // 現在アクティブなセッションIDを特定するメソッド
+    private int getCurrentSessionId(Connection conn, String tableNumber) throws SQLException {
+        String sql = 
+        		"SELECT session_id "
+        		+ "FROM table_sessions "
+        		+ "WHERE table_id = ? "
+        		+ "AND session_status = 'active'";
+        
+        try (PreparedStatement pStmt = conn.prepareStatement(sql)) {
+            pStmt.setString(1, tableNumber);
+            try (ResultSet rs = pStmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("session_id");
+                }
+            }
+        }
+        return -1; // 見つからない場合
+    }
+
+    private void updateOrderDetails(Connection conn, int sessionId) throws SQLException {
+        System.out.println("session_id: " + sessionId + " の会計フラグを立てます");
         String sql = 
         		"UPDATE order_details "
         		+ "SET accounting_flag = 1 "
@@ -56,30 +80,30 @@ public class CheckOutDAO {
         		+ "AND accounting_flag = 0";
         
         try (PreparedStatement pStmt = conn.prepareStatement(sql)) {
-            pStmt.setString(1, tableNumber);
+            pStmt.setInt(1, sessionId); // sessionIdを使用
             pStmt.executeUpdate();
         }
     }
 
-    private void closeCurrentSession(Connection conn, String tableNumber) throws SQLException {
-    	System.out.println("今のテーブルのセッションを終了します");
+    private void closeCurrentSession(Connection conn, int sessionId) throws SQLException {
+        System.out.println("session_id: " + sessionId + " を終了します");
         String sql = 
         		"UPDATE table_sessions "
         		+ "SET session_status = 'closed', end_time = NOW() "
-        		+ "WHERE session_id = ? "
-        		+ "AND session_status = 'active'";
+        		+ "WHERE session_id = ?";
         
         try (PreparedStatement pStmt = conn.prepareStatement(sql)) {
-            pStmt.setString(1, tableNumber);
+        	System.out.println("◯");
+            pStmt.setInt(1, sessionId);
             pStmt.executeUpdate();
+            System.out.println("△");
         }
     }
 
     private void createNewSession(Connection conn, String tableNumber) throws SQLException {
-    	System.out.println("新しいセッションURLを作成します");
-        String sql = 
-        		"INSERT INTO table_sessions (table_id, session_status, url_token, guest_count) "
-        		+ "VALUES (?, 'inactive', CONCAT(UUID(), '-', SUBSTRING(MD5(RAND()), 1, 8)), 0);";
+        System.out.println("テーブル " + tableNumber + " に新しいセッションURLを作成します");
+        String sql = "INSERT INTO table_sessions (table_id, session_status, url_token, guest_count) "
+                   + "VALUES (?, 'inactive', CONCAT(UUID(), '-', SUBSTRING(MD5(RAND()), 1, 8)), 0);";
         
         try (PreparedStatement pStmt = conn.prepareStatement(sql)) {
             pStmt.setString(1, tableNumber);
@@ -88,9 +112,7 @@ public class CheckOutDAO {
     }
 
     private void updateTableMaster(Connection conn, String tableNumber) throws SQLException {
-    	System.out.println("table_masterの卓番の状態を更新します");
-        String sql =
-        		"UPDATE table_master "
+        String sql = "UPDATE table_master "
         		+ "SET table_status = 'inactive', updated_at = CURRENT_TIMESTAMP "
         		+ "WHERE table_id = ?";
         
