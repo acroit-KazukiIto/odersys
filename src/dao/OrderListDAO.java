@@ -33,7 +33,7 @@ public class OrderListDAO {
 		try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
 			String sql = 
 	                "SELECT od.order_id, od.product_quantity, od.session_id, od.order_flag, "
-	                + "p.product_name, p.product_price, od.order_price, "
+	                + "p.product_name, p.product_price, od.order_price, p.category_name, "
 	                + "t.topping_name, t.topping_price, "
 	                + "mt.topping_quantity, (od.product_quantity * od.order_price) AS sub_total "
 	                + "FROM order_details AS od "
@@ -60,6 +60,7 @@ public class OrderListDAO {
                 if (info == null) {
                     info = new OrderListInfo();
                     info.setOrderId(orderId);
+                    info.setCategoryName(rs.getString("category_name"));
                     info.setProductName(rs.getString("product_name"));
                     info.setOrderQuantity(rs.getInt("product_quantity"));
                     info.setOrderFlag(rs.getInt("order_flag"));
@@ -79,6 +80,8 @@ public class OrderListDAO {
                     int currentSubTotal = info.getSubTotal();
                     info.setSubTotal(currentSubTotal + (tPrice * tQty * info.getOrderQuantity()));
                 }
+                String cname = info.getCategoryName();
+                System.out.println(cname);
             }
 
 			}catch(SQLException e){
@@ -107,7 +110,7 @@ public class OrderListDAO {
 					PreparedStatement ps = conn.prepareStatement(sql);
 					ps.setInt(1, oid);
 					int rs = ps.executeUpdate();
-					System.out.println("オーダー増加dao");				
+					System.out.println("オーダー増加dao");
 				}else {
 					String sql = "UPDATE order_details SET product_quantity = CASE WHEN product_quantity > 1 then product_quantity - 1 ELSE product_quantity = 1 END WHERE order_id = ?"; 
 					PreparedStatement ps = conn.prepareStatement(sql);
@@ -134,7 +137,7 @@ public class OrderListDAO {
 
 			//DB接続
 			try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
-				String sql = "SELECT SUM(od.product_quantity * od.order_price) AS all_order_price FROM order_details AS od LEFT JOIN product_details AS pd ON od.order_id = pd.order_id LEFT JOIN product AS p ON pd.product_id = p.product_id LEFT JOIN multiple_toppings AS mt ON od.order_id = mt.order_id LEFT JOIN topping AS t ON mt.topping_id = t.topping_id WHERE order_flag = 0 AND session_id = ?";
+				String sql = "SELECT SUM(product_quantity * order_price) AS all_order_price FROM order_details WHERE order_flag = 0 AND session_id = ? ";
 
 				PreparedStatement pStmt = conn.prepareStatement(sql);
 				pStmt.setInt(1, sid);

@@ -8,7 +8,9 @@ import java.util.List;
 
 public class OrderListInfo implements Serializable{
 	//private int[] productToppingList;
-	private String productName, toppingName;
+	private String productName, toppingName, categoryName;
+	
+
 	private int orderId, toppingQuantity, toppingPrice, subTotal, productPrice,orderQuantity, toppingStock, productStock, allOrderPrice, sessionId, orderPrice, orderFlag;
 	
 	private int productQuantity;
@@ -131,6 +133,15 @@ public class OrderListInfo implements Serializable{
 
 	public void setOrderFlag(int orderFlag) {
 		this.orderFlag = orderFlag;
+	}
+	
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+		
 	}
 	
 }
