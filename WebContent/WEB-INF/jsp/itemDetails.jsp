@@ -15,18 +15,16 @@ Integer subTotal = (Integer)request.getAttribute("subTotal");
 String category = (String)request.getAttribute("currentCategory");
 String tableNum = (String)session.getAttribute("tableNumber");
 String formAction = (String)request.getAttribute("formAction");
-
 if (category == null) {
     category = "";
 }
 Set<String> toppingCategories = Set.of("お好み焼き","もんじゃ焼き");
 boolean showTopping =
         toppingCategories.contains(category);
-if(formAction == null){
+if (formAction == null) {
     formAction = "ItemDetailsServlet";
 }
 %>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -36,15 +34,12 @@ if(formAction == null){
 <link rel="stylesheet" href="./css/style.css">
 <script src="./js/windowScaler.js"></script>
 </head>
-
 <body style="margin:0;padding-bottom:120px;font-family:sans-serif;">
 <!-- 商品名 -->
 <table width="100%" style="padding:10px;">
 <tr>
 <td align="left">
-<strong style="font-size:1.3em;">
-<%= pName %>
-</strong>
+<strong style="font-size:1.3em;"><%= pName %></strong>
 </td>
 <td align="right">
 <%= pPrice %>円(税込)
@@ -52,82 +47,69 @@ if(formAction == null){
 </tr>
 </table>
 <hr>
-
 <!-- トッピング -->
 <% if (showTopping && toppingList != null) { %>
 <div style="padding:10px;">
 <table width="100%" cellpadding="10">
 <%
 for (int i = 0; i < toppingList.size(); i++) {
-ItemDetailsInfo t = toppingList.get(i);
+    ItemDetailsInfo t = toppingList.get(i);
 %>
 <tr>
 <td width="60%">
 <%= t.getToppingName() %><br>
-<small>
-<%= t.getToppingPrice() %>円
-</small>
+<small><%= t.getToppingPrice() %>円</small>
 </td>
 <td width="40%" align="right">
-
-<!-- ＋－フォーム -->
-<form action="<%= formAction %>"method="post"style="display:inline;">
+<%-- ★在庫あり --%>
+<% if (t.getToppingStock() > 0) { %>
+<form action="<%= formAction %>" method="post" style="display:inline;">
 
 <!-- 商品情報 -->
-<input type="hidden"name="productId"value="<%= productId %>">
-<input type="hidden"name="productName"value="<%= pName %>">
-<input type="hidden"name="productPrice"value="<%= pPrice %>">
-<input type="hidden"name="productCategory"value="<%= category %>">
-<input type="hidden"name="subTotal"value="<%= subTotal %>">
-<input type="hidden"name="orderId"value="<%= request.getAttribute("orderId") %>">
-
-<!-- mode -->
-<input type="hidden"name="mode"value="view">
-
-<!-- トッピング保持 -->
+<input type="hidden" name="productId" value="<%= productId %>">
+<input type="hidden" name="productName" value="<%= pName %>">
+<input type="hidden" name="productPrice" value="<%= pPrice %>">
+<input type="hidden" name="productCategory" value="<%= category %>">
+<input type="hidden" name="subTotal" value="<%= subTotal %>">
+<input type="hidden" name="orderId" value="<%= request.getAttribute("orderId") %>">
+<input type="hidden" name="mode" value="view">
 <%
 for (int j = 0; j < toppingList.size(); j++) {
 %>
-<input type="hidden"name="oldQty_<%= j %>"value="<%= toppingList.get(j).getToppingQuantity() %>">
+<input type="hidden"
+       name="oldQty_<%= j %>"
+       value="<%= toppingList.get(j).getToppingQuantity() %>">
 <%
 }
 %>
 
-<!-- マイナス -->
+<!-- − -->
 <button type="submit"
         name="Button"
         value="-<%= i %>"
-        style="width:40px;
-               height:40px;"
-        <%= (t.getToppingQuantity() <= 0)
-                ? "disabled"
-                : "" %>>
-
+        style="width:40px;height:40px;"
+        <%= (t.getToppingQuantity() <= 0) ? "disabled" : "" %>>
 －
-
 </button>
 <!-- 数量 -->
-<span style="display:inline-block;
-             width:25px;
-             text-align:center;
-             font-weight:bold;">
-
+<span style="display:inline-block;width:25px;text-align:center;font-weight:bold;">
 <%= t.getToppingQuantity() %>
 </span>
-<!-- プラス -->
+<!-- ＋ -->
 <button type="submit"
         name="Button"
         value="+<%= i %>"
-        style="width:40px;
-               height:40px;"
-        <%= (t.getToppingQuantity() >= 20)
-                ? "disabled"
-                : "" %>>
-
+        style="width:40px;height:40px;"
+        <%= (t.getToppingQuantity() >= 20) ? "disabled" : "" %>>
 ＋
-
 </button>
 </form>
+<% } else { %>
+<!-- ★在庫なし -->
+<span style="color:black;font-weight:bold;font-size:16px;">
+売切
+</span>
+<% } %>
 </td>
 </tr>
 <%
@@ -135,19 +117,14 @@ for (int j = 0; j < toppingList.size(); j++) {
 %>
 </table>
 </div>
-<%
-}
-%>
-
+<% } %>
 <!-- 小計 -->
 <div align="right"
      style="padding:20px;
             border-top:1px solid #ccc;
             margin-bottom:70px;">
 <strong style="font-size:1.3em;">
-
-小計：
-<%= subTotal %>円(税込)
+小計：<%= subTotal %>円(税込)
 </strong>
 </div>
 <!-- 下固定 -->
@@ -158,73 +135,37 @@ for (int j = 0; j < toppingList.size(); j++) {
             background:#fff;
             border-top:2px solid #333;
             padding:10px 0;">
-
-<table width="100%"
-       style="table-layout:fixed;">
+<table width="100%" style="table-layout:fixed;">
 <tr>
 <!-- メニュー -->
 <td align="center">
-<form action="ShowMenuServlet"
-      method="post">
-<input type="submit"
-       value="メニュー"
-       style="width:90%;
-              height:50px;">
+<form action="ShowMenuServlet" method="post">
+<input type="submit" value="メニュー"
+       style="width:90%;height:50px;">
 </form>
 </td>
-
 <!-- 卓番号 -->
 <td align="center">
-<strong style="font-size:1.5em;">
-<%= tableNum %>卓
-</strong>
+<strong style="font-size:1.5em;"><%= tableNum %>卓</strong>
 </td>
-
-<!-- 変更 -->
+<!-- 追加 -->
 <td align="center">
-<form action="<%= formAction %>"
-      method="post">
-
+<form action="<%= formAction %>" method="post">
 <!-- 商品情報 -->
-<input type="hidden"
-       name="productId"
-       value="<%= productId %>">
-
-<input type="hidden"
-       name="productName"
-       value="<%= pName %>">
-
-<input type="hidden"
-       name="productPrice"
-       value="<%= pPrice %>">
-
-<input type="hidden"
-       name="productCategory"
-       value="<%= category %>">
-
-<input type="hidden"
-       name="subTotal"
-       value="<%= subTotal %>">
-
-<input type="hidden"
-       name="orderId"
-       value="<%= request.getAttribute("orderId") %>">
-
-<!-- mode -->
-<input type="hidden"
-       name="mode"
-       value="add">
-
-<!-- トッピング保持 -->
+<input type="hidden" name="productId" value="<%= productId %>">
+<input type="hidden" name="productName" value="<%= pName %>">
+<input type="hidden" name="productPrice" value="<%= pPrice %>">
+<input type="hidden" name="productCategory" value="<%= category %>">
+<input type="hidden" name="subTotal" value="<%= subTotal %>">
+<input type="hidden" name="orderId" value="<%= request.getAttribute("orderId") %>">
+<input type="hidden" name="mode" value="add">
 <%
 if (toppingList != null) {
     for (int j = 0; j < toppingList.size(); j++) {
 %>
-
 <input type="hidden"
        name="oldQty_<%= j %>"
        value="<%= toppingList.get(j).getToppingQuantity() %>">
-
 <%
     }
 }
@@ -233,22 +174,11 @@ if (toppingList != null) {
 <input type="submit"
        name="Button"
        value="追加"
-       style="width:90%;
-              height:50px;
-              background:orange;
-              color:white;
-              border:none;
-              font-weight:bold;">
-
+       style="width:90%;height:50px;background:orange;color:white;border:none;font-weight:bold;">
 </form>
-
 </td>
-
 </tr>
-
 </table>
-
 </div>
-
 </body>
 </html>

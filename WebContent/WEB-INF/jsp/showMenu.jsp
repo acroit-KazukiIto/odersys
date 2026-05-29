@@ -120,7 +120,7 @@ if(productList != null){
 <input class="btn-add" type="submit" value="＋">
 </form>
 <% } else { %>
-<span style="color:red;">売切</span>
+<span style="color:black;">売切</span>
 <% } %>
 </td>
 </tr>

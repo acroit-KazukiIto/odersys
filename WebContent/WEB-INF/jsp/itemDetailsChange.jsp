@@ -12,15 +12,20 @@ if (ol == null) {
     response.sendRedirect("OrderListServlet");
     return;
 }
+
 int orderId = ol.getOrderId();
 String productName = ol.getProductName();
 int productPrice = ol.getProductPrice();
+
 String tableNum =
 (String)session.getAttribute("tableNumber");
+
 List<ItemDetailsInfo> toppingList =
 (List<ItemDetailsInfo>)request.getAttribute("toppingList");
+
 Integer subTotal =
 (Integer)request.getAttribute("subTotal");
+
 if (subTotal == null) {
     subTotal = productPrice;
 }
@@ -30,8 +35,12 @@ if (subTotal == null) {
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>商品変更画面</title>
+<link rel="stylesheet" href="./css/style.css">
+<script src="./js/windowScaler.js"></script>
 </head>
+
 <body style="margin:0; padding-bottom:120px; font-family:sans-serif;">
 
 <!-- 商品 -->
@@ -49,21 +58,29 @@ if (subTotal == null) {
 <!-- トッピング -->
 <div style="padding:10px;">
 <table width="100%" cellpadding="10">
+
 <%
 if (toppingList != null) {
-for (int i = 0; i < toppingList.size(); i++) {
-ItemDetailsInfo t = toppingList.get(i);
+    for (int i = 0; i < toppingList.size(); i++) {
+
+        ItemDetailsInfo t = toppingList.get(i);
 %>
+
 <tr>
 <td width="60%">
 <b><%= t.getToppingName() %></b><br>
 <small><%= t.getToppingPrice() %>円</small>
 </td>
+
 <td width="40%" align="right">
+
+<%-- ★ここが追加：在庫チェック --%>
+<% if (t.getToppingStock() > 0) { %>
+
 <form action="ItemDetailsChangeServlet" method="post" style="display:inline;">
+
 <input type="hidden" name="orderId" value="<%= orderId %>">
 
-<!-- 全数量保持 -->
 <%
 for (int j = 0; j < toppingList.size(); j++) {
 %>
@@ -96,14 +113,24 @@ for (int j = 0; j < toppingList.size(); j++) {
         <%= (t.getToppingQuantity() >= 20) ? "disabled" : "" %>>
 ＋
 </button>
+
 </form>
+
+<% } else { %>
+
+<!-- ★ここ追加：売切表示 -->
+<span style="color:black; font-weight:bold;">売切</span>
+
+<% } %>
+
 </td>
 </tr>
 
 <%
-}
+    }
 }
 %>
+
 </table>
 </div>
 
@@ -118,6 +145,7 @@ for (int j = 0; j < toppingList.size(); j++) {
 <!-- 下固定 -->
 <div style="position:fixed; bottom:0; left:0; width:100%;
             background:#fff; border-top:2px solid #333; padding:10px 0;">
+
 <table width="100%">
 <tr>
 
@@ -134,7 +162,7 @@ for (int j = 0; j < toppingList.size(); j++) {
 <strong style="font-size:1.5em;"><%= tableNum %>卓</strong>
 </td>
 
-<!-- ⭐ここが重要：更新（DB反映） -->
+<!-- 更新 -->
 <td align="center">
 
 <form action="ItemDetailsChangeServlet" method="post">
@@ -142,7 +170,6 @@ for (int j = 0; j < toppingList.size(); j++) {
 <input type="hidden" name="mode" value="update">
 <input type="hidden" name="orderId" value="<%= orderId %>">
 
-<!-- 現在の数量 -->
 <%
 for (int j = 0; j < toppingList.size(); j++) {
 %>
@@ -158,9 +185,12 @@ for (int j = 0; j < toppingList.size(); j++) {
        style="width:90%; height:50px; background:orange; color:white; border:none; font-weight:bold;">
 
 </form>
+
 </td>
 </tr>
 </table>
+
 </div>
+
 </body>
 </html>
