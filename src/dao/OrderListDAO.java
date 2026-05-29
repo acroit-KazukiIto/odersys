@@ -82,7 +82,7 @@ public class OrderListDAO {
                     int currentSubTotal = info.getSubTotal();
                     info.setSubTotal(currentSubTotal + (tPrice * tQty * info.getOrderQuantity()));
                 }
-                String cname = info.getCategoryName();
+                int cname = info.getToppingStock();
                 System.out.println(cname);
             }
 
