@@ -68,6 +68,7 @@ public class OrderListDAO {
                     info.setProductPrice(rs.getInt("product_price"));
                     info.setProductStock(rs.getInt("product_stock"));
                     info.setToppingStock(rs.getInt("topping_stock"));
+                    info.setToppingQuantity(rs.getInt("topping_quantity"));
                     // 初期金額（商品単価 × 数量）
                     info.setSubTotal(rs.getInt("product_price") * rs.getInt("product_quantity"));
                     map.put(orderId, info);
@@ -182,7 +183,7 @@ public class OrderListDAO {
 							+ "ON od.product_id = p.product_id "
 							+ "LEFT JOIN topping AS t "
 							+ "ON mt.topping_id = t.topping_id "
-							+ "SET p.product_stock = p.product_stock - 1, t.topping_stock = t.topping_stock - 1 "
+							+ "SET p.product_stock = p.product_stock - mt.topping_quantity, t.topping_stock = t.topping_stock - 1 "
 							+ "WHERE od.order_id = ? AND order_flag = 0 ";
 					PreparedStatement ps = conn.prepareStatement(sql);
 					ps.setInt(1, oid);

@@ -102,7 +102,7 @@ String tableNum = (String) session.getAttribute("tableNumber");
 									<td>上限</td>
 
 								</c:if>
-								<c:if test="${item.toppingStock <= 0}">
+								<c:if test="${item.toppingStock <= item.toppingQuantity and item.toppingQuantity !=null}">
 
 									<td style="text-align: right;">
 										<form action="OrderListServlet" method="post">
