@@ -34,7 +34,7 @@ public class OrderListDAO {
 			String sql = 
 	                "SELECT od.order_id, od.product_quantity, od.session_id, od.order_flag, "
 	                + "p.product_name, p.product_price, od.order_price, p.category_name, "
-	                + "t.topping_name, t.topping_price, "
+	                + "t.topping_name, t.topping_price, t.topping_stock, p.product_stock, "
 	                + "mt.topping_quantity, (od.product_quantity * od.order_price) AS sub_total "
 	                + "FROM order_details AS od "
 	                + "LEFT JOIN product_details AS pd "
@@ -66,6 +66,8 @@ public class OrderListDAO {
                     info.setOrderFlag(rs.getInt("order_flag"));
                     info.setOrderPrice(rs.getInt("order_price"));
                     info.setProductPrice(rs.getInt("product_price"));
+                    info.setProductStock(rs.getInt("product_stock"));
+                    info.setToppingStock(rs.getInt("topping_stock"));
                     // 初期金額（商品単価 × 数量）
                     info.setSubTotal(rs.getInt("product_price") * rs.getInt("product_quantity"));
                     map.put(orderId, info);
@@ -106,13 +108,13 @@ public class OrderListDAO {
 
 				//order_details更新のsql
 				if(n > 0) {
-					String sql = "UPDATE order_details SET product_quantity = CASE WHEN product_quantity < 10 then product_quantity + 1 ELSE product_quantity = 10 END WHERE order_id = ?"; 
+					String sql = "UPDATE order_details SET product_quantity = CASE WHEN product_quantity < 10 then product_quantity + 1 ELSE product_quantity = 10 END WHERE order_id = ?";
 					PreparedStatement ps = conn.prepareStatement(sql);
 					ps.setInt(1, oid);
 					int rs = ps.executeUpdate();
 					System.out.println("オーダー増加dao");
 				}else {
-					String sql = "UPDATE order_details SET product_quantity = CASE WHEN product_quantity > 1 then product_quantity - 1 ELSE product_quantity = 1 END WHERE order_id = ?"; 
+					String sql = "UPDATE order_details SET product_quantity = CASE WHEN product_quantity > 1 then product_quantity - 1 ELSE product_quantity = 1 END WHERE order_id = ?";
 					PreparedStatement ps = conn.prepareStatement(sql);
 					ps.setInt(1, oid);
 					int rs = ps.executeUpdate();
@@ -128,7 +130,6 @@ public class OrderListDAO {
 		public OrderListInfo findAllOrderPrice(int sid)throws SQLException{
 			OrderListInfo ol2 = null;
 			//JDBCドライバを読み込む
-			
 			try {
 				Class.forName("com.mysql.cj.jdbc.Driver");
 			}catch(ClassNotFoundException e){
@@ -159,6 +160,54 @@ public class OrderListDAO {
 				System.out.println("合計DAO失敗");
 			}
 			return ol2;
+		}
+		
+		public void updateStock(int oid, int n) {
+			//JDBCドライバを読み込む
+			try {
+				Class.forName("com.mysql.cj.jdbc.Driver");
+			}catch(ClassNotFoundException e){
+				throw new IllegalStateException("JDBCドライバを読み込めませんでした");
+			}
+
+			//DB接続
+			try(Connection conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS)){
+
+				//order_details更新のsql
+				if(n > 0) {
+					String sql = "UPDATE order_details AS od "
+							+ "LEFT JOIN multiple_toppings AS mt "
+							+ "ON od.order_id = mt.order_id "
+							+ "LEFT JOIN product AS p "
+							+ "ON od.product_id = p.product_id "
+							+ "LEFT JOIN topping AS t "
+							+ "ON mt.topping_id = t.topping_id "
+							+ "SET p.product_stock = p.product_stock - 1, t.topping_stock = t.topping_stock - 1 "
+							+ "WHERE od.order_id = ? AND order_flag = 0 ";
+					PreparedStatement ps = conn.prepareStatement(sql);
+					ps.setInt(1, oid);
+					int rs = ps.executeUpdate();
+					System.out.println("stock増加dao");
+				}else {
+					String sql = "UPDATE order_details AS od "
+							+ "LEFT JOIN multiple_toppings AS mt "
+							+ "ON od.order_id = mt.order_id "
+							+ "LEFT JOIN product AS p "
+							+ "ON od.product_id = p.product_id "
+							+ "LEFT JOIN topping AS t "
+							+ "ON mt.topping_id = t.topping_id "
+							+ "SET p.product_stock = p.product_stock + 1, t.topping_stock = t.topping_stock + 1 "
+							+ "WHERE od.order_id = ? AND order_flag = 0 ";
+					PreparedStatement ps = conn.prepareStatement(sql);
+					ps.setInt(1, oid);
+					int rs = ps.executeUpdate();
+					System.out.println("stock減少dao");
+				}
+
+
+			}catch(SQLException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}

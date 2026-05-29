@@ -73,7 +73,7 @@ String tableNum = (String) session.getAttribute("tableNumber");
 
 								</c:if>
 								<c:if
-									test="${item.orderQuantity < 10 and item.orderQuantity > 1}">
+									test="${item.orderQuantity < 4 and item.orderQuantity > 1}">
 
 									<td style="text-align: right;">
 										<form action="OrderListServlet" method="post">
@@ -90,7 +90,7 @@ String tableNum = (String) session.getAttribute("tableNumber");
 									</td>
 									</form>
 								</c:if>
-								<c:if test="${item.orderQuantity == 10}">
+								<c:if test="${item.orderQuantity == 4 } ">
 
 									<td style="text-align: right;">
 										<form action="OrderListServlet" method="post">
@@ -100,6 +100,18 @@ String tableNum = (String) session.getAttribute("tableNumber");
 										</form>
 									</td>
 									<td>上限</td>
+
+								</c:if>
+								<c:if test="${item.orderQuantity == 4 or item.toppingStock <= t.toppingQuantity} ">
+
+									<td style="text-align: right;">
+										<form action="OrderListServlet" method="post">
+											<input type="hidden" name="oid" value="${item.orderId}">
+											<button type="submit" name="Button" value="-">-</button>
+											${item.orderQuantity}
+										</form>
+									</td>
+									<td>トッピング上限</td>
 
 								</c:if>
 							</tr>
