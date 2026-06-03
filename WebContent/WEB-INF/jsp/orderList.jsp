@@ -35,7 +35,7 @@ String tableNum = (String) session.getAttribute("tableNumber");
 
 						<input type="hidden" name="oid" value="${item.orderId}">
 						<input type="hidden" name="subTotal" value="${item.subTotal}">
-						<table class="ol-table">
+						<table border="5" class="ol-table">
 							<tr>
 								<td>${item.productName}
 								</th>
@@ -90,7 +90,8 @@ String tableNum = (String) session.getAttribute("tableNumber");
 									</td>
 									</form>
 								</c:if>
-								<c:if test="${item.orderQuantity == 4 or item.productStock == 0}">
+								<c:if
+									test="${item.orderQuantity == 4 or item.productStock == 0}">
 
 									<td style="text-align: right;">
 										<form action="OrderListServlet" method="post">
@@ -102,7 +103,8 @@ String tableNum = (String) session.getAttribute("tableNumber");
 									<td>上限</td>
 
 								</c:if>
-								<c:if test="${item.toppingStock <= item.toppingQuantity and item.toppingQuantity !=null}">
+								<c:if
+									test="${item.toppingStock <= item.toppingQuantity and item.toppingQuantity !=null}">
 
 									<td style="text-align: right;">
 										<form action="OrderListServlet" method="post">
@@ -113,10 +115,10 @@ String tableNum = (String) session.getAttribute("tableNumber");
 									</td>
 									<td>トッピング上限</td>
 
-								</c:if>							
+								</c:if>
 							</tr>
 							<tr>
-								<td>小計：${item.subTotal}円</td>
+								<td colspan="2">小計：${item.subTotal}円</td>
 							</tr>
 
 
@@ -130,7 +132,7 @@ String tableNum = (String) session.getAttribute("tableNumber");
 
 					</div>
 		</div>
-
+		//footer
 		<div class="footer">
 			<div class="footer-btn btn-menu"
 				onclick="location.href='ShowMenuServlet'">
