@@ -1,209 +1,191 @@
-@charset "UTF-8";
-/* =========================================
-   ShowMenu.css
-========================================= */
-
-@charset "UTF-8";
-
-/* ================= 基本 ================= */
-
 body{
-    margin:0;
-    padding:0;
-    font-family:"Helvetica Neue",Arial,
-    "Hiragino Kaku Gothic ProN",
-    "Hiragino Sans",
-    Meiryo,
-    sans-serif;
-    background-color:#FDF5E6;
+	margin:0;
+	padding-bottom:90px;
+	font-family:sans-serif;
+	background:#FDF5E6;
 }
 
-.container{
-    width:100%;
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
+/* =========================
+   カテゴリ横スクロール
+========================= */
+
+.category-area{
+	background:#FDF5E6;
+	position:sticky;
+	top:0;
+	z-index:100;
 }
 
-.content{
-    flex-grow:1;
-    overflow-y:auto;
-    padding-bottom:120px;
+.scroll-text{
+	font-size:12px;
+	color:#666;
+	padding:8px 12px 0;
 }
-
-/* ================= ヘッダー画像 ================= */
-
-.header-img{
-    width:100%;
-    height:85px;
-    object-fit:cover;
-    display:block;
-}
-
-/* ================= カテゴリ ================= */
 
 .category-wrap{
-    position:sticky;
-    top:0;
-    z-index:100;
-    background:#fff;
-    overflow-x:auto;
-    overflow-y:hidden;
-    white-space:nowrap;
-    border-bottom:1px solid #ddd;
-    box-shadow:0 2px 6px rgba(0,0,0,0.08);
-    -webkit-overflow-scrolling:touch;
+	overflow-x:auto;
+	overflow-y:hidden;
+	-webkit-overflow-scrolling:touch;
+	padding:10px 0;
+	border-top:1px solid #ddd;
+	border-bottom:1px solid #ddd;
+	background:#FDF5E6;
+	box-shadow:inset -20px 0 20px -20px rgba(0,0,0,0.25);
 }
+
+/* スクロールバー */
 
 .category-wrap::-webkit-scrollbar{
-    height:5px;
-}
-
-.category-wrap::-webkit-scrollbar-thumb{
-    background:#bbb;
-    border-radius:10px;
+	height:6px;
 }
 
 .category-wrap::-webkit-scrollbar-track{
-    background:#eee;
+	background:#eee;
+	border-radius:10px;
 }
+
+.category-wrap::-webkit-scrollbar-thumb{
+	background:#999;
+	border-radius:10px;
+}
+
+/* テーブル */
 
 .category-table{
-    width:max-content;
-    min-width:900px;
-    border-collapse:collapse;
-    background:#fff;
+	border-collapse:separate;
+	border-spacing:10px 0;
+	white-space:nowrap;
+	min-width:max-content;
+	padding:0 10px;
 }
 
-.category-table td{
-    padding:0;
+/* カテゴリボタン */
+.category-table input{
+	min-width:140px;
+	height:50px;
+	border:1px solid #333;
+	border-radius:8px;
+	background:#FFFFFF;  
+	font-size:16px;
+	font-weight:bold;
+	cursor:pointer;
+	transition:0.2s;
+	box-shadow:none;
 }
 
-.category-btn{
-    border:none;
-    background:white;
-    color:#888;
-    font-size:14px;
-    font-weight:bold;
-    padding:16px 18px;
-    cursor:pointer;
-    white-space:nowrap;
+.category-table input:active{
+	transform:scale(0.96);
 }
 
-.active-category{
-    color:#2e8b57;
-    border-bottom:4px solid #7CFC00;
-}
-
-/* カテゴリ下余白 */
-
-.category-space{
-    height:18px;
-}
-
-/* ================= 商品一覧 ================= */
+/* =========================
+   商品一覧
+========================= */
 
 .product-area{
-    padding:0 14px 120px;
+	padding:10px;
 }
 
 .product-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-.product-row td{
-    padding:18px 0;
-    border-bottom:1px solid #e5e5e5;
+	width:100%;
+	border-collapse:collapse;
 }
 
 .product-name{
-    font-size:18px;
-    font-weight:bold;
-    color:#222;
-    margin-bottom:16px;
+	font-size:18px;
+	font-weight:bold;
 }
 
 .product-price{
-    font-size:26px;
-    font-weight:bold;
-    color:#333;
+	margin-top:5px;
+	font-size:15px;
 }
 
-/* ================= ＋ボタン ================= */
+.product-line{
+	border-bottom:1px solid #d8c9a7;
+}
+
+/* ＋ボタン*/
 
 .btn-add{
-    width:52px;
-    height:52px;
-    border-radius:50%;
-    border:3px solid #666;
-    background:#fff;
-    color:#666;
-    font-size:34px;
-    font-weight:bold;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    line-height:1;
+	padding:10px 18px;
+	width:auto;
+	height:auto;
+	border-radius:8px;
+	border:1px solid #333;
+	background:#FF8C60;
+	color:white;
+	font-size:18px;
+	font-weight:bold;
+	cursor:pointer;
+	box-shadow:none;
 }
 
-/* ================= 売切 ================= */
+/* 売切 */
 
 .sold-out{
-    color:red;
-    font-size:20px;
-    font-weight:bold;
+	font-size:18px;
+	font-weight:bold;
+	color:#777;
 }
 
-/* ================= フッター ================= */
+/* =========================
+   フッター
+========================= */
 
-.footer{
-    position:fixed;
-    bottom:0;
-    width:100%;
-    height:100px;
-    background:#fff;
-    border-top:1px solid #ccc;
-    display:flex;
-    z-index:50;
+footer{
+	position:fixed;
+	bottom:0;
+	left:0;
+	width:100%;
+	background:#FDF5E6;
+	border-top:1px solid #ccc;
 }
 
-.footer-btn{
-    flex:1;
-    border:none;
-    cursor:pointer;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    text-decoration:none;
-    color:inherit;
-    font-size:15px;
-    font-weight:bold;
+.footer-table{
+	width:100%;
+	border-collapse:collapse;
+	text-align:center;
+	background:#FDF5E6;
 }
 
-/* 履歴 */
+.footer-table td{
+	height:80px;
+}
+
+/* 履歴・お会計 */
 
 .btn-order-history{
-    background:#A0FFA0;
+	width:100%;
+	height:80px;
+	border:none;
+	background:#A0FFA0;
+	font-size:14px;
+	font-weight:normal;
+	cursor:pointer;
+	box-shadow:none;
 }
 
 /* 注文リスト */
 
 .btn-order-list{
-    background:#FF8C60;
+	width:100%;
+	height:80px;
+	border:none;
+	background:#FF8C60;
+	color:white;
+	font-size:14px;
+	font-weight:normal;
+	cursor:pointer;
+	box-shadow:none;
 }
 
-/* 卓番号 */
-
-.table-num{
-    flex:1;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:2rem;
-    font-weight:bold;
-    border-left:1px solid #ccc;
-    background:#fff;
-}
+	/* 卓番号 */
+    .table-num {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: bold;
+      border-left: 1px solid #ccc;
+    }

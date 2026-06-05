@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-    // Servletから送られてきたデータを取得
     Integer tableNumber = (Integer) request.getAttribute("tableNumber");
     Integer guestCount = (Integer) request.getAttribute("guestCount");
 %>
