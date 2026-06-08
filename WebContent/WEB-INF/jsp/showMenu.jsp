@@ -19,7 +19,7 @@ if(items == null){
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>メニュー表示</title>
+<title>メニュー表示です</title>
 <link rel="stylesheet" href="./css/showMenu.css">
 </head>
 <body>
